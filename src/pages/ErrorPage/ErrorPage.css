@@ -1,0 +1,62 @@
+.error-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: #00000069;
+}
+
+.error-page__logo {
+  margin-top: 15rem;
+  position: relative;
+  width: 100%;
+}
+
+.error-page__logo--image {
+  position: absolute;
+  top: 0;
+  left: 29%;
+}
+
+.error-page__logo--image > img {
+  width: 40rem;
+  object-fit: cover;
+}
+
+.error-page__logo--title {
+  position: absolute;
+  color: #00000069;
+  font-weight: 900;
+  font-size: 8rem;
+  top: 11rem;
+  left: 40%;
+}
+
+.error-page__description {
+  margin-top: 24rem;
+  font-size: 3rem;
+  font-style: italic;
+  color: rgb(0, 0, 0);
+}
+
+.error-page__button {
+  margin: 4rem;
+}
+
+.error-page__button > button {
+  padding: 1rem 3rem;
+  border-radius: 5rem;
+  font-size: 1.8rem;
+  color: #006838;
+  font-weight: 500;
+  border: 0.2rem solid #006838;
+  background-color: rgb(255, 255, 255);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.error-page__button > button:hover {
+  color: white;
+  background-color: #006838;
+}

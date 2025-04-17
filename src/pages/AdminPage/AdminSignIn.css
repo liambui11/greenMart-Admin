@@ -1,0 +1,81 @@
+
+
+.admin-sign-in-container {
+  width: 100%;
+  height: 100%;
+}
+
+.admin-sign-in {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  font-size: 1.5rem;
+}
+
+/* ==== logo ==== */
+
+.admin-sign-in__logo {
+  position: relative;
+  top: 10rem;
+}
+
+.admin-sign-in__logo > img {
+  width: 25rem;
+  transform: translateX(-3rem);
+}
+
+.admin-sign-in__logo > span {
+  position: absolute;
+  color: #0000009e;
+  font-weight: 700;
+  font-size: 2.8rem;
+  top: 7rem;
+  left: 17rem;
+}
+
+/* ==== form ==== */
+.admin-sign-in__form {
+  position: absolute;
+  top: 25rem;
+}
+
+.admin-sign-in__label {
+  display: block;
+  color: #006838;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.admin-sign-in__input-group {
+  margin-bottom: 3rem;
+  width: 40rem;
+}
+
+.admin-sign-in__input {
+  width: 100%;
+  padding: 1rem;
+  border: 0.1rem solid #ccc;
+  border-radius: 0.5rem;
+  font-size: 1.4rem;
+}
+
+.admin-sign-in__button {
+  width: 100%;
+  padding: 0.8rem;
+  background-color: #006838;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: 600;
+}
+
+.admin-sign-in__button:hover {
+  background-color: #01522c;
+}

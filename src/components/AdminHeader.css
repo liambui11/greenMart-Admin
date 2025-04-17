@@ -1,0 +1,83 @@
+.admin-header-container {
+  height: 10rem;
+  width: 100%;
+  position: fixed; /* 👈 cái này nè, quan trọng nhất */
+  top: 0;
+  left: 0;
+  background-color: white;
+  border-bottom: 0.1rem solid rgba(0, 0, 0, 0.212);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+}
+
+.admin-header {
+  position: relative;
+  height: 10rem;
+  width: 100%;
+  display: flex;
+}
+
+/* ==== user ==== */
+
+.admin-header__user {
+  position: absolute;
+  bottom: 2rem;
+  right: 18rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.admin-header__user--avatar {
+  height: 6rem;
+  width: 6rem;
+  border: 0.1rem solid rgba(0, 0, 0, 0.263);
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.admin-header__user--name {
+  color: #0000009e;
+  font-size: 2rem;
+  font-weight: 500;
+  margin-left: 2rem;
+}
+
+/* ==== log out ==== */
+
+.admin-header__log-out {
+  color: #0000009e;
+  font-weight: 500;
+  font-size: 2rem;
+  position: absolute;
+  bottom: 3.8rem;
+  right: 4rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.admin-header__log-out > svg {
+  margin-left: 0.6rem;
+}
+
+@media (max-width: 1000px) {
+  .admin-header__user {
+    right: 15rem;
+  }
+  .admin-header__user--avatar {
+    height: 5rem;
+    width: 5rem;
+  }
+
+  .admin-header__user--name {
+    font-size: 1.7rem;
+    font-weight: 500;
+    margin-left: 1.1rem;
+  }
+
+  .admin-header__log-out {
+    font-size: 1.7rem;
+    font-weight: 500;
+    bottom: 3.55rem;
+  }
+}

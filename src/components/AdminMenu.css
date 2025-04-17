@@ -1,0 +1,46 @@
+.admin-menu {
+  width: 35rem;
+}
+
+.admin-menu__title {
+  margin: 5rem 0 0 7.2rem;
+  color: #006838;
+  font-weight: 750;
+  font-size: 2.4rem;
+}
+
+.admin-menu__items {
+  width: 25rem;
+  margin: 2rem 0 0 7.2rem;
+  color: #00000069;
+  font-size: 1.7rem;
+  font-weight: 400;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.admin-menu__items a {
+  padding: 1rem 2rem;
+  text-decoration: none;
+  display: block;
+  color: #006838;
+  font-size: 1.7rem;
+  font-weight: 400;
+}
+
+.admin-menu__items a:visited {
+  color: #006838;
+  font-size: 1.7rem;
+  font-weight: 400;
+}
+
+.admin-menu__items a:hover,
+.admin-menu__items > a.active {
+  color: white;
+  cursor: pointer;
+  font-size: 1.8rem;
+  font-weight: 500;
+  background-color: #006838;
+  border-radius: 1.2rem;
+}
