@@ -2,14 +2,42 @@ import { FaChevronRight } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./ProductCategoryDetail.css";
 import { useEffect, useState } from "react";
+import { CiEdit } from "react-icons/ci";
+import { TbArrowBackUp } from "react-icons/tb";
+import { LuSave } from "react-icons/lu";
+import { FaCloudUploadAlt } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 function ProductCategoryDetail() {
   const navigateToAdmin = useNavigate();
   const navigateToProductCategories = useNavigate();
+  const [currentParentCategory, setCurrentParentCategory] = useState();
+  const [isEdit, setIsEdit] = useState(false);
+
   const location = useLocation();
   const currentCategory = location.state?.item;
-  const [parentCategory, setParentCategory] = useState();
-  const [isEdit, setIsEdit] = useState(false);
+  const [categoryName, setCategoryName] = useState(
+    currentCategory.categoryName
+  );
+  const [categoryImage, setCategoryImage] = useState(
+    currentCategory.categoryImage
+  );
+  const [parentCategory, setParentCategory] = useState(
+    currentCategory.categoryParentID
+  );
+
+  const [categoryStatus, setCategoryStatus] = useState(
+    currentCategory.categoryStatus
+  );
+  const [categorySlug, setCategorySlug] = useState(
+    currentCategory.categorySlug
+  );
+  const [categoryDeleted, setCategoryDeleted] = useState(
+    currentCategory.deleted
+  );
+  const [categoryPosition, setCategoryPosition] = useState(
+    currentCategory.categoryPosition
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -17,7 +45,7 @@ function ProductCategoryDetail() {
         `http://localhost:3000/api/v1/products-category`
       );
       const parentCategoryJson = await resParentCategory.json();
-      setParentCategory(parentCategoryJson.info);
+      setCurrentParentCategory(parentCategoryJson.info);
     };
     fetchData();
   }, []);
@@ -30,10 +58,48 @@ function ProductCategoryDetail() {
     navigateToProductCategories(`/productcategories`);
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setCategoryImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <div className="product-category-detail-container">
       <div className="product-category-detail">
-        <div className="product-category-detail__title">Category Detail</div>
+        <div className="product-category-detail__title">
+          <div className="product-category-detail__title--name">
+            Category Detail
+          </div>
+          <div className="product-category-detail__title--button">
+            {isEdit && (
+              <div
+                className="save-button"
+                onClick={() => handleSave(setIsEdit)}
+              >
+                <LuSave />
+                Save
+              </div>
+            )}
+
+            <div className="edit-button" onClick={() => setIsEdit(true)}>
+              <CiEdit />
+              Edit
+            </div>
+            <div
+              className="back-button"
+              onClick={() => navigateToProductCategories(`/productcategories`)}
+            >
+              <TbArrowBackUp />
+              Back
+            </div>
+          </div>
+        </div>
         <div className="product-category-detail__breadcrumb">
           <span onClick={handleAdminClick}>Admin</span>
           <FaChevronRight />
@@ -46,31 +112,53 @@ function ProductCategoryDetail() {
             Name
             <input
               type="text"
-              value={currentCategory.categoryName}
-              disabled={isEdit}
+              value={categoryName}
+              disabled={!isEdit}
+              onChange={(e) => setCategoryName(e.target.value)}
             ></input>
           </label>
           <label className="category__parent-category">
             Parent Category
-            <input
-              type="text"
-              value={
-                parentCategory && parentCategory.length > 0
-                  ? parentCategory.find(
-                      (item) => item._id === currentCategory.categoryParentID
-                    )?.categoryName || "No parent"
-                  : null
-              }
-              disabled={isEdit}
-            ></input>
+            <select
+              disabled={!isEdit}
+              value={parentCategory}
+              onChange={(e) => setParentCategory(e.target.value)}
+            >
+              <option value="">No Parent</option>
+              {currentParentCategory?.map((item) => (
+                <option key={item._id} value={item._id}>
+                  {item.categoryName}
+                </option>
+              ))}
+            </select>
           </label>
           <label className="category__image">
             Image
-            <img
-              alt=""
-              src={currentCategory.categoryImage}
-              style={{ width: "20rem", height: "12rem", objectFit: "contain" }}
-            />
+            <div className="category__image--content">
+              <img
+                alt=""
+                src={categoryImage}
+                style={{
+                  width: "20rem",
+                  height: "12rem",
+                  objectFit: "contain",
+                }}
+              />
+              {isEdit && (
+                <>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    id="imageUpload"
+                    style={{ display: "none" }}
+                    onChange={handleImageChange}
+                  />
+                  <label className="upload-icon" htmlFor="imageUpload">
+                    <FaCloudUploadAlt size="3rem" />
+                  </label>
+                </>
+              )}
+            </div>
           </label>
           <label className="category__status">
             Status
@@ -79,8 +167,9 @@ function ProductCategoryDetail() {
                 <input
                   type="radio"
                   value="active"
-                  checked={currentCategory.categoryStatus === "active"}
-                  disabled={isEdit}
+                  checked={categoryStatus === "active"}
+                  disabled={!isEdit}
+                  onChange={(e) => setCategoryStatus(e.target.value)}
                 ></input>
                 Active
               </label>
@@ -88,8 +177,9 @@ function ProductCategoryDetail() {
                 <input
                   type="radio"
                   value="inactive"
-                  checked={currentCategory.categoryStatus === "inactive"}
-                  disabled={isEdit}
+                  checked={categoryStatus === "inactive"}
+                  disabled={!isEdit}
+                  onChange={(e) => setCategoryStatus(e.target.value)}
                 ></input>
                 InActive
               </label>
@@ -99,16 +189,18 @@ function ProductCategoryDetail() {
             Position
             <input
               type="number"
-              value={currentCategory.categoryPosition}
-              disabled={isEdit}
+              value={categoryPosition}
+              disabled={!isEdit}
+              onChange={(e) => setCategoryPosition(Number(e.target.value))}
             ></input>
           </label>
           <label className="category__slug">
             Slug
             <input
               type="text"
-              value={currentCategory.categorySlug}
-              disabled={isEdit}
+              value={categorySlug}
+              disabled={!isEdit}
+              onChange={(e) => setCategorySlug(e.target.value)}
             ></input>
           </label>
           <label className="category__create-by">
@@ -116,7 +208,7 @@ function ProductCategoryDetail() {
             <input
               type="text"
               value={currentCategory.createBy}
-              disabled={isEdit}
+              disabled={true}
             ></input>
           </label>
           <label className="category__update-by">
@@ -124,7 +216,7 @@ function ProductCategoryDetail() {
             <input
               type="text"
               value={currentCategory.updateBy}
-              disabled={isEdit}
+              disabled={true}
             ></input>
           </label>
           <label className="category__delete-by">
@@ -132,7 +224,7 @@ function ProductCategoryDetail() {
             <input
               type="text"
               value={currentCategory.deleteBy}
-              disabled={isEdit}
+              disabled={true}
             ></input>
           </label>
           <label className="category__deleted">
@@ -141,18 +233,20 @@ function ProductCategoryDetail() {
               <label>
                 <input
                   type="radio"
-                  value={true}
-                  checked={currentCategory.deleted === true}
-                  disabled={isEdit}
+                  value="true"
+                  checked={categoryDeleted.toString() === "true"}
+                  disabled={!isEdit}
+                  onChange={(e) => setCategoryDeleted(true)}
                 ></input>
                 True
               </label>
               <label>
                 <input
                   type="radio"
-                  value={false}
-                  checked={currentCategory.deleted === false}
-                  disabled={isEdit}
+                  value="false"
+                  checked={categoryDeleted.toString() === "false"}
+                  disabled={!isEdit}
+                  onChange={(e) => setCategoryDeleted(false)}
                 ></input>
                 False
               </label>
@@ -169,7 +263,7 @@ function ProductCategoryDetail() {
                     )
                   : "Null"
               }
-              disabled={isEdit}
+              disabled={true}
             ></input>
           </label>
           <label className="category__create-at">
@@ -183,7 +277,7 @@ function ProductCategoryDetail() {
                     )
                   : "Null"
               }
-              disabled={isEdit}
+              disabled={true}
             ></input>
           </label>
           <label className="category__update-at">
@@ -197,7 +291,7 @@ function ProductCategoryDetail() {
                     )
                   : "Null"
               }
-              disabled={isEdit}
+              disabled={true}
             ></input>
           </label>
         </div>
@@ -207,3 +301,22 @@ function ProductCategoryDetail() {
 }
 
 export default ProductCategoryDetail;
+
+function handleSave(setIsEdit) {
+  Swal.fire({
+    title: "Do you want to save the changes?",
+    showDenyButton: true,
+    showCancelButton: true,
+    confirmButtonText: "Save",
+    denyButtonText: `Don't save`,
+  }).then((result) => {
+    if (result.isConfirmed) {
+      Swal.fire("Saved!", "", "success");
+      setIsEdit(false);
+    } else if (result.isDenied) {
+      Swal.fire("Changes are not saved", "", "info");
+      // Thực hiện hành động khi không lưu
+    }
+    // Không cần xử lý gì nếu người dùng nhấp vào "Cancel"
+  });
+}
