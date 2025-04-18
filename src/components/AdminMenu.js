@@ -78,7 +78,7 @@ function AdminMenu() {
             Staff
           </NavLink>
           <NavLink
-            to={`/AdminPage/Customers`}
+            to={`/customer`}
             className={({ isActive }) =>
               `admin-menu__items--customers ${isActive ? "active" : ""}`
             }
