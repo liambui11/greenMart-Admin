@@ -1,4 +1,6 @@
 import LayoutDefault from "../layout/LayoutDefault/LayoutDefault";
+import Customer from "../pages/AdminCustomer/Customer";
+import CustomerDetail from "../pages/AdminCustomer/CustomerDetail";
 import ProductCategories from "../pages/AdminPageMenu/ProductCategories";
 import ProductCategoryDetail from "../pages/AdminPageMenu/ProductCategoryDetail";
 import Products from "../pages/AdminPageMenu/Products";
@@ -22,6 +24,14 @@ export const routes = [
       {
         path: "products",
         element: <Products />,
+      },
+      {
+        path: "customer",
+        element: <Customer />,
+      },
+      {
+        path: "customerdetail",
+        element: <CustomerDetail />,
       },
       {
         path: "productdetail",
