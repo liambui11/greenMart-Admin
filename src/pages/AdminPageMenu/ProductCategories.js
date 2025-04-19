@@ -30,6 +30,12 @@ function ProductCategories() {
     fetchData();
   }, []);
 
+  const [searchQuery, setSearchQuery] = useState("");
+  const filteredCategory = categoriesData.filter(
+    (item) =>
+      item.categoryName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="product-categories-container">
       <div className="product-categories">
@@ -44,6 +50,8 @@ function ProductCategories() {
             className="product-categories__content--search"
             type="text"
             placeholder="Search Product Category"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
           ></input>
           <table className="product-categories__content--table">
             <thead>
@@ -62,7 +70,7 @@ function ProductCategories() {
               </tr>
             </thead>
             <tbody>
-              {categoriesData.map((item) => (
+              {filteredCategory.map((item) => (
                 <tr key={item._id}>
                   <td>
                     <input type="checkbox"></input>

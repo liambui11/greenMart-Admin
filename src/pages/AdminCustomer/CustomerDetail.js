@@ -1,26 +1,25 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FaChevronRight } from "react-icons/fa";
 import './CustomerDetail.css'
+import Swal from "sweetalert2";
+import { CiEdit } from "react-icons/ci";
+import { TbArrowBackUp } from "react-icons/tb";
+import { LuSave } from "react-icons/lu";
 
 function CustomerDetail() {
     const navigateToAdmin = useNavigate();
     const navigateToCustomer = useNavigate();
     const location = useLocation();
     const currentCustomer = location.state?.item;
-    const [parentCustomer, setParentCustomer] = useState();
+    // const [parentCustomer, setParentCustomer] = useState();
     const [isEdit, setIsEdit] = useState(false);
 
-    useEffect(() => {
-        const fetchData = async () => {
-          const resParentCustomer = await fetch(
-            `http://localhost:3000/api/v1/users/all`
-          );
-          const parentCustomerJson = await resParentCustomer.json();
-          setParentCustomer(parentCustomerJson.info);
-        };
-        fetchData();
-      }, []);
+    const [customerName,setCustomerName] = useState(currentCustomer.userName);
+    const [customerEmail,setCustomerEmail] = useState(currentCustomer.userEmail);
+    const [customerAddress,setCustomerAddress] = useState(currentCustomer.userAddress);
+    const [customerPhone,setCustomerPhone] = useState(currentCustomer.userPhone);
+    
 
     const handleAdminClick = () => {
         navigateToAdmin(`/`);
@@ -33,7 +32,32 @@ function CustomerDetail() {
   return (
     <div className="customer-detail-container">
           <div className="customer-detail">
-            <div className="customer-detail__title">Customer Detail</div>
+              <div className="customer-detail__title">
+              <div className="customer-detail__title--name">Customer Detail</div>
+                <div className="customer-detail__title--button">
+                        {isEdit && (
+                          <div
+                            className="customer-save-button"
+                            onClick={() => handleSave(setIsEdit)}
+                          >
+                            <LuSave />
+                            Save
+                          </div>
+                        )}
+            
+                        <div className="customer-edit-button" onClick={() => setIsEdit(true)}>
+                          <CiEdit />
+                          Edit
+                        </div>
+                        <div
+                          className="customer-back-button"
+                          onClick={() => navigateToCustomer(`/customer`)}
+                        >
+                          <TbArrowBackUp />
+                          Back
+                </div>
+              </div>
+            </div>
             <div className="customer-detail__breadcrumb">
               <span onClick={handleAdminClick}>Admin</span>
               <FaChevronRight />
@@ -46,18 +70,18 @@ function CustomerDetail() {
                 Name
                 <input
                   type="text"
-                  value={currentCustomer.userName}
-                  disabled={isEdit}
+                  value={customerName}
+                  disabled={!isEdit}
+                  onChange={(e)=>setCustomerName(e.target.value)}
                 ></input>
               </label>
               <label className="customer-email">
                 Email
                 <input
                   type="email"
-                  value={
-                    currentCustomer.userEmail
-                  }
-                  disabled={isEdit}
+                  value={customerEmail}
+                  disabled={!isEdit}
+                  onChange={(e)=>setCustomerEmail(e.target.value)}
                 ></input>
               </label>
               <label className="customer__image">
@@ -76,7 +100,7 @@ function CustomerDetail() {
                       type="radio"
                       value="active"
                       checked={currentCustomer.userStatus === "active"}
-                      disabled={isEdit}
+                      disabled={true}
                     ></input>
                     Active
                   </label>
@@ -85,7 +109,7 @@ function CustomerDetail() {
                       type="radio"
                       value="inactive"
                       checked={currentCustomer.userStatus === "inactive"}
-                      disabled={isEdit}
+                      disabled={true}
                     ></input>
                     InActive
                   </label>
@@ -95,42 +119,20 @@ function CustomerDetail() {
                 Number-Phone
                 <input
                   type="text"
-                  value={currentCustomer.userPhone}
-                  disabled={isEdit}
+                  value={customerPhone}
+                  disabled={!isEdit}
+                  onChange={(e)=>setCustomerPhone(e.target.value)}
                 ></input>
               </label>
               <label className="customer__address">
                 Address
                 <input
                   type="text"
-                  value={currentCustomer.userAddress}
-                  disabled={isEdit}
+                  value={customerAddress}
+                  disabled={!isEdit}
+                  onChange={(e)=>setCustomerAddress(e.target.value)}
                 ></input>
               </label>
-              {/* <label className="category__create-by">
-                Create By
-                <input
-                  type="text"
-                  value={currentCategory.createBy}
-                  disabled={isEdit}
-                ></input>
-              </label> */}
-              {/* <label className="category__update-by">
-                Update By
-                <input
-                  type="text"
-                  value={current.updateBy}
-                  disabled={isEdit}
-                ></input>
-              </label> */}
-              {/* <label className="category__delete-by">
-                Delete By
-                <input
-                  type="text"
-                  value={currentCategory.deleteBy}
-                  disabled={isEdit}
-                ></input>
-              </label> */}
               <label className="customer__deleted">
                 Deleted
                 <div className="customer__deleted--group">
@@ -139,7 +141,7 @@ function CustomerDetail() {
                       type="radio"
                       value={true}
                       checked={currentCustomer.deleted === true}
-                      disabled={isEdit}
+                      disabled={!isEdit}
                     ></input>
                     True
                   </label>
@@ -148,7 +150,7 @@ function CustomerDetail() {
                       type="radio"
                       value={false}
                       checked={currentCustomer.deleted === false}
-                      disabled={isEdit}
+                      disabled={!isEdit}
                     ></input>
                     False
                   </label>
@@ -165,7 +167,7 @@ function CustomerDetail() {
                         )
                       : "Null"
                   }
-                  disabled={isEdit}
+                  disabled={true}
                 ></input>
               </label>
               <label className="customer__create-at">
@@ -179,7 +181,7 @@ function CustomerDetail() {
                         )
                       : "Null"
                   }
-                  disabled={isEdit}
+                  disabled={true}
                 ></input>
               </label>
               <label className="customer__update-at">
@@ -193,7 +195,7 @@ function CustomerDetail() {
                         )
                       : "Null"
                   }
-                  disabled={isEdit}
+                  disabled={true}
                 ></input>
               </label>
             </div>
@@ -202,4 +204,23 @@ function CustomerDetail() {
   )
 }
 
-export default CustomerDetail
+export default CustomerDetail;
+
+function handleSave(setIsEdit) {
+  Swal.fire({
+    title: "Do you want to save the changes?",
+    showDenyButton: true,
+    showCancelButton: true,
+    confirmButtonText: "Save",
+    denyButtonText: `Don't save`,
+  }).then((result) => {
+    if (result.isConfirmed) {
+      Swal.fire("Saved!", "", "success");
+      setIsEdit(false);
+    } else if (result.isDenied) {
+      Swal.fire("Changes are not saved", "", "info");
+      // Thực hiện hành động khi không lưu
+    }
+    // Không cần xử lý gì nếu người dùng nhấp vào "Cancel"
+  });
+}

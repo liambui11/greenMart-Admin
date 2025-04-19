@@ -33,6 +33,12 @@ function Products() {
     fetchData();
   }, []);
 
+  const [searchQuery, setSearchQuery] = useState("");
+  const filteredProduct = productsData.filter(
+    (item) =>
+      item.productName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="products-container">
       <div className="products">
@@ -47,6 +53,8 @@ function Products() {
             className="products__content--search"
             type="text"
             placeholder="Search Product"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
           ></input>
           <table className="products__content--table">
             <thead>
@@ -66,7 +74,7 @@ function Products() {
               </tr>
             </thead>
             <tbody>
-              {productsData.map((item) => (
+              {filteredProduct.map((item) => (
                 <tr key={item._id}>
                   <td>
                     <input type="checkbox"></input>
