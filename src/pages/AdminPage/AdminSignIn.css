@@ -79,3 +79,10 @@
 .admin-sign-in__button:hover {
   background-color: #01522c;
 }
+
+.admin-sign-in__error{
+  color: red;
+  margin-top: 0.5rem;
+  font-size: 1.3rem;
+  font-weight: 500;
+}

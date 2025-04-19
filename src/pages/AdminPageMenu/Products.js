@@ -9,9 +9,15 @@ function Products() {
   const [categoriesData, setCategoriesData] = useState([]);
   const [productsData, setProductsData] = useState([]);
   const navigateToAdmin = useNavigate();
+  const navigateToProductDetail = useNavigate();
 
   const handleAdminClick = () => {
     navigateToAdmin(`/`);
+  };
+  const handleProductDetailClick = (item) => {
+    navigateToProductDetail(`/productdetail`, {
+      state: { item },
+    });
   };
 
   useEffect(() => {
@@ -96,7 +102,10 @@ function Products() {
                   <td>{item.productStock}</td>
                   <td>01/01/2025</td>
                   <td>
-                    <CiEdit />
+                    <CiEdit
+                      className="edit-icon"
+                      onClick={() => handleProductDetailClick(item)}
+                    />
                   </td>
                   <td>
                     <MdOutlineDeleteOutline />

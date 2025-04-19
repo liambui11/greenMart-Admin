@@ -1,19 +1,47 @@
 import { useNavigate } from "react-router-dom";
 import "./AdminSignIn.css";
+import { useState } from "react";
 
 function AdminSignIn() {
-  const navigate = useNavigate(); // Đổi tên biến từ "navigation" thành "navigate"
+  const navigate = useNavigate();
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
+  const [error, setError] = useState({});
+
+  const validate = () => {
+    const newErrors = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!email) {
+      newErrors.email = "Email cannot be empty";
+    } else if (!emailRegex.test(email)) {
+      newErrors.email = "Invalid email format";
+    }
+
+    if (!password) {
+      newErrors.password = "Password cannot be empty";
+    } else if (password.length <= 6) {
+      newErrors.password = "Password must be more than 6 characters";
+    }
+
+    return newErrors;
+  };
 
   const handleLogin = (event) => {
-    event.preventDefault(); // Ngăn form tải lại trang
-    navigate("/AdminPage"); // Điều hướng đến trang Admin
+    event.preventDefault();
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length === 0) {
+      navigate("/");
+    } else {
+      setError(validationErrors);
+    }
   };
 
   return (
     <div className="admin-sign-in-container">
       <div className="admin-sign-in">
         <div className="admin-sign-in__logo">
-          <img alt="Logo" src="/images/logo.png"></img>
+          <img alt="Logo" src="/image/logoGM.png"></img>
           <span className="admin-sign-in__logo--title">Admin</span>
         </div>
         <form className="admin-sign-in__form">
@@ -26,7 +54,10 @@ function AdminSignIn() {
               type="email"
               id="email"
               placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
+            {error && <p className="admin-sign-in__error">{error.email}</p>}
           </div>
 
           <div className="admin-sign-in__input-group">
@@ -38,7 +69,10 @@ function AdminSignIn() {
               type="password"
               id="password"
               placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
+            {error && <p className="admin-sign-in__error">{error.password}</p>}
           </div>
 
           <button className="admin-sign-in__button" onClick={handleLogin}>

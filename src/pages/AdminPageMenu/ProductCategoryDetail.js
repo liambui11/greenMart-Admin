@@ -9,8 +9,7 @@ import { FaCloudUploadAlt } from "react-icons/fa";
 import Swal from "sweetalert2";
 
 function ProductCategoryDetail() {
-  const navigateToAdmin = useNavigate();
-  const navigateToProductCategories = useNavigate();
+  const navigate = useNavigate();
   const [currentParentCategory, setCurrentParentCategory] = useState();
   const [isEdit, setIsEdit] = useState(false);
 
@@ -51,11 +50,11 @@ function ProductCategoryDetail() {
   }, []);
 
   const handleAdminClick = () => {
-    navigateToAdmin(`/`);
+    navigate(`/`);
   };
 
   const handleProductCategoriesClick = () => {
-    navigateToProductCategories(`/productcategories`);
+    navigate(`/productcategories`);
   };
 
   const handleImageChange = (e) => {
@@ -93,7 +92,7 @@ function ProductCategoryDetail() {
             </div>
             <div
               className="back-button"
-              onClick={() => navigateToProductCategories(`/productcategories`)}
+              onClick={() => navigate(`/productcategories`)}
             >
               <TbArrowBackUp />
               Back

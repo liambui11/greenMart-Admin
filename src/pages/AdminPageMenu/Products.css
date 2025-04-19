@@ -68,3 +68,10 @@ input[type="checkbox"] {
   accent-color: #006838;
   cursor: pointer;
 }
+
+.edit-icon {
+  cursor: pointer;
+}
+.edit-icon:hover {
+  color: #006838;
+}
