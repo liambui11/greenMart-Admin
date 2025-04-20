@@ -7,14 +7,13 @@ import { useNavigate } from "react-router-dom";
 
 function ProductCategories() {
   const [categoriesData, setCategoriesData] = useState([]);
-  const navigateToAdmin = useNavigate();
-  const navigateToProductCategoryDetail = useNavigate();
+  const navigate = useNavigate();
 
   const handleAdminClick = () => {
-    navigateToAdmin(`/`);
+    navigate(`/`);
   };
   const handleProductDetailClick = (item) => {
-    navigateToProductCategoryDetail(`/productcategorydetail`, {
+    navigate(`/productcategorydetail`, {
       state: { item },
     });
   };
@@ -31,15 +30,26 @@ function ProductCategories() {
   }, []);
 
   const [searchQuery, setSearchQuery] = useState("");
-  const filteredCategory = categoriesData.filter(
-    (item) =>
-      item.categoryName.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredCategory = categoriesData.filter((item) =>
+    item.categoryName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
     <div className="product-categories-container">
       <div className="product-categories">
-        <div className="product-categories__title">Product Categories</div>
+        <div className="product-categories__title">
+          <div className="product-categories__title--name">
+            Product Categories
+          </div>
+          <div className="product-categories__title--button">
+            <div
+              className="add-button"
+              onClick={() => navigate(`/addproductcategory`)}
+            >
+              Add Category
+            </div>
+          </div>
+        </div>
         <div className="product-categories__breadcrumb">
           <span onClick={handleAdminClick}>Admin</span>
           <FaChevronRight />
@@ -87,7 +97,13 @@ function ProductCategories() {
                   </td>
                   <td>{item.categoryName}</td>
                   <td>
-                    <span className="categories-status">Active</span>
+                    <span
+                      className={`categories-status ${
+                        item.categoryStatus === "active" ? "" : "inactive"
+                      }`}
+                    >
+                      {item.categoryStatus === "active" ? "Active" : "Inactive"}
+                    </span>
                   </td>
                   <td>
                     {item.createdAt

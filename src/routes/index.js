@@ -7,12 +7,19 @@ import Products from "../pages/AdminPageMenu/Products";
 import ProductDetail from "../pages/AdminPageMenu/ProductDetail";
 import ErrorPage from "../pages/ErrorPage/ErrorPage";
 import AdminSignIn from "../pages/AdminPage/AdminSignIn";
+import Overview from "../pages/AdminPageMenu/Overview";
+import AddProduct from "../pages/AdminPageMenu/AddProduct";
+import AddProductCategory from "../pages/AdminPageMenu/AddProductCategory";
 
 export const routes = [
   {
     path: "/",
     element: <LayoutDefault />,
     children: [
+      {
+        path: "overview",
+        element: <Overview />,
+      },
       {
         path: "productcategories",
         element: <ProductCategories />,
@@ -36,6 +43,14 @@ export const routes = [
       {
         path: "productdetail",
         element: <ProductDetail />,
+      },
+      {
+        path: "addproduct",
+        element: <AddProduct />,
+      },
+      {
+        path: "addproductcategory",
+        element: <AddProductCategory />,
       },
     ],
   },

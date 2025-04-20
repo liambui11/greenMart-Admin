@@ -8,14 +8,13 @@ import { useNavigate } from "react-router-dom";
 function Products() {
   const [categoriesData, setCategoriesData] = useState([]);
   const [productsData, setProductsData] = useState([]);
-  const navigateToAdmin = useNavigate();
-  const navigateToProductDetail = useNavigate();
+  const navigate = useNavigate();
 
   const handleAdminClick = () => {
-    navigateToAdmin(`/`);
+    navigate(`/`);
   };
   const handleProductDetailClick = (item) => {
-    navigateToProductDetail(`/productdetail`, {
+    navigate(`/productdetail`, {
       state: { item },
     });
   };
@@ -24,7 +23,9 @@ function Products() {
     const fetchData = async () => {
       try {
         const [resProducts, resCategories] = await Promise.all([
-          fetch(`http://localhost:3000/api/v1/products`),
+          fetch(
+            `http://localhost:3000/api/v1/products?currentPage=1&limitItems=1000`
+          ),
           fetch(`http://localhost:3000/api/v1/products-category`),
         ]);
         const productJson = await resProducts.json();
@@ -40,15 +41,21 @@ function Products() {
   }, []);
 
   const [searchQuery, setSearchQuery] = useState("");
-  const filteredProduct = productsData.filter(
-    (item) =>
-      item.productName.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredProduct = productsData.filter((item) =>
+    item.productName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
     <div className="products-container">
       <div className="products">
-        <div className="products__title">Products</div>
+        <div className="products__title">
+          <div className="products__title--name">Products</div>
+          <div className="products__title--button">
+            <div className="add-button" onClick={() => navigate(`/addproduct`)}>
+              Add Product
+            </div>
+          </div>
+        </div>
         <div className="products__breadcrumb">
           <span onClick={handleAdminClick}>Admin</span>
           <FaChevronRight />
@@ -104,7 +111,13 @@ function Products() {
                     )}
                   </td>
                   <td>
-                    <span className="products-status">Active</span>
+                    <span
+                      className={`products-status ${
+                        item.productStatus === "active" ? "" : "inactive"
+                      }`}
+                    >
+                      {item.productStatus === "active" ? "Active" : "Inactive"}
+                    </span>
                   </td>
                   <td>${item.productPrice}</td>
                   <td>{item.productStock}</td>

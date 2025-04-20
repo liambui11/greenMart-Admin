@@ -3,8 +3,46 @@
 }
 
 .products__title {
+  display: flex;
+  position: relative;
+  height: 5rem;
+}
+
+.products__title--name {
+  position: absolute;
+  top: 0;
+  left: 0;
   font-size: 3rem;
   font-weight: 600;
+}
+
+.add-button {
+  width: 13rem;
+  padding: 1rem 1rem;
+  background-color: #5c6c75;
+  color: white;
+  font-weight: 600;
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.add-button:hover {
+  background-color: #2d6a4f;
+}
+
+.add-button > svg {
+  margin-right: 0.5rem;
+}
+
+.products__title--button {
+  position: absolute;
+  top: 0;
+  right: 0rem;
+  display: flex;
+  gap: 2rem;
 }
 
 .products__breadcrumb {
@@ -62,6 +100,10 @@
   background-color: #006838;
   border-radius: 0.4rem;
   font-weight: 600;
+}
+
+.products-status.inactive {
+  background-color: #db3030;
 }
 
 input[type="checkbox"] {

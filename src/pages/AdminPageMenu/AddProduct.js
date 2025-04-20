@@ -1,42 +1,26 @@
 import { FaChevronRight } from "react-icons/fa";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./ProductCategoryDetail.css";
 import { useEffect, useState } from "react";
-import { CiEdit } from "react-icons/ci";
 import { TbArrowBackUp } from "react-icons/tb";
 import { LuSave } from "react-icons/lu";
 import { FaCloudUploadAlt } from "react-icons/fa";
-import "./ProductDetail.css";
+import "./AddProduct.css";
 import Swal from "sweetalert2";
 
-function ProductDetail() {
+function AddProduct() {
   const navigate = useNavigate();
-  const location = useLocation();
-  const currentProduct = location.state?.item;
-  const [isEdit, setIsEdit] = useState(false);
-
-  const [productName, setProductName] = useState(currentProduct.productName);
-  const [productCategory, setProductCategory] = useState(
-    currentProduct.categoryID
-  );
+  const [productName, setProductName] = useState("");
+  const [productCategory, setProductCategory] = useState("No Category");
   const [categoryList, setCategoryList] = useState([]);
-  const [productImage, setProductImage] = useState(currentProduct.productImage);
-  const [productStock, setProductStock] = useState(currentProduct.productStock);
-  const [productPrice, setProductPrice] = useState(currentProduct.productPrice);
-  const [productDescription, setProductDescription] = useState(
-    currentProduct.productDescription
-  );
-  const [productStatus, setProductStatus] = useState(
-    currentProduct.productStatus
-  );
-  const [productPosition, setProductPosition] = useState(
-    currentProduct.productPosition
-  );
-  const [productDiscountPercentage, setProductDiscountPercentage] = useState(
-    currentProduct.productDiscountPercentage
-  );
-  const [productSlug, setProductSlug] = useState(currentProduct.productSlug);
-  const [productDeleted, setProductDeleted] = useState(currentProduct.deleted);
+  const [productImage, setProductImage] = useState("/image/logoGM.png");
+  const [productStock, setProductStock] = useState(0);
+  const [productPrice, setProductPrice] = useState(0);
+  const [productDescription, setProductDescription] = useState("");
+  const [productStatus, setProductStatus] = useState("active");
+  const [productPosition, setProductPosition] = useState(0);
+  const [productDiscountPercentage, setProductDiscountPercentage] = useState(0);
+  const [productSlug, setProductSlug] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,25 +43,16 @@ function ProductDetail() {
       reader.readAsDataURL(file);
     }
   };
-  return (
-    <div className="product-detail-container">
-      <div className="product-detail">
-        <div className="product-detail__title">
-          <div className="product-detail__title--name">Product Detail</div>
-          <div className="product-detail__title--button">
-            {isEdit && (
-              <div
-                className="save-button"
-                onClick={() => handleSave(setIsEdit)}
-              >
-                <LuSave />
-                Save
-              </div>
-            )}
 
-            <div className="edit-button" onClick={() => setIsEdit(true)}>
-              <CiEdit />
-              Edit
+  return (
+    <div className="add-product-container">
+      <div className="add-product">
+        <div className="add-product__title">
+          <div className="add-product__title--name">Add New Product</div>
+          <div className="add-product__title--button">
+            <div className="save-button" onClick={() => handleSave()}>
+              <LuSave />
+              Save
             </div>
             <div className="back-button" onClick={() => navigate(`/products`)}>
               <TbArrowBackUp />
@@ -85,27 +60,25 @@ function ProductDetail() {
             </div>
           </div>
         </div>
-        <div className="product-detail__breadcrumb">
+        <div className="add-product__breadcrumb">
           <span onClick={() => navigate(`/`)}>Admin</span>
           <FaChevronRight />
           <span onClick={() => navigate(`/products`)}>Products</span>
           <FaChevronRight />
-          <span>{currentProduct.productName}</span>
+          <span>Add New Product</span>
         </div>
-        <div className="product-detail__content">
+        <div className="add-product__content">
           <label className="product__name">
             Name
             <input
               type="text"
               value={productName}
-              disabled={!isEdit}
               onChange={(e) => setProductName(e.target.value)}
             ></input>
           </label>
           <label className="product__category">
             Category
             <select
-              disabled={!isEdit}
               value={productCategory}
               onChange={(e) => setProductCategory(e.target.value)}
             >
@@ -129,20 +102,19 @@ function ProductDetail() {
                   objectFit: "contain",
                 }}
               />
-              {isEdit && (
-                <>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    id="imageUpload"
-                    style={{ display: "none" }}
-                    onChange={handleImageChange}
-                  />
-                  <label className="upload-icon" htmlFor="imageUpload">
-                    <FaCloudUploadAlt size="3rem" />
-                  </label>
-                </>
-              )}
+
+              <>
+                <input
+                  type="file"
+                  accept="image/*"
+                  id="imageUpload"
+                  style={{ display: "none" }}
+                  onChange={handleImageChange}
+                />
+                <label className="upload-icon" htmlFor="imageUpload">
+                  <FaCloudUploadAlt size="3rem" />
+                </label>
+              </>
             </div>
           </label>
           <label className="product__stock">
@@ -151,7 +123,6 @@ function ProductDetail() {
               type="number"
               value={productStock}
               min={0}
-              disabled={!isEdit}
               onChange={(e) => setProductStock(Number(e.target.value))}
             ></input>
           </label>
@@ -159,8 +130,7 @@ function ProductDetail() {
             Description
             <textarea
               value={productDescription}
-              disabled={!isEdit}
-              style={{ width: "70rem", height: "10rem", resize: "none" }}
+              style={{ width: "100rem", height: "15rem", resize: "none" }}
               onChange={(e) => setProductDescription(e.target.value)}
             ></textarea>
           </label>
@@ -172,7 +142,6 @@ function ProductDetail() {
                   type="radio"
                   value="active"
                   checked={productStatus === "active"}
-                  disabled={!isEdit}
                   onChange={(e) => setProductStatus(e.target.value)}
                 ></input>
                 Active
@@ -182,7 +151,6 @@ function ProductDetail() {
                   type="radio"
                   value="inactive"
                   checked={productStatus === "inactive"}
-                  disabled={!isEdit}
                   onChange={(e) => setProductStatus(e.target.value)}
                 ></input>
                 InActive
@@ -194,7 +162,6 @@ function ProductDetail() {
             <input
               type="number"
               value={productPosition}
-              disabled={!isEdit}
               onChange={(e) => setProductPosition(Number(e.target.value))}
             ></input>
           </label>
@@ -208,7 +175,6 @@ function ProductDetail() {
                 type="number"
                 value={productPrice}
                 min={0}
-                disabled={!isEdit}
                 onChange={(e) => setProductPrice(Number(e.target.value))}
                 style={{
                   padding: "1rem",
@@ -226,7 +192,6 @@ function ProductDetail() {
               value={productDiscountPercentage}
               min={0}
               max={100}
-              disabled={!isEdit}
               onChange={(e) =>
                 setProductDiscountPercentage(Number(e.target.value))
               }
@@ -237,99 +202,7 @@ function ProductDetail() {
             <input
               type="text"
               value={productSlug}
-              disabled={!isEdit}
               onChange={(e) => setProductSlug(e.target.value)}
-            ></input>
-          </label>
-          <label className="product__create-by">
-            Create By
-            <input
-              type="text"
-              value={currentProduct.createBy}
-              disabled={true}
-            ></input>
-          </label>
-          <label className="product__update-by">
-            Update By
-            <input
-              type="text"
-              value={currentProduct.updateBy}
-              disabled={true}
-            ></input>
-          </label>
-          <label className="product__delete-by">
-            Delete By
-            <input
-              type="text"
-              value={currentProduct.deleteBy}
-              disabled={true}
-            ></input>
-          </label>
-          <label className="product__deleted">
-            Deleted
-            <div className="product__deleted--group">
-              <label>
-                <input
-                  type="radio"
-                  value="true"
-                  checked={productDeleted.toString() === "true"}
-                  disabled={!isEdit}
-                  onChange={(e) => setProductDeleted(true)}
-                ></input>
-                True
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  value="false"
-                  checked={productDeleted.toString() === "false"}
-                  disabled={!isEdit}
-                  onChange={(e) => setProductDeleted(false)}
-                ></input>
-                False
-              </label>
-            </div>
-          </label>
-          <label className="product__delete-at">
-            Delete At
-            <input
-              type="text"
-              value={
-                currentProduct.deletedAt
-                  ? new Date(currentProduct.deletedAt).toLocaleDateString(
-                      "vi-VN"
-                    )
-                  : "Null"
-              }
-              disabled={true}
-            ></input>
-          </label>
-          <label className="product__create-at">
-            Create At
-            <input
-              type="text"
-              value={
-                currentProduct.createdAt
-                  ? new Date(currentProduct.createdAt).toLocaleDateString(
-                      "vi-VN"
-                    )
-                  : "Null"
-              }
-              disabled={true}
-            ></input>
-          </label>
-          <label className="product__update-at">
-            Update At
-            <input
-              type="text"
-              value={
-                currentProduct.updatedAt
-                  ? new Date(currentProduct.updatedAt).toLocaleDateString(
-                      "vi-VN"
-                    )
-                  : "Null"
-              }
-              disabled={true}
             ></input>
           </label>
         </div>
@@ -338,9 +211,9 @@ function ProductDetail() {
   );
 }
 
-export default ProductDetail;
+export default AddProduct;
 
-function handleSave(setIsEdit) {
+function handleSave() {
   Swal.fire({
     title: "Do you want to save the changes?",
     showDenyButton: true,
@@ -350,7 +223,6 @@ function handleSave(setIsEdit) {
   }).then((result) => {
     if (result.isConfirmed) {
       Swal.fire("Saved!", "", "success");
-      setIsEdit(false);
     } else if (result.isDenied) {
       Swal.fire("Changes are not saved", "", "info");
       // Thực hiện hành động khi không lưu

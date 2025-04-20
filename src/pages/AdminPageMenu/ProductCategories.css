@@ -3,8 +3,46 @@
 }
 
 .product-categories__title {
+  display: flex;
+  position: relative;
+  height: 5rem;
+}
+
+.product-categories__title--name {
+  position: absolute;
+  top: 0;
+  left: 0;
   font-size: 3rem;
   font-weight: 600;
+}
+
+.product-categories__title--button {
+  position: absolute;
+  top: 0;
+  right: 0rem;
+  display: flex;
+  gap: 2rem;
+}
+
+.add-button {
+  width: 13rem;
+  padding: 1rem 1rem;
+  background-color: #5c6c75;
+  color: white;
+  font-weight: 600;
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.add-button:hover {
+  background-color: #2d6a4f;
+}
+
+.add-button > svg {
+  margin-right: 0.5rem;
 }
 
 .product-categories__breadcrumb {
@@ -64,6 +102,9 @@
   font-weight: 600;
 }
 
+.categories-status.inactive {
+  background-color: #db3030;
+}
 /* ===== detail ===== */
 
 input[type="checkbox"] {
@@ -71,9 +112,9 @@ input[type="checkbox"] {
   cursor: pointer;
 }
 
-.edit-icon{
+.edit-icon {
   cursor: pointer;
 }
-.edit-icon:hover{
+.edit-icon:hover {
   color: #006838;
 }

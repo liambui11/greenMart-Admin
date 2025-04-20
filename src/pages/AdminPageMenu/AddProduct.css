@@ -1,0 +1,206 @@
+.add-product {
+    margin: 3rem;
+  }
+  
+  .add-product__title {
+    display: flex;
+    position: relative;
+    height: 5rem;
+  }
+  
+  .add-product__title--name {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 3rem;
+    font-weight: 600;
+  }
+  
+  .add-product__title--button {
+    position: absolute;
+    top: 0;
+    right: 10rem;
+    display: flex;
+    gap: 2rem;
+  }
+  
+  .back-button,
+  .save-button {
+    width: 8rem;
+    padding: 1rem 1rem;
+    background-color: #5c6c75;
+    color: white;
+    font-weight: 600;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  
+  .back-button:hover,
+  .save-button:hover {
+    background-color: #2d6a4f;
+  }
+  
+  .back-button > svg,
+  .save-button > svg {
+    margin-right: 0.5rem;
+  }
+  
+  .add-product__breadcrumb {
+    color: #0000009e;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 2rem;
+    font-weight: 500;
+  }
+  
+  .add-product__breadcrumb > svg {
+    color: #2d6a4f;
+    padding: 0.1rem;
+    margin: 0 1rem;
+  }
+  
+  .add-product__breadcrumb span:first-child:hover {
+    color: #2d6a4f;
+    cursor: pointer;
+  }
+  .add-product__breadcrumb span:nth-child(3):hover {
+    color: #2d6a4f;
+    cursor: pointer;
+  }
+  
+  /* ====== content ====== */
+  
+  .add-product__content {
+    width: 100%;
+    height: 60rem;
+    margin-top: 5rem;
+    margin-bottom: 10rem;
+    display: flex;
+    position: relative;
+  }
+  
+  .add-product__content > label {
+    color: #0000009e;
+    display: flex;
+    flex-direction: column;
+    font-weight: 600;
+  }
+  
+  .add-product__content > label > input,
+  .add-product__content > label > select,
+  .add-product__content > label > textarea {
+    padding: 1rem;
+    border-radius: 0.7rem;
+    border: 0.1rem solid #00000056;
+    height: 4.3rem;
+  }
+  
+  .add-product__content > label > input:focus,
+  .add-product__content > label > select:focus,
+  .add-product__content > label > textarea:focus {
+    border: 0.2rem solid #2d6a4f;
+    outline: none;
+    background-color: #f0fff4;
+  }
+  
+  .product__name {
+    width: 30rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  
+  .product__category {
+    width: 30rem;
+    position: absolute;
+    top: 0;
+    left: 40rem;
+    height: 4.3rem;
+  }
+  
+  .product__status {
+    position: absolute;
+    top: 0rem;
+    left: 80rem;
+  }
+  
+  .product__status--group > label {
+    margin: 1rem 2rem;
+    width: 9rem;
+  }
+  
+  .product__status--group input[type="radio"] {
+    margin-right: 1rem;
+    accent-color: #2d6a4f;
+  }
+  
+  
+  .product__image {
+    position: absolute;
+    top: 10rem;
+    left: 0rem;
+    width: 30rem;
+    display: flex;
+  }
+  
+  .product__image--content {
+    display: flex;
+    align-items: center;
+    gap: 4rem;
+  }
+  
+  .upload-icon:hover {
+    color: #2d6a4f;
+    cursor: pointer;
+  }
+  
+  .product__description {
+    position: absolute;
+    top: 30rem;
+    left: 0rem;
+  }
+  
+  .product__slug {
+    width: 30rem;
+    position: absolute;
+    top: 10rem;
+    left: 40rem;
+  }
+  
+  .product__price {
+    position: absolute;
+    top: 20rem;
+    left: 40rem;
+    width: 7rem;
+  }
+  
+  .product__position {
+    position: absolute;
+    top: 20rem;
+    left: 54rem;
+    width: 7rem;
+  }
+  
+  .product__stock {
+    position: absolute;
+    top: 20rem;
+    left: 67rem;
+    width: 7rem;
+  }
+  
+  .product__discount-percentage {
+    position: absolute;
+    top: 20rem;
+    left: 80rem;
+    width: 17rem;
+  }
+  
+  .product__discount-percentage > input {
+    width: 7rem;
+  }
+  
+  

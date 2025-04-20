@@ -1,0 +1,108 @@
+.over-view {
+  margin: 3rem;
+}
+
+.over-view__title {
+  font-size: 3rem;
+  font-weight: 600;
+}
+
+.over-view__breadcrumb {
+  color: #0000009e;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 2rem;
+  font-weight: 500;
+}
+
+.over-view__breadcrumb > svg {
+  color: #2d6a4f;
+  padding: 0.1rem;
+  margin: 0 1rem;
+}
+
+.over-view__breadcrumb span:first-child:hover {
+  color: #2d6a4f;
+  cursor: pointer;
+}
+
+.over-view__content {
+  height: 50rem;
+}
+
+.over-view__content--cards {
+  margin-top: 7rem;
+  display: flex;
+  gap: 5rem;
+  height: 30rem;
+  justify-content: space-around;
+}
+
+.card {
+  width: 35rem;
+  font-weight: 600;
+  border: 0.1rem solid #0000001d !important;
+  border-radius: 1.4rem !important;
+  box-shadow: 0 0.8rem 2rem rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+}
+
+.card-name {
+  display: flex;
+  position: relative;
+  height: 14rem;
+  width: 35rem;
+}
+
+.card-name__name {
+  position: absolute;
+  font-size: 4rem;
+  top: 3.3rem;
+  left: 3rem;
+}
+
+.card-name__icon {
+  position: absolute;
+  top: 2.4rem;
+  right: 3rem;
+}
+
+.card-name__icon {
+  height: 8rem;
+  width: 8rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.orders-report .card-name__icon {
+  background-color: #fff3cd;
+  color: rgb(102, 77, 3);
+}
+.product-report .card-name__icon {
+  background-color: #f8d6d6;
+  color: rgb(88, 19, 19);
+}
+.customer-report .card-name__icon {
+  background-color: #cce1fe;
+  color: rgb(0, 43, 99);
+}
+
+.card-quantity {
+  font-size: 7rem;
+  font-weight: 800;
+  text-align: right;
+  padding-right: 3rem;
+}
+
+.orders-report .card-quantity{
+  color: rgb(102, 77, 3);
+}
+.product-report .card-quantity{
+  color: rgb(88, 19, 19);
+}
+.customer-report .card-quantity{
+  color: rgb(0, 43, 99);
+}
