@@ -1,3 +1,4 @@
+import { Navigate } from "react-router-dom";
 import LayoutDefault from "../layout/LayoutDefault/LayoutDefault";
 import Customer from "../pages/AdminCustomer/Customer";
 import CustomerDetail from "../pages/AdminCustomer/CustomerDetail";
@@ -10,53 +11,37 @@ import AdminSignIn from "../pages/AdminPage/AdminSignIn";
 import Overview from "../pages/AdminPageMenu/Overview";
 import AddProduct from "../pages/AdminPageMenu/AddProduct";
 import AddProductCategory from "../pages/AdminPageMenu/AddProductCategory";
+import PrivateRoute from "./PrivateRoute";
 
 export const routes = [
   {
     path: "/",
-    element: <LayoutDefault />,
-    children: [
-      {
-        path: "overview",
-        element: <Overview />,
-      },
-      {
-        path: "productcategories",
-        element: <ProductCategories />,
-      },
-      {
-        path: "productcategorydetail",
-        element: <ProductCategoryDetail />,
-      },
-      {
-        path: "products",
-        element: <Products />,
-      },
-      {
-        path: "customer",
-        element: <Customer />,
-      },
-      {
-        path: "customerdetail",
-        element: <CustomerDetail />,
-      },
-      {
-        path: "productdetail",
-        element: <ProductDetail />,
-      },
-      {
-        path: "addproduct",
-        element: <AddProduct />,
-      },
-      {
-        path: "addproductcategory",
-        element: <AddProductCategory />,
-      },
-    ],
+    element: <Navigate to="/dashboard/signin" />,
   },
   {
-    path: "/signin",
+    path: "/dashboard/signin",
     element: <AdminSignIn />,
+  },
+  {
+    path: "/dashboard",
+    element: <PrivateRoute />, 
+    children: [
+      {
+        path: "",
+        element: <LayoutDefault />,
+        children: [
+          { path: "overview", element: <Overview /> },
+          { path: "productcategories", element: <ProductCategories /> },
+          { path: "productcategorydetail", element: <ProductCategoryDetail /> },
+          { path: "products", element: <Products /> },
+          { path: "customer", element: <Customer /> },
+          { path: "customerdetail", element: <CustomerDetail /> },
+          { path: "productdetail", element: <ProductDetail /> },
+          { path: "addproduct", element: <AddProduct /> },
+          { path: "addproductcategory", element: <AddProductCategory /> },
+        ],
+      },
+    ],
   },
   {
     path: "*",
