@@ -1,7 +1,17 @@
 import "./AdminHeader.css";
 import { IoIosLogOut } from "react-icons/io";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { logoutStaff } from "../actions/authStaff";
 
 function AdminHeader() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    dispatch(logoutStaff()); 
+    navigate("/dashboard/signin");
+  };
   return (
     <div className="admin-header-container">
       <div className="admin-header">
@@ -20,7 +30,7 @@ function AdminHeader() {
           </div>
           <div className="admin-header__user--name">Luan</div>
         </div>
-        <div className="admin-header__log-out">
+        <div className="admin-header__log-out"  onClick={handleLogout}>
           <span>Log out</span>
           <IoIosLogOut />
         </div>

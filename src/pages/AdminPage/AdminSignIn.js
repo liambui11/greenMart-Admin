@@ -1,12 +1,25 @@
 import { useNavigate } from "react-router-dom";
 import "./AdminSignIn.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { loginStaff } from "../../actions/authStaff"; 
+
 
 function AdminSignIn() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState({});
+  const dispatch = useDispatch();
+
+  const isAuthenticated = useSelector((state) => state.staffAuth.isAuthenticated);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/dashboard/overview");
+    }
+  }, [isAuthenticated, navigate]);
+
 
   const validate = () => {
     const newErrors = {};
@@ -27,11 +40,15 @@ function AdminSignIn() {
     return newErrors;
   };
 
-  const handleLogin = (event) => {
+  const handleLogin = async (event) => {
     event.preventDefault();
     const validationErrors = validate();
     if (Object.keys(validationErrors).length === 0) {
-      navigate("/");
+      const result = await dispatch(loginStaff(email, password));
+      console.log(email, password);
+      if (result.success) {
+        navigate("/dashboard/overview");
+      }
     } else {
       setError(validationErrors);
     }
