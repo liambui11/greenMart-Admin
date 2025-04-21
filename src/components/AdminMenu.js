@@ -32,7 +32,9 @@ function AdminMenu() {
           <NavLink
             to={`/productcategories`}
             className={({ isActive }) =>
-              `admin-menu__items--product-categories ${isActive ? "active" : ""}`
+              `admin-menu__items--product-categories ${
+                isActive ? "active" : ""
+              }`
             }
           >
             Product Categories
@@ -70,7 +72,7 @@ function AdminMenu() {
             Permissions
           </NavLink>
           <NavLink
-            to={`/AdminPage/Staff`}
+            to={`/staffdetail`}
             className={({ isActive }) =>
               `admin-menu__items--staff ${isActive ? "active" : ""}`
             }

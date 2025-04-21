@@ -10,6 +10,7 @@ import AdminSignIn from "../pages/AdminPage/AdminSignIn";
 import Overview from "../pages/AdminPageMenu/Overview";
 import AddProduct from "../pages/AdminPageMenu/AddProduct";
 import AddProductCategory from "../pages/AdminPageMenu/AddProductCategory";
+import StaffDetail from "../pages/StaffDetail/StaffDetail";
 
 export const routes = [
   {
@@ -51,6 +52,10 @@ export const routes = [
       {
         path: "addproductcategory",
         element: <AddProductCategory />,
+      },
+      {
+        path: "staffdetail",
+        element: <StaffDetail />,
       },
     ],
   },
