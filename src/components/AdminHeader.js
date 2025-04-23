@@ -9,7 +9,7 @@ function AdminHeader() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    dispatch(logoutStaff()); 
+    dispatch(logoutStaff());
     navigate("/dashboard/signin");
   };
   return (
@@ -30,7 +30,7 @@ function AdminHeader() {
           </div>
           <div className="admin-header__user--name">Luan</div>
         </div>
-        <div className="admin-header__log-out"  onClick={handleLogout}>
+        <div className="admin-header__log-out" onClick={handleLogout}>
           <span>Log out</span>
           <IoIosLogOut />
         </div>
