@@ -1,5 +1,5 @@
 import { FaChevronRight } from "react-icons/fa";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import "./ProductCategoryDetail.css";
 import { useEffect, useState } from "react";
 import { CiEdit } from "react-icons/ci";
@@ -8,46 +8,70 @@ import { LuSave } from "react-icons/lu";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import "./ProductDetail.css";
 import Swal from "sweetalert2";
+// import { faL } from "@fortawesome/free-solid-svg-icons";
+import axiosInstanceStaff from "../../untils/axiosInstanceStaff";
+import OverlayLoading from "../../components/OverlayLoading/OverlayLoading";
+import ErrorPage from "../ErrorPage/ErrorPage";
 
 function ProductDetail() {
   const navigate = useNavigate();
-  const location = useLocation();
-  const currentProduct = location.state?.item;
-  const [isEdit, setIsEdit] = useState(false);
+  const { productslug } = useParams();
 
-  const [productName, setProductName] = useState(currentProduct.productName);
-  const [productCategory, setProductCategory] = useState(
-    currentProduct.categoryID
-  );
+  const [isEdit, setIsEdit] = useState(false);
+  const [notFound, setNotFound] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [currentProduct, setCurrentProduct] = useState();
   const [categoryList, setCategoryList] = useState([]);
-  const [productImage, setProductImage] = useState(currentProduct.productImage);
-  const [productStock, setProductStock] = useState(currentProduct.productStock);
-  const [productPrice, setProductPrice] = useState(currentProduct.productPrice);
-  const [productDescription, setProductDescription] = useState(
-    currentProduct.productDescription
-  );
-  const [productStatus, setProductStatus] = useState(
-    currentProduct.productStatus
-  );
-  const [productPosition, setProductPosition] = useState(
-    currentProduct.productPosition
-  );
-  const [productDiscountPercentage, setProductDiscountPercentage] = useState(
-    currentProduct.productDiscountPercentage
-  );
-  const [productSlug, setProductSlug] = useState(currentProduct.productSlug);
-  const [productDeleted, setProductDeleted] = useState(currentProduct.deleted);
+
+  const [productName, setProductName] = useState("");
+  const [productCategory, setProductCategory] = useState("No Category");
+  const [productImage, setProductImage] = useState("/image/logoGM.png");
+  const [productStock, setProductStock] = useState(0);
+  const [productPrice, setProductPrice] = useState(0);
+  const [productDescription, setProductDescription] = useState("");
+  const [productStatus, setProductStatus] = useState("inactive");
+  const [productPosition, setProductPosition] = useState(0);
+  const [productDiscountPercentage, setProductDiscountPercentage] = useState(0);
+  const [productSlug, setProductSlug] = useState("");
+  const [productDeleted, setProductDeleted] = useState(false);
+
+  useEffect(() => {
+    if (currentProduct) {
+      setProductName(currentProduct.productName);
+      setProductCategory(currentProduct.categoryID);
+      setProductImage(currentProduct.productImage);
+      setProductStock(currentProduct.productStock);
+      setProductPrice(currentProduct.productPrice);
+      setProductDescription(currentProduct.productDescription);
+      setProductStatus(currentProduct.productStatus);
+      setProductPosition(currentProduct.productPosition);
+      setProductDiscountPercentage(currentProduct.productDiscountPercentage);
+      setProductSlug(currentProduct.productSlug);
+      setProductDeleted(currentProduct.deleted);
+    }
+  }, [currentProduct]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const resParentCategory = await fetch(
-        `http://localhost:3000/api/v1/products-category`
-      );
-      const parentCategoryJson = await resParentCategory.json();
-      setCategoryList(parentCategoryJson.info);
+      setIsLoading(true);
+      try {
+        const [resProduct, resCategoryList] = await Promise.all([
+          axiosInstanceStaff.get(
+            `/api/v1/admin/products/detail/${productslug}`
+          ),
+          axiosInstanceStaff.get(`/api/v1/admin/products-category`),
+        ]);
+        setCurrentProduct(resProduct.data.info);
+        setCategoryList(resCategoryList.data.info);
+      } catch (err) {
+        console.log(err);
+        setNotFound(true);
+      } finally {
+        setIsLoading(false);
+      }
     };
     fetchData();
-  }, []);
+  }, [productslug]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -59,6 +83,8 @@ function ProductDetail() {
       reader.readAsDataURL(file);
     }
   };
+
+  if (notFound) return <ErrorPage />;
   return (
     <div className="product-detail-container">
       <div className="product-detail">
@@ -79,18 +105,21 @@ function ProductDetail() {
               <CiEdit />
               Edit
             </div>
-            <div className="back-button" onClick={() => navigate(`/products`)}>
+            <div
+              className="back-button"
+              onClick={() => navigate(`/dashboard/products`)}
+            >
               <TbArrowBackUp />
               Back
             </div>
           </div>
         </div>
         <div className="product-detail__breadcrumb">
-          <span onClick={() => navigate(`/`)}>Admin</span>
+          <span onClick={() => navigate(`/dashboard/overview`)}>Admin</span>
           <FaChevronRight />
-          <span onClick={() => navigate(`/products`)}>Products</span>
+          <span onClick={() => navigate(`/dashboard/products`)}>Products</span>
           <FaChevronRight />
-          <span>{currentProduct.productName}</span>
+          <span>{productName}</span>
         </div>
         <div className="product-detail__content">
           <label className="product__name">
@@ -245,7 +274,7 @@ function ProductDetail() {
             Create By
             <input
               type="text"
-              value={currentProduct.createBy}
+              value={currentProduct?.createBy}
               disabled={true}
             ></input>
           </label>
@@ -253,7 +282,7 @@ function ProductDetail() {
             Update By
             <input
               type="text"
-              value={currentProduct.updateBy}
+              value={currentProduct?.updateBy}
               disabled={true}
             ></input>
           </label>
@@ -261,7 +290,7 @@ function ProductDetail() {
             Delete By
             <input
               type="text"
-              value={currentProduct.deleteBy}
+              value={currentProduct?.deleteBy}
               disabled={true}
             ></input>
           </label>
@@ -295,8 +324,8 @@ function ProductDetail() {
             <input
               type="text"
               value={
-                currentProduct.deletedAt
-                  ? new Date(currentProduct.deletedAt).toLocaleDateString(
+                currentProduct?.deletedAt
+                  ? new Date(currentProduct?.deletedAt).toLocaleDateString(
                       "vi-VN"
                     )
                   : "Null"
@@ -309,8 +338,8 @@ function ProductDetail() {
             <input
               type="text"
               value={
-                currentProduct.createdAt
-                  ? new Date(currentProduct.createdAt).toLocaleDateString(
+                currentProduct?.createdAt
+                  ? new Date(currentProduct?.createdAt).toLocaleDateString(
                       "vi-VN"
                     )
                   : "Null"
@@ -323,8 +352,8 @@ function ProductDetail() {
             <input
               type="text"
               value={
-                currentProduct.updatedAt
-                  ? new Date(currentProduct.updatedAt).toLocaleDateString(
+                currentProduct?.updatedAt
+                  ? new Date(currentProduct?.updatedAt).toLocaleDateString(
                       "vi-VN"
                     )
                   : "Null"
@@ -334,6 +363,7 @@ function ProductDetail() {
           </label>
         </div>
       </div>
+      {isLoading && <OverlayLoading />}
     </div>
   );
 }

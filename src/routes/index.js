@@ -24,7 +24,7 @@ export const routes = [
   },
   {
     path: "/dashboard",
-    element: <PrivateRoute />, 
+    element: <PrivateRoute />,
     children: [
       {
         path: "",
@@ -32,13 +32,22 @@ export const routes = [
         children: [
           { path: "overview", element: <Overview /> },
           { path: "productcategories", element: <ProductCategories /> },
-          { path: "productcategorydetail", element: <ProductCategoryDetail /> },
+          {
+            path: "productcategories/productcategorydetail/:categoryslug",
+            element: <ProductCategoryDetail />,
+          },
           { path: "products", element: <Products /> },
           { path: "customer", element: <Customer /> },
           { path: "customerdetail", element: <CustomerDetail /> },
-          { path: "productdetail", element: <ProductDetail /> },
-          { path: "addproduct", element: <AddProduct /> },
-          { path: "addproductcategory", element: <AddProductCategory /> },
+          {
+            path: "products/productdetail/:productslug",
+            element: <ProductDetail />,
+          },
+          { path: "products/addproduct", element: <AddProduct /> },
+          {
+            path: "productcategories/addproductcategory",
+            element: <AddProductCategory />,
+          },
         ],
       },
     ],

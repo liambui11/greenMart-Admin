@@ -111,9 +111,11 @@ input[type="checkbox"] {
   cursor: pointer;
 }
 
-.edit-icon {
+.edit-icon,
+.delete-icon {
   cursor: pointer;
 }
-.edit-icon:hover {
+.edit-icon:hover,
+.delete-icon:hover {
   color: #006838;
 }

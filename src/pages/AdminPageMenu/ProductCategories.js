@@ -4,27 +4,40 @@ import { CiEdit } from "react-icons/ci";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import { FaChevronRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import axiosInstanceStaff from "../../untils/axiosInstanceStaff";
+import OverlayLoading from "../../components/OverlayLoading/OverlayLoading";
 
 function ProductCategories() {
   const [categoriesData, setCategoriesData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleAdminClick = () => {
-    navigate(`/`);
+    navigate(`/dashboard/overview`);
   };
-  const handleProductDetailClick = (item) => {
-    navigate(`/productcategorydetail`, {
-      state: { item },
-    });
+  const handleCategoryProductDetailClick = (categorySlug) => {
+    navigate(
+      `/dashboard/productcategories/productcategorydetail/${categorySlug}`
+    );
+  };
+
+  const handleCategoryProductDeleteClick = () => {
+    console.log("deleted");
   };
 
   useEffect(() => {
     const fetchData = async () => {
-      const resProducts = await fetch(
-        `http://localhost:3000/api/v1/products-category`
-      );
-      const productJson = await resProducts.json();
-      setCategoriesData(productJson.info);
+      setIsLoading(true);
+      try {
+        const resProductCategory = await axiosInstanceStaff.get(
+          `/api/v1/admin/products-category`
+        );
+        setCategoriesData(resProductCategory.data.info);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setIsLoading(false);
+      }
     };
     fetchData();
   }, []);
@@ -44,7 +57,7 @@ function ProductCategories() {
           <div className="product-categories__title--button">
             <div
               className="add-button"
-              onClick={() => navigate(`/addproductcategory`)}
+              onClick={() => navigate(`/dashboard/productcategories/addproductcategory`)}
             >
               Add Category
             </div>
@@ -124,11 +137,16 @@ function ProductCategories() {
                   <td>
                     <CiEdit
                       className="edit-icon"
-                      onClick={() => handleProductDetailClick(item)}
+                      onClick={() =>
+                        handleCategoryProductDetailClick(item.categorySlug)
+                      }
                     />
                   </td>
                   <td>
-                    <MdOutlineDeleteOutline />
+                    <MdOutlineDeleteOutline
+                      className="delete-icon"
+                      onClick={handleCategoryProductDeleteClick}
+                    />
                   </td>
                 </tr>
               ))}
@@ -136,6 +154,7 @@ function ProductCategories() {
           </table>
         </div>
       </div>
+      {isLoading && <OverlayLoading />}
     </div>
   );
 }
