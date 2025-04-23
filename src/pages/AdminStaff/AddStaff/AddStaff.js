@@ -1,18 +1,18 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import React, { useEffect, useState } from "react";
-import ValidationStaff from "./MyProfileValidationStaff";
-import "./StaffDetail.css";
+import ValidationStaff from "./ValidationAddStaff";
+import "./AddStaff.css";
 
 import Swal from "sweetalert2";
-import axiosInstanceStaff from "../../untils/axiosInstanceStaff";
-import { useParams } from "react-router-dom";
+import axiosInstanceStaff from "../../../untils/axiosInstanceStaff";
+// import { useParams } from "react-router-dom";
 // import OverlayLoading from "../../../components/OverlayLoading/OverlayLoading";
 
-function StaffDetail() {
+function AddStaff() {
   const [file, setFile] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const { id } = useParams();
+  //   const { id } = useParams();
 
   const [values, setValues] = useState({
     name: "",
@@ -21,66 +21,6 @@ function StaffDetail() {
     phone: "",
     position: "",
   });
-
-  useEffect(() => {
-    const fetchStaff = async () => {
-      try {
-        const res = await axiosInstanceStaff.get(
-          `/api/v1/admin/staffs/detail/${id}`
-        );
-        if (res.data.code === 200) {
-          const user = res.data.info;
-          console.log("admin auth detail", user);
-          setValues({
-            name: user.staffName || "",
-            email: user.staffEmail || "",
-            address: user.staffAddress || "",
-            phone: user.staffPhone || "",
-            position: user.roleID.roleName || "",
-          });
-          if (user.staffAvatar) {
-            setFile(user.staffAvatar);
-          }
-        }
-      } catch (err) {
-        console.error("Lỗi khi lấy thông tin staff:", err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (id) {
-      fetchStaff();
-    }
-  }, [id]);
-
-  // useEffect(() => {
-  //   setIsLoading(true);
-  //   const fetchUser = async () => {
-  //     try {
-  //       const res = await axiosInstanceStaff.get("/api/v1/admin/auth/detail");
-  //       if (res.data.code === 200) {
-  //         const user = res.data.info;
-  //         console.log("admin auth detail", user);
-  //         setValues({
-  //           name: user.staffName || "",
-  //           email: user.staffEmail || "",
-  //           address: user.staffAddress || "",
-  //           phone: user.staffPhone || "",
-  //           position: user.roleID.roleName || "",
-  //         });
-  //         if (user.staffAvatar) {
-  //           setFile(user.staffAvatar);
-  //         }
-  //       }
-  //     } catch (err) {
-  //       console.error("Lỗi khi lấy thông tin user:", err);
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
-  //   fetchUser();
-  // }, []);
 
   const [errors, setErrors] = useState({});
 
@@ -115,7 +55,6 @@ function StaffDetail() {
         formData.append("staffName", values.name);
         formData.append("staffPhone", values.phone);
         formData.append("staffAddress", values.address);
-        // formData.append("staffAddress", values.address);
 
         const imageFile = document.getElementById("fileInput").files[0];
         if (imageFile) {
@@ -191,8 +130,8 @@ function StaffDetail() {
           </label>
         </div>
         <div className="staff-title">
-          <div className="staff-name">Staff Account</div>
-          <div className="staff__title-info">Position: {values.position}</div>
+          <div className="staff-name">Add Staff Account</div>
+          {/* <div className="staff__title-info">Position: {values.position}</div> */}
         </div>
       </div>
       <div className="Profile__infor__form">
@@ -219,7 +158,7 @@ function StaffDetail() {
               type="email"
               placeholder="Enter Email"
               name="email"
-              disabled={true}
+              //   disabled={true}
               onChange={handleInput}
               value={values.email}
               className="form-control rounded-0"
@@ -228,6 +167,25 @@ function StaffDetail() {
               <span className="text-danger">{errors.email}</span>
             )}
           </div>
+
+          <div className="Profile__infor__position">
+            <label>
+              <strong>Position</strong>
+            </label>
+            <input
+              type="text"
+              placeholder="Enter Position"
+              name="email"
+              //   disabled={true}
+              onChange={handleInput}
+              value={values.position}
+              className="form-control rounded-0"
+            />
+            {errors.email && (
+              <span className="text-danger">{errors.email}</span>
+            )}
+          </div>
+
           <div className="Profile__infor__Address">
             <label htmlFor="address">
               <strong>Address</strong>
@@ -269,4 +227,4 @@ function StaffDetail() {
   );
 }
 
-export default StaffDetail;
+export default AddStaff;

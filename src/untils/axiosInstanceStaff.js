@@ -4,7 +4,7 @@ import { store } from "../redux/store";
 import { checkAuthStaff } from "../actions/authStaff";
 
 const axiosInstanceStaff = axios.create({
-  baseURL: "http://localhost:3000", 
+  baseURL: "http://localhost:3000",
   withCredentials: true,
 });
 
@@ -12,7 +12,7 @@ let isRefreshing = false;
 let failedQueue = [];
 
 const processQueue = (error, token = null) => {
-  failedQueue.forEach(prom => {
+  failedQueue.forEach((prom) => {
     if (error) prom.reject(error);
     else prom.resolve(token);
   });
@@ -21,7 +21,7 @@ const processQueue = (error, token = null) => {
 
 axiosInstanceStaff.interceptors.request.use(
   async (config) => {
-    const token = store.getState().authStaff.accessToken;
+    const token = store.getState().staffAuth.accessToken;
     if (token) {
       const decoded = jwtDecode(token);
       const now = Date.now() / 1000;
@@ -31,7 +31,7 @@ axiosInstanceStaff.interceptors.request.use(
           isRefreshing = true;
           try {
             await store.dispatch(checkAuthStaff());
-            const newToken = store.getState().authStaff.accessToken;
+            const newToken = store.getState().staffAuth.accessToken;
             processQueue(null, newToken);
             config.headers.Authorization = `Bearer ${newToken}`;
             return config;
@@ -62,9 +62,12 @@ axiosInstanceStaff.interceptors.request.use(
 );
 
 axiosInstanceStaff.interceptors.response.use(
-  res => res,
-  err => {
-    if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+  (res) => res,
+  (err) => {
+    if (
+      err.response &&
+      (err.response.status === 401 || err.response.status === 403)
+    ) {
       store.dispatch({ type: "STAFF_LOGOUT" });
     }
     return Promise.reject(err);

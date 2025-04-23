@@ -21,7 +21,7 @@ function AdminMenu() {
         <div className="admin-menu__title">MENU</div>
         <div className="admin-menu__items">
           <NavLink
-            to={`/overview`}
+            to={`/dashboard/overview`}
             className={({ isActive }) =>
               `admin-menu__items--over-view ${isActive ? "active" : ""}`
             }
@@ -30,7 +30,7 @@ function AdminMenu() {
           </NavLink>
           <Divider />
           <NavLink
-            to={`/productcategories`}
+            to={`/dashboard/productcategories`}
             className={({ isActive }) =>
               `admin-menu__items--product-categories ${
                 isActive ? "active" : ""
@@ -40,7 +40,7 @@ function AdminMenu() {
             Product Categories
           </NavLink>
           <NavLink
-            to={`/products`}
+            to={`/dashboard/products`}
             className={({ isActive }) =>
               `admin-menu__items--products ${isActive ? "active" : ""}`
             }
@@ -48,7 +48,7 @@ function AdminMenu() {
             Products
           </NavLink>
           <NavLink
-            to={`/promotions`}
+            to={`/dashboard/promotions`}
             className={({ isActive }) =>
               `admin-menu__items--promotions ${isActive ? "active" : ""}`
             }
@@ -56,7 +56,7 @@ function AdminMenu() {
             Promotions
           </NavLink>
           <NavLink
-            to={`/rolesgroup`}
+            to={`/dashboard/rolesgroup`}
             className={({ isActive }) =>
               `admin-menu__items--role-groups ${isActive ? "active" : ""}`
             }
@@ -72,7 +72,7 @@ function AdminMenu() {
             Permissions
           </NavLink>
           <NavLink
-            to={`/staffdetail`}
+            to={`/dashboard/staff`}
             className={({ isActive }) =>
               `admin-menu__items--staff ${isActive ? "active" : ""}`
             }
@@ -80,7 +80,7 @@ function AdminMenu() {
             Staff
           </NavLink>
           <NavLink
-            to={`/customer`}
+            to={`/dashboard/user`}
             className={({ isActive }) =>
               `admin-menu__items--customers ${isActive ? "active" : ""}`
             }

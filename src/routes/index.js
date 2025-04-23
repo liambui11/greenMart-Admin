@@ -1,7 +1,7 @@
 import { Navigate } from "react-router-dom";
 import LayoutDefault from "../layout/LayoutDefault/LayoutDefault";
-import Customer from "../pages/AdminCustomer/Customer";
-import CustomerDetail from "../pages/AdminCustomer/CustomerDetail";
+import Customer from "../pages/AdminCustomer/User";
+import CustomerDetail from "../pages/AdminCustomer/UserDetail";
 import ProductCategories from "../pages/AdminPageMenu/ProductCategories";
 import ProductCategoryDetail from "../pages/AdminPageMenu/ProductCategoryDetail";
 import Products from "../pages/AdminPageMenu/Products";
@@ -13,6 +13,8 @@ import AddProduct from "../pages/AdminPageMenu/AddProduct";
 import AddProductCategory from "../pages/AdminPageMenu/AddProductCategory";
 import PrivateRoute from "./PrivateRoute";
 import StaffDetail from "../pages/StaffDetail/StaffDetail";
+import Staff from "../pages/AdminStaff/Staff";
+import AddStaff from "../pages/AdminStaff/AddStaff/AddStaff";
 
 export const routes = [
   {
@@ -35,11 +37,14 @@ export const routes = [
           { path: "productcategories", element: <ProductCategories /> },
           { path: "productcategorydetail", element: <ProductCategoryDetail /> },
           { path: "products", element: <Products /> },
-          { path: "customer", element: <Customer /> },
-          { path: "customerdetail", element: <CustomerDetail /> },
+          { path: "user", element: <Customer /> },
+          { path: "userdetail/:id", element: <CustomerDetail /> },
           { path: "productdetail", element: <ProductDetail /> },
           { path: "addproduct", element: <AddProduct /> },
           { path: "addproductcategory", element: <AddProductCategory /> },
+          { path: "staffdetail/:id", element: <StaffDetail /> },
+          { path: "staff", element: <Staff /> },
+          { path: "addstaff", element: <AddStaff /> },
         ],
       },
     ],

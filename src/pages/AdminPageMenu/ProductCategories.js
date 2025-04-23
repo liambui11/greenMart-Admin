@@ -13,7 +13,7 @@ function ProductCategories() {
     navigate(`/`);
   };
   const handleProductDetailClick = (item) => {
-    navigate(`/productcategorydetail`, {
+    navigate(`/dashboard/productcategorydetail`, {
       state: { item },
     });
   };
