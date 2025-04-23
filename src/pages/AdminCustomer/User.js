@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import "./Customer.css";
+import "./User.css";
 import { CiEdit } from "react-icons/ci";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import { FaChevronRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import axiosInstanceStaff from "../../untils/axiosInstanceStaff";
 
 function Customer() {
   const [customer, setCustomer] = useState([]);
@@ -15,12 +16,12 @@ function Customer() {
   };
 
   const handleCustomerClick = (item) => {
-    navigate(`/customerdetail`, { state: { item } });
+    navigate(`/dashboard/userdetail/${item._id}`, { state: { item } });
   };
 
-  const handleDeleteCustomer = ()=>{
-    alert("Da xoa")
-  }
+  const handleDeleteCustomer = () => {
+    alert("Da xoa");
+  };
 
   const filteredCustomers = customer.filter(
     (item) =>
@@ -31,10 +32,9 @@ function Customer() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/api/v1/users/all`);
-        const json = await res.json();
-        console.log("Danh sách user:", json.info);
-        setCustomer(json.info || []);
+        const res = await axiosInstanceStaff.get("/api/v1/admin/users");
+        console.log("Danh sách user:", res.data.info);
+        setCustomer(res.data.info || []);
       } catch (err) {
         console.error("Lỗi:", err);
         setCustomer([]);
@@ -64,7 +64,9 @@ function Customer() {
           <table className="customer__content--table">
             <thead>
               <tr>
-                <th><input type="checkbox" /></th>
+                <th>
+                  <input type="checkbox" />
+                </th>
                 <th>Image</th>
                 <th>Name</th>
                 <th>Email</th>
@@ -79,20 +81,50 @@ function Customer() {
               {filteredCustomers?.length > 0 ? (
                 filteredCustomers.map((item) => (
                   <tr key={item._id}>
-                    <td><input type="checkbox" /></td>
-                    <td><img alt="" src={item.userAvatar} style={{ height: "4rem", objectFit: "contain" }} /></td>
+                    <td>
+                      <input type="checkbox" />
+                    </td>
+                    <td>
+                      <img
+                        alt=""
+                        src={item.userAvatar}
+                        style={{ height: "4rem", objectFit: "contain" }}
+                      />
+                    </td>
                     <td>{item.userName}</td>
                     <td>{item.userEmail}</td>
-                    <td>{item.createdAt ? new Date(item.createdAt).toLocaleDateString("vi-VN") : ""}</td>
-                    <td>{item.updatedAt ? new Date(item.updatedAt).toLocaleDateString("vi-VN") : ""}</td>
-                    <td><span className="customer-status">{item.userStatus}</span></td>
-                    <td><CiEdit className="edit-icon" onClick={() => handleCustomerClick(item)} /></td>
-                    <td><MdOutlineDeleteOutline className="delete-icon"  onClick={handleDeleteCustomer}/></td>
+                    <td>
+                      {item.createdAt
+                        ? new Date(item.createdAt).toLocaleDateString("vi-VN")
+                        : ""}
+                    </td>
+                    <td>
+                      {item.updatedAt
+                        ? new Date(item.updatedAt).toLocaleDateString("vi-VN")
+                        : ""}
+                    </td>
+                    <td>
+                      <span className="customer-status">{item.userStatus}</span>
+                    </td>
+                    <td>
+                      <CiEdit
+                        className="edit-icon"
+                        onClick={() => handleCustomerClick(item)}
+                      />
+                    </td>
+                    <td>
+                      <MdOutlineDeleteOutline
+                        className="delete-icon"
+                        onClick={handleDeleteCustomer}
+                      />
+                    </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="9" style={{ textAlign: "center" }}>No Customers.</td>
+                  <td colSpan="9" style={{ textAlign: "center" }}>
+                    No Customers.
+                  </td>
                 </tr>
               )}
             </tbody>

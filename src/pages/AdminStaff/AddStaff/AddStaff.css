@@ -1,0 +1,127 @@
+.StaffProfile-top {
+  /* background-color: aqua; */
+  display: flex;
+  margin: 2rem auto;
+}
+.Profile__infor__avatar {
+  width: 30%;
+  margin-left: 10%;
+}
+
+.Profile__infor__avatar__img {
+  border-radius: "50%";
+  object-fit: "cover";
+  border-radius: 50%;
+  display: block;
+  object-fit: cover;
+}
+
+.Profile__infor__avatar #fileInput {
+  display: none;
+}
+
+.Profile__infor__avatar__btn {
+  background: #0aad0a;
+  border: none;
+  margin-top: 2rem;
+  color: white;
+  width: 20rem;
+}
+
+.Profile__infor__avatar__btn:hover {
+  background-color: #bbb;
+  color: black;
+}
+
+.staff-title {
+  margin-top: 5rem;
+}
+.staff-name {
+  font-size: 5rem;
+  font-weight: 700;
+}
+.staff__title-info {
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+/* bao ngoài form */
+.Profile__infor__form {
+  width: 80%;
+  /* background-color: antiquewhite; */
+  margin: 2rem auto;
+  padding: 1.5rem 0;
+}
+
+/* mỗi dòng label + input */
+.Profile__infor__Fullname,
+.Profile__infor__position,
+.Profile__infor__Email,
+.Profile__infor__Address,
+.Profile__infor__Phone {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 3rem;
+  margin-bottom: 3rem;
+}
+
+/* label cố định đủ rộng, không wrap */
+.Profile__infor__Fullname label,
+.Profile__infor__position label,
+.Profile__infor__Email label,
+.Profile__infor__Address label,
+.Profile__infor__Phone label {
+  flex: 0 0 15rem; /* label luôn chiếm 12rem (~192px) */
+  white-space: nowrap; /* không cho xuống hàng */
+  font-size: 2rem;
+  font-weight: 400;
+  text-align: left;
+}
+
+/* input sẽ chiếm phần còn lại */
+.Profile__infor__Fullname input,
+.Profile__infor__position input,
+.Profile__infor__Email input,
+.Profile__infor__Address input,
+.Profile__infor__Phone input {
+  flex: 1;
+  height: 4rem;
+  font-size: 1.5rem;
+  padding: 0 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fafafa;
+}
+
+.Profile__infor__form__btn {
+  height: 4rem;
+  width: 25rem;
+  font-size: larger;
+  border: none;
+  background-color: #0aad0a;
+  color: white;
+  position: relative;
+  left: 40%;
+}
+
+@media (max-width: 600px) {
+  .Profile__infor {
+    flex-direction: column;
+  }
+  .Profile__infor__form {
+    width: 100%;
+    margin: 0 auto;
+  }
+  .Profile__infor__avatar {
+    width: 100%;
+    margin: 2rem auto;
+  }
+  .StaffProfile-top {
+    flex-wrap: wrap;
+  }
+  .Profile__infor__form__btn {
+    position: relative;
+    left: 10%;
+  }
+}

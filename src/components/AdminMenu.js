@@ -15,8 +15,6 @@ const Divider = () => {
   );
 };
 
-
-
 function AdminMenu() {
   return (
     <div className="admin-menu-container">
@@ -77,10 +75,27 @@ function AdminMenu() {
             }
           >
             Permissions
+          </NavLink>
+          <NavLink
+            to={`/dashboard/staff`}
+            className={({ isActive }) =>
+              `admin-menu__items--staff ${isActive ? "active" : ""}`
+            }
+          >
+            Staff
+          </NavLink>
+          <NavLink
+            to={`/dashboard/user`}
+            className={({ isActive }) =>
+              `admin-menu__items--customers ${isActive ? "active" : ""}`
+            }
+          >
+            Customers
+          </NavLink>
           </NavLink> */}
           {CheckRole("staff", "view") && (
             <NavLink
-              to={`/AdminPage/Staff`}
+              to={`/dashboard/staff`}
               className={({ isActive }) =>
                 `admin-menu__items--staff ${isActive ? "active" : ""}`
               }
@@ -90,7 +105,7 @@ function AdminMenu() {
           )}
           {CheckRole("user", "view") && (
             <NavLink
-              to={`/dashboard/customer`}
+              to={`/dashboard/user`}
               className={({ isActive }) =>
                 `admin-menu__items--customers ${isActive ? "active" : ""}`
               }

@@ -57,7 +57,9 @@ function ProductCategories() {
           <div className="product-categories__title--button">
             <div
               className="add-button"
-              onClick={() => navigate(`/dashboard/productcategories/addproductcategory`)}
+              onClick={() =>
+                navigate(`/dashboard/productcategories/addproductcategory`)
+              }
             >
               Add Category
             </div>

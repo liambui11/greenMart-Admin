@@ -6,7 +6,6 @@ import { FaChevronRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import axiosInstanceStaff from "../../untils/axiosInstanceStaff";
 import OverlayLoading from "../../components/OverlayLoading/OverlayLoading";
-import { faL } from "@fortawesome/free-solid-svg-icons";
 
 function Products() {
   const [categoriesData, setCategoriesData] = useState([]);
