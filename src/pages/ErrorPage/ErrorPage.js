@@ -21,7 +21,7 @@ function ErrorPage() {
           Oops! Looks like you’ve wandered into the wrong aisle...
         </div>
         <div className="error-page__button">
-          <button onClick={() => handleHomeButton("/")}>
+          <button onClick={() => handleHomeButton("/dashboard/overview")}>
             <FaHome style={{ marginRight: "0.7rem" }} />
             Back to Home
           </button>

@@ -54,7 +54,10 @@ function AddProduct() {
               <LuSave />
               Save
             </div>
-            <div className="back-button" onClick={() => navigate(`/products`)}>
+            <div
+              className="back-button"
+              onClick={() => navigate(`/dashboard/products`)}
+            >
               <TbArrowBackUp />
               Back
             </div>

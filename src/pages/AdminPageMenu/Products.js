@@ -4,41 +4,46 @@ import { CiEdit } from "react-icons/ci";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import { FaChevronRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import axiosInstanceStaff from "../../untils/axiosInstanceStaff";
+import OverlayLoading from "../../components/OverlayLoading/OverlayLoading";
+import { faL } from "@fortawesome/free-solid-svg-icons";
 
 function Products() {
   const [categoriesData, setCategoriesData] = useState([]);
   const [productsData, setProductsData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleAdminClick = () => {
-    navigate(`/`);
+    navigate(`/dashboard/overview`);
   };
-  const handleProductDetailClick = (item) => {
-    navigate(`/dashboard/productdetail`, {
-      state: { item },
-    });
+  const handleProductDetailClick = (itemSlug) => {
+    navigate(`/dashboard/products/productdetail/${itemSlug}`);
   };
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
       try {
         const [resProducts, resCategories] = await Promise.all([
-          fetch(
-            `http://localhost:3000/api/v1/products?currentPage=1&limitItems=1000`
+          axiosInstanceStaff.get(
+            `/api/v1/admin/products?currentPage=1&limitItems=1000`
           ),
-          fetch(`http://localhost:3000/api/v1/products-category`),
+          axiosInstanceStaff.get(`/api/v1/admin/products-category`),
         ]);
-        const productJson = await resProducts.json();
-        const categoryJson = await resCategories.json();
 
-        setProductsData(productJson.info);
-        setCategoriesData(categoryJson.info);
+        setProductsData(resProducts.data.info);
+        setCategoriesData(resCategories.data.info);
       } catch (err) {
-        console.error("Lỗi fetch:", err);
+        console.error("Lỗi: ", err);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchData();
   }, []);
+
+  console.log(productsData);
 
   const [searchQuery, setSearchQuery] = useState("");
   const filteredProduct = productsData.filter((item) =>
@@ -51,7 +56,10 @@ function Products() {
         <div className="products__title">
           <div className="products__title--name">Products</div>
           <div className="products__title--button">
-            <div className="add-button" onClick={() => navigate(`/addproduct`)}>
+            <div
+              className="add-button"
+              onClick={() => navigate(`/dashboard/products/addproduct`)}
+            >
               Add Product
             </div>
           </div>
@@ -125,11 +133,11 @@ function Products() {
                   <td>
                     <CiEdit
                       className="edit-icon"
-                      onClick={() => handleProductDetailClick(item)}
+                      onClick={() => handleProductDetailClick(item.productSlug)}
                     />
                   </td>
                   <td>
-                    <MdOutlineDeleteOutline />
+                    <MdOutlineDeleteOutline className="delete-icon" />
                   </td>
                 </tr>
               ))}
@@ -137,6 +145,7 @@ function Products() {
           </table>
         </div>
       </div>
+      {isLoading && <OverlayLoading />}
     </div>
   );
 }

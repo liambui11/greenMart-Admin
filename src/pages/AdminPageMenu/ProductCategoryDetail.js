@@ -1,5 +1,5 @@
 import { FaChevronRight } from "react-icons/fa";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "./ProductCategoryDetail.css";
 import { useEffect, useState } from "react";
 import { CiEdit } from "react-icons/ci";
@@ -7,54 +7,72 @@ import { TbArrowBackUp } from "react-icons/tb";
 import { LuSave } from "react-icons/lu";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import Swal from "sweetalert2";
+import axiosInstanceStaff from "../../untils/axiosInstanceStaff";
+import OverlayLoading from "../../components/OverlayLoading/OverlayLoading";
+import ErrorPage from "../ErrorPage/ErrorPage";
+
 
 function ProductCategoryDetail() {
   const navigate = useNavigate();
-  const [currentParentCategory, setCurrentParentCategory] = useState();
+  const { categoryslug } = useParams();
+
   const [isEdit, setIsEdit] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [notFound, setNotFound] = useState(false);
 
-  const location = useLocation();
-  const currentCategory = location.state?.item;
-  const [categoryName, setCategoryName] = useState(
-    currentCategory.categoryName
-  );
-  const [categoryImage, setCategoryImage] = useState(
-    currentCategory.categoryImage
-  );
-  const [parentCategory, setParentCategory] = useState(
-    currentCategory.categoryParentID
-  );
+  const [categoryList, setCategoryList] = useState([]);
+  const [currentCategory, setCurrentCategory] = useState();
 
-  const [categoryStatus, setCategoryStatus] = useState(
-    currentCategory.categoryStatus
-  );
-  const [categorySlug, setCategorySlug] = useState(
-    currentCategory.categorySlug
-  );
-  const [categoryDeleted, setCategoryDeleted] = useState(
-    currentCategory.deleted
-  );
-  const [categoryPosition, setCategoryPosition] = useState(
-    currentCategory.categoryPosition
-  );
+  const [categoryName, setCategoryName] = useState("");
+  const [categoryImage, setCategoryImage] = useState("/image/logoGM.png");
+  const [parentCategory, setParentCategory] = useState("");
+  const [categoryStatus, setCategoryStatus] = useState("inactive");
+  const [categorySlug, setCategorySlug] = useState("");
+  const [categoryDeleted, setCategoryDeleted] = useState(false);
+  const [categoryPosition, setCategoryPosition] = useState(0);
+
+  useEffect(() => {
+    if (currentCategory) {
+      setCategoryName(currentCategory.categoryName);
+      setCategoryImage(currentCategory.categoryImage);
+      setParentCategory(currentCategory.categoryParentID);
+      setCategoryStatus(currentCategory.categoryStatus);
+      setCategorySlug(currentCategory.categorySlug);
+      setCategoryDeleted(currentCategory.deleted);
+      setCategoryPosition(currentCategory.categoryPosition);
+    }
+  }, [currentCategory]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const resParentCategory = await fetch(
-        `http://localhost:3000/api/v1/products-category`
-      );
-      const parentCategoryJson = await resParentCategory.json();
-      setCurrentParentCategory(parentCategoryJson.info);
+      setIsLoading(true);
+      try {
+        const [resProductCategory, resCategoryList] = await Promise.all([
+          axiosInstanceStaff.get(
+            `/api/v1/admin/products-category/detail/${categoryslug}`
+          ),
+          axiosInstanceStaff.get(`/api/v1/admin/products-category`),
+        ]);
+        setCurrentCategory(resProductCategory.data.info);
+        setCategoryList(resCategoryList.data.info);
+        console.log(resProductCategory.data.code)
+        console.log(resCategoryList.data.code)
+      } catch (err) {
+        console.log(err);
+        setNotFound(true);
+      } finally {
+        setIsLoading(false);
+      }
     };
     fetchData();
-  }, []);
+  }, [categoryslug, navigate]);
 
   const handleAdminClick = () => {
-    navigate(`/`);
+    navigate(`/dashboard/overview`);
   };
 
   const handleProductCategoriesClick = () => {
-    navigate(`/productcategories`);
+    navigate(`/dashboard/productcategories`);
   };
 
   const handleImageChange = (e) => {
@@ -68,6 +86,7 @@ function ProductCategoryDetail() {
     }
   };
 
+  if (notFound) return <ErrorPage />;
   return (
     <div className="product-category-detail-container">
       <div className="product-category-detail">
@@ -92,7 +111,7 @@ function ProductCategoryDetail() {
             </div>
             <div
               className="back-button"
-              onClick={() => navigate(`/productcategories`)}
+              onClick={() => navigate(`/dashboard/productcategories`)}
             >
               <TbArrowBackUp />
               Back
@@ -104,7 +123,7 @@ function ProductCategoryDetail() {
           <FaChevronRight />
           <span onClick={handleProductCategoriesClick}>Product Categories</span>
           <FaChevronRight />
-          <span>{currentCategory.categoryName}</span>
+          <span>{categoryName}</span>
         </div>
         <div className="product-category-detail__content">
           <label className="category__name">
@@ -124,7 +143,7 @@ function ProductCategoryDetail() {
               onChange={(e) => setParentCategory(e.target.value)}
             >
               <option value="">No Parent</option>
-              {currentParentCategory?.map((item) => (
+              {categoryList?.map((item) => (
                 <option key={item._id} value={item._id}>
                   {item.categoryName}
                 </option>
@@ -206,7 +225,7 @@ function ProductCategoryDetail() {
             Create By
             <input
               type="text"
-              value={currentCategory.createBy}
+              value={currentCategory?.createBy}
               disabled={true}
             ></input>
           </label>
@@ -214,7 +233,7 @@ function ProductCategoryDetail() {
             Update By
             <input
               type="text"
-              value={currentCategory.updateBy}
+              value={currentCategory?.updateBy}
               disabled={true}
             ></input>
           </label>
@@ -222,7 +241,7 @@ function ProductCategoryDetail() {
             Delete By
             <input
               type="text"
-              value={currentCategory.deleteBy}
+              value={currentCategory?.deleteBy}
               disabled={true}
             ></input>
           </label>
@@ -256,7 +275,7 @@ function ProductCategoryDetail() {
             <input
               type="text"
               value={
-                currentCategory.deletedAt
+                currentCategory?.deletedAt
                   ? new Date(currentCategory.deletedAt).toLocaleDateString(
                       "vi-VN"
                     )
@@ -270,7 +289,7 @@ function ProductCategoryDetail() {
             <input
               type="text"
               value={
-                currentCategory.createdAt
+                currentCategory?.createdAt
                   ? new Date(currentCategory.createdAt).toLocaleDateString(
                       "vi-VN"
                     )
@@ -284,7 +303,7 @@ function ProductCategoryDetail() {
             <input
               type="text"
               value={
-                currentCategory.updatedAt
+                currentCategory?.updatedAt
                   ? new Date(currentCategory.updatedAt).toLocaleDateString(
                       "vi-VN"
                     )
@@ -295,6 +314,7 @@ function ProductCategoryDetail() {
           </label>
         </div>
       </div>
+      {isLoading && <OverlayLoading />}
     </div>
   );
 }

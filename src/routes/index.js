@@ -35,13 +35,22 @@ export const routes = [
         children: [
           { path: "overview", element: <Overview /> },
           { path: "productcategories", element: <ProductCategories /> },
-          { path: "productcategorydetail", element: <ProductCategoryDetail /> },
+          {
+            path: "productcategories/productcategorydetail/:categoryslug",
+            element: <ProductCategoryDetail />,
+          },
           { path: "products", element: <Products /> },
           { path: "user", element: <Customer /> },
           { path: "userdetail/:id", element: <CustomerDetail /> },
-          { path: "productdetail", element: <ProductDetail /> },
-          { path: "addproduct", element: <AddProduct /> },
-          { path: "addproductcategory", element: <AddProductCategory /> },
+          {
+            path: "products/productdetail/:productslug",
+            element: <ProductDetail />,
+          },
+          { path: "products/addproduct", element: <AddProduct /> },
+          {
+            path: "productcategories/addproductcategory",
+            element: <AddProductCategory />,
+          },
           { path: "staffdetail/:id", element: <StaffDetail /> },
           { path: "staff", element: <Staff /> },
           { path: "addstaff", element: <AddStaff /> },
