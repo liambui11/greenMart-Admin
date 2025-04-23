@@ -95,7 +95,7 @@ function AdminMenu() {
           </NavLink> */}
           {CheckRole("staff", "view") && (
             <NavLink
-              to={`/AdminPage/Staff`}
+              to={`/dashboard/staff`}
               className={({ isActive }) =>
                 `admin-menu__items--staff ${isActive ? "active" : ""}`
               }
@@ -105,7 +105,7 @@ function AdminMenu() {
           )}
           {CheckRole("user", "view") && (
             <NavLink
-              to={`/dashboard/customer`}
+              to={`/dashboard/user`}
               className={({ isActive }) =>
                 `admin-menu__items--customers ${isActive ? "active" : ""}`
               }
