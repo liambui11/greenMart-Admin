@@ -1,4 +1,4 @@
-function ValidationStaff(values) {
+function ValidationAuth(values) {
   let error = {};
   const email_pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   // const phone_pattern = /^0\d{9}$/;
@@ -22,4 +22,4 @@ function ValidationStaff(values) {
   return error;
 }
 
-export default ValidationStaff;
+export default ValidationAuth;

@@ -1,0 +1,233 @@
+.StaffProfile__title {
+  /* margin-left: 10%; */
+  margin: 3rem;
+}
+.StaffProfile__title--name {
+  font-size: 3rem;
+  font-weight: 700;
+}
+.StaffProfile-top {
+  /* background-color: aqua; */
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin: 2rem auto;
+}
+.Profile__infor__avatar {
+  width: 30%;
+  margin-left: 10%;
+}
+
+.Profile__infor__avatar__img {
+  border-radius: "50%";
+  object-fit: "cover";
+  border-radius: 50%;
+  display: block;
+  object-fit: cover;
+}
+
+.Profile__infor__avatar #fileInput {
+  display: none;
+}
+
+.Profile__infor__avatar__btn {
+  background: #0aad0a;
+  border: none;
+  margin-top: 2rem;
+  color: white;
+  width: 20rem;
+}
+
+.Profile__infor__avatar__btn:hover {
+  background-color: #bbb;
+  color: black;
+}
+
+.staff__top-btn {
+  margin-left: 10rem;
+  display: flex;
+  gap: 2rem;
+}
+
+.staff-back,
+.staff-edit {
+  width: 8rem;
+  height: 4rem;
+  padding: 1rem 1rem;
+  /* margin-left: 20rem; */
+  background-color: #5c6c75;
+  color: white;
+  font-weight: 600;
+  border-radius: 1rem;
+  /* font-size: 3rem; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.staff-title {
+  margin-top: 5rem;
+}
+.staff-name {
+  font-size: 5rem;
+  font-weight: 700;
+}
+.staff__title-info {
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+/* bao ngoài form */
+.Profile__infor__form {
+  width: 80%;
+  /* background-color: antiquewhite; */
+  margin: 2rem auto;
+  padding: 1.5rem 0;
+}
+
+/* mỗi dòng label + input */
+.Profile__infor__Fullname,
+.Profile__infor__Email,
+.Profile__infor__Address,
+.Profile__infor__Phone,
+.Profile__infor__password {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 3rem;
+  margin-bottom: 3rem;
+}
+
+/* label cố định đủ rộng, không wrap */
+.Profile__infor__Fullname label,
+.Profile__infor__Email label,
+.Profile__infor__Address label,
+.Profile__infor__Phone label,
+.Profile__infor__password label,
+.Profile__infor__position label {
+  flex: 0 0 15rem;
+  font-size: 2rem;
+  font-weight: 400;
+  text-align: left;
+  color: #5c6c75;
+}
+
+/* input sẽ chiếm phần còn lại */
+.Profile__infor__Fullname input,
+.Profile__infor__Email input,
+.Profile__infor__Address input,
+.Profile__infor__Phone input,
+.Profile__infor__password input {
+  flex: 1;
+  height: 3.75rem;
+  font-size: 1.5rem;
+  /* padding: 0 2rem; */
+  border: 1px solid #ccc;
+  background-color: #fafafa;
+}
+
+.staff__info__by {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 2rem 0;
+}
+
+.staff__info__by label {
+  color: #5c6c75;
+  font-size: 1.75rem;
+  font-weight: 400;
+  text-align: left;
+}
+.staff__info__by label input {
+  margin-left: 1.5rem;
+}
+
+.staff__create-by,
+.staff__update-by,
+.staff__update-at {
+  margin-right: 2rem;
+}
+
+.staff__at__status {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  font-size: 1.75rem;
+  color: #5c6c75;
+  margin: 2rem 0;
+}
+
+.staff__at__status label input {
+  margin-left: 1rem;
+}
+
+.staff__update-at {
+  margin-right: 7rem;
+}
+
+.Profile__infor__form__btn {
+  height: 4rem;
+  width: 25rem;
+  font-size: larger;
+  border: none;
+  /* background-color: #0aad0a; */
+  border-radius: 1rem;
+  color: white;
+  position: relative;
+  left: 40%;
+}
+
+.btn-disabled {
+  background-color: #5c6c75 !important;
+}
+
+.btn-enabled {
+  background-color: #0aad0a !important;
+}
+
+@media (max-width: 1124px) {
+  .staff__top-btn {
+    margin-left: 0rem;
+    display: flex;
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .StaffProfile {
+    margin: 3rem;
+  }
+  .Profile__infor__form {
+    width: 100%;
+    margin: 2rem;
+    font-size: 1rem;
+  }
+  .Profile__infor__avatar {
+    width: 100%;
+    margin: 2rem;
+  }
+  .StaffProfile-top {
+    /* flex-wrap: wrap; */
+    /* font-size: 1rem; */
+    background-color: aqua;
+  }
+  .staff-name {
+    font-size: 1.5rem;
+    /* color: #0aad0a; */
+  }
+  .staff__top-btn {
+    margin: auto;
+    display: flex;
+    gap: 2rem;
+  }
+  .staff__info__by {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .Profile__infor__form__btn {
+    position: relative;
+    left: 10%;
+  }
+}

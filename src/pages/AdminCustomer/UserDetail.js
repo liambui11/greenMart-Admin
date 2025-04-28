@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { FaChevronRight } from "react-icons/fa";
+import { FaCloudUploadAlt } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { CiEdit } from "react-icons/ci";
 import { TbArrowBackUp } from "react-icons/tb";
 import { LuSave } from "react-icons/lu";
 import axiosInstanceStaff from "../../untils/axiosInstanceStaff";
 import "./UserDetail.css";
+import OverlayLoading from "../../components/OverlayLoading/OverlayLoading";
 
 function CustomerDetail() {
   const navigateToAdmin = useNavigate();
   const navigateToCustomer = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
+  // const [userStatus, setUserStatus] = useState("inactive");
   const { id } = useParams();
 
   const [isEdit, setIsEdit] = useState(false);
@@ -24,9 +28,12 @@ function CustomerDetail() {
         );
         if (res.data.code === 200) {
           setUserData(res.data.info);
+          console.log("USER DATA:", res.data.info);
         }
       } catch (err) {
         console.error("Lỗi khi lấy thông tin user:", err);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -51,9 +58,22 @@ function CustomerDetail() {
   };
 
   const handleAdminClick = () => navigateToAdmin(`/`);
-  const handleCustomerClick = () => navigateToCustomer(`/customer`);
+  const handleCustomerClick = () => navigateToCustomer(`/dashboard/user`);
 
-  if (!userData) return <div>Loading...</div>;
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setUserData((prev) => ({
+          ...prev,
+          userAvatar: reader.result,
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  if (!userData) return <OverlayLoading />;
 
   return (
     <div className="customer-detail-container">
@@ -76,7 +96,7 @@ function CustomerDetail() {
             </div>
             <div
               className="customer-back-button"
-              onClick={() => navigateToCustomer(`/user`)}
+              onClick={() => navigateToCustomer(`/dashboard/user`)}
             >
               <TbArrowBackUp />
               Back
@@ -93,6 +113,34 @@ function CustomerDetail() {
         </div>
 
         <div className="customer-detail__content">
+          <label className="customer__image">
+            Image
+            <div className="customer__image--content">
+              <img
+                alt=""
+                src={userData.userAvatar}
+                style={{
+                  width: "30rem",
+                  height: "15rem",
+                  objectFit: "contain",
+                }}
+              />
+              {isEdit && (
+                <>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    id="imageUpload"
+                    style={{ display: "none" }}
+                    onChange={handleImageChange}
+                  />
+                  <label className="upload-icon" htmlFor="imageUpload">
+                    <FaCloudUploadAlt size="3rem" />
+                  </label>
+                </>
+              )}
+            </div>
+          </label>
           <label className="customer__name">
             Name
             <input
@@ -115,14 +163,7 @@ function CustomerDetail() {
               }
             />
           </label>
-          <label className="customer__image">
-            Image
-            <img
-              alt=""
-              src={userData.userAvatar}
-              style={{ width: "20rem", height: "12rem", objectFit: "contain" }}
-            />
-          </label>
+
           <label className="customer__status">
             Status
             <div className="customer__status--group">
@@ -131,16 +172,22 @@ function CustomerDetail() {
                   type="radio"
                   value="active"
                   checked={userData.userStatus === "active"}
-                  disabled
+                  disabled={!isEdit}
+                  onChange={(e) =>
+                    setUserData({ ...userData, userStatus: e.target.value })
+                  }
                 />
                 Active
               </label>
-              <label>
+              <label className="">
                 <input
                   type="radio"
                   value="inactive"
                   checked={userData.userStatus === "inactive"}
-                  disabled
+                  disabled={!isEdit}
+                  onChange={(e) =>
+                    setUserData({ ...userData, userStatus: e.target.value })
+                  }
                 />
                 InActive
               </label>
@@ -168,18 +215,23 @@ function CustomerDetail() {
               }
             />
           </label>
-          <label className="customer__delete-at">
-            Delete At
+          <label className="customer__create-by">
+            Create By
             <input
               type="text"
-              value={
-                userData.deletedAt
-                  ? new Date(userData.deletedAt).toLocaleDateString("vi-VN")
-                  : "Null"
-              }
-              disabled
-            />
+              value={userData?.createBy}
+              disabled={true}
+            ></input>
           </label>
+          <label className="customer__update-by">
+            Update By
+            <input
+              type="text"
+              value={userData?.updateBy}
+              disabled={true}
+            ></input>
+          </label>
+
           <label className="customer__create-at">
             Create At
             <input

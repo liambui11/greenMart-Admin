@@ -1,15 +1,15 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import React, { useEffect, useState } from "react";
-import ValidationStaff from "./MyProfileValidationStaff";
-import "./StaffDetail.css";
+import ValidationAuth from "./MyProfileValidationAuth";
+// import "./StaffDetail.css";
 
 import Swal from "sweetalert2";
 import axiosInstanceStaff from "../../untils/axiosInstanceStaff";
 import { useParams } from "react-router-dom";
-// import OverlayLoading from "../../../components/OverlayLoading/OverlayLoading";
+import OverlayLoading from "../../components/OverlayLoading/OverlayLoading";
 
-function StaffDetail() {
+function AuthDetail() {
   const [file, setFile] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const { id } = useParams();
@@ -23,11 +23,10 @@ function StaffDetail() {
   });
 
   useEffect(() => {
-    const fetchStaff = async () => {
+    setIsLoading(true);
+    const fetchUser = async () => {
       try {
-        const res = await axiosInstanceStaff.get(
-          `/api/v1/admin/staffs/detail/${id}`
-        );
+        const res = await axiosInstanceStaff.get("/api/v1/admin/auth/detail");
         if (res.data.code === 200) {
           const user = res.data.info;
           console.log("admin auth detail", user);
@@ -43,44 +42,13 @@ function StaffDetail() {
           }
         }
       } catch (err) {
-        console.error("Lỗi khi lấy thông tin staff:", err);
+        console.error("Lỗi khi lấy thông tin user:", err);
       } finally {
         setIsLoading(false);
       }
     };
-
-    if (id) {
-      fetchStaff();
-    }
-  }, [id]);
-
-  // useEffect(() => {
-  //   setIsLoading(true);
-  //   const fetchUser = async () => {
-  //     try {
-  //       const res = await axiosInstanceStaff.get("/api/v1/admin/auth/detail");
-  //       if (res.data.code === 200) {
-  //         const user = res.data.info;
-  //         console.log("admin auth detail", user);
-  //         setValues({
-  //           name: user.staffName || "",
-  //           email: user.staffEmail || "",
-  //           address: user.staffAddress || "",
-  //           phone: user.staffPhone || "",
-  //           position: user.roleID.roleName || "",
-  //         });
-  //         if (user.staffAvatar) {
-  //           setFile(user.staffAvatar);
-  //         }
-  //       }
-  //     } catch (err) {
-  //       console.error("Lỗi khi lấy thông tin user:", err);
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
-  //   fetchUser();
-  // }, []);
+    fetchUser();
+  }, []);
 
   const [errors, setErrors] = useState({});
 
@@ -93,7 +61,7 @@ function StaffDetail() {
 
   const handleInputPhone = (event) => {
     const onlyNums = event.target.value.replace(/\D/g, "");
-    const validationErrors = ValidationStaff(values);
+    const validationErrors = ValidationAuth(values);
 
     setErrors(validationErrors);
     setValues((prev) => ({
@@ -104,7 +72,7 @@ function StaffDetail() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const validationErrors = ValidationStaff(values);
+    const validationErrors = ValidationAuth(values);
 
     setErrors(validationErrors);
 
@@ -265,8 +233,9 @@ function StaffDetail() {
           </button>
         </form>
       </div>
+      {isLoading && <OverlayLoading />}
     </div>
   );
 }
 
-export default StaffDetail;
+export default AuthDetail;

@@ -58,7 +58,8 @@
 .Profile__infor__position,
 .Profile__infor__Email,
 .Profile__infor__Address,
-.Profile__infor__Phone {
+.Profile__infor__Phone,
+.Profile__infor__pass {
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -71,7 +72,8 @@
 .Profile__infor__position label,
 .Profile__infor__Email label,
 .Profile__infor__Address label,
-.Profile__infor__Phone label {
+.Profile__infor__Phone label,
+.Profile__infor__pass label {
   flex: 0 0 15rem; /* label luôn chiếm 12rem (~192px) */
   white-space: nowrap; /* không cho xuống hàng */
   font-size: 2rem;
@@ -81,10 +83,11 @@
 
 /* input sẽ chiếm phần còn lại */
 .Profile__infor__Fullname input,
-.Profile__infor__position input,
+.Profile__infor__position select,
 .Profile__infor__Email input,
 .Profile__infor__Address input,
-.Profile__infor__Phone input {
+.Profile__infor__Phone input,
+.Profile__infor__pass input {
   flex: 1;
   height: 4rem;
   font-size: 1.5rem;

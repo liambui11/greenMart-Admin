@@ -5,23 +5,38 @@ import { CiEdit } from "react-icons/ci";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import "./Staff.css";
 import { useNavigate } from "react-router-dom";
+import OverlayLoading from "../../components/OverlayLoading/OverlayLoading";
+import Swal from "sweetalert2";
 
 function Staff() {
   const [staff, setStaff] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortKey, setSortKey] = useState("userName");
+  const [sortValue, setSortValue] = useState("desc");
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     const axiosData = async () => {
       try {
-        const res = await axiosInstanceStaff.get("/api/v1/admin/staffs");
+        setIsLoading(true);
+        const res = await axiosInstanceStaff.get("/api/v1/admin/staffs", {
+          params: {
+            keyword: searchQuery,
+            sortKey: sortKey,
+            sortValue: sortValue,
+          },
+        });
         console.log("admin staffs", res.data.info);
         setStaff(res.data.info || []);
       } catch (err) {
         alert("Loi:", err);
         setStaff([]);
+      } finally {
+        setIsLoading(false);
       }
     };
     axiosData();
-  }, []);
+  }, [searchQuery, sortKey, sortValue]);
 
   const handleStaffdetail = (item) => {
     navigate(`/dashboard/staffdetail/${item._id}`);
@@ -29,6 +44,37 @@ function Staff() {
 
   const handleAddStaff = (item) => {
     navigate(`/dashboard/addstaff`);
+  };
+
+  const handleDeleteStaff = async (item) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: `You are deleting ${item.name || "this staff"}!`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await axiosInstanceStaff.delete(
+          `api/v1/admin/staffs/delete/${item._id}`
+        );
+        setStaff((prev) => prev.filter((s) => s._id !== item._id));
+        Swal.fire({
+          title: "Deleted!",
+          text: "Staff deleted successfully.",
+          icon: "success",
+        });
+      } catch (error) {
+        console.error("Delete staff error:", error);
+        Swal.fire({
+          title: "Error",
+          text: error?.response?.data?.message || "Failed to delete staff.",
+          icon: "error",
+        });
+      }
+    }
   };
 
   return (
@@ -46,34 +92,47 @@ function Staff() {
           <span>Staff</span>
         </div>
         <div className="staff__content">
-          <input
-            className="staff__content--search"
-            type="text"
-            placeholder="Staff Searching ..."
-          />
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              setSearchQuery(e.target.search.value);
+            }}
+          >
+            <input
+              className="staff__content--search"
+              type="text"
+              placeholder="Staff Searching ..."
+              name="search"
+              defaultValue={searchQuery}
+            />
+            <button type="submit" className="staff__content__btn__submit">
+              Search
+            </button>
+          </form>
+
           <table className="staff__content--table">
             <thead>
               <tr>
-                <th>
+                {/* <th>
                   <input type="checkbox" />
-                </th>
+                </th> */}
                 <th>Image</th>
                 <th>Name</th>
                 <th>Email</th>
                 <th>Phone</th>
                 <th>Position</th>
                 <th>Status</th>
-                <th></th>
-                <th></th>
+                <th>Edit</th>
+                <th>Delete</th>
               </tr>
             </thead>
             <tbody>
               {staff?.length > 0 ? (
                 staff.map((item) => (
                   <tr key={item._id}>
-                    <td>
+                    {/* <td>
                       <input type="checkbox" />
-                    </td>
+                    </td> */}
                     <td>
                       <img
                         alt=""
@@ -88,14 +147,14 @@ function Staff() {
                     <td>{item.staffStatus}</td>
                     <td>
                       <CiEdit
-                        className="staff__edit-icon"
+                        className="staff__edit__icon"
                         onClick={() => handleStaffdetail(item)}
                       />
                     </td>
                     <td>
                       <MdOutlineDeleteOutline
-                        className="staff__delete-icon"
-                        // onClick={handleDeleteCustomer}
+                        className="staff__delete__icon"
+                        onClick={() => handleDeleteStaff(item)}
                       />
                     </td>
                   </tr>
@@ -111,6 +170,7 @@ function Staff() {
           </table>
         </div>
       </div>
+      {isLoading && <OverlayLoading />}
     </div>
   );
 }

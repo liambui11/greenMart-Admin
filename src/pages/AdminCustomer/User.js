@@ -5,11 +5,40 @@ import { MdOutlineDeleteOutline } from "react-icons/md";
 import { FaChevronRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import axiosInstanceStaff from "../../untils/axiosInstanceStaff";
+import OverlayLoading from "../../components/OverlayLoading/OverlayLoading";
 
 function Customer() {
   const [customer, setCustomer] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [sortKey, setSortKey] = useState("userName");
+  const [sortValue, setSortValue] = useState("desc");
+
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        const res = await axiosInstanceStaff.get("/api/v1/admin/users", {
+          params: {
+            keyword: searchQuery,
+            sortKey: sortKey,
+            sortValue: sortValue,
+          },
+        });
+
+        setCustomer(res.data.info || []);
+      } catch (err) {
+        console.error("Lỗi:", err);
+        setCustomer([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [searchQuery, sortKey, sortValue]);
 
   const handleAdminClick = () => {
     navigate(`/`);
@@ -19,30 +48,9 @@ function Customer() {
     navigate(`/dashboard/userdetail/${item._id}`, { state: { item } });
   };
 
-  const handleDeleteCustomer = () => {
+  const handleDeleteCustomer = (item) => {
     alert("Da xoa");
   };
-
-  const filteredCustomers = customer.filter(
-    (item) =>
-      item.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.userEmail.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await axiosInstanceStaff.get("/api/v1/admin/users");
-        console.log("Danh sách user:", res.data.info);
-        setCustomer(res.data.info || []);
-      } catch (err) {
-        console.error("Lỗi:", err);
-        setCustomer([]);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   return (
     <div className="customer-container">
@@ -54,13 +62,21 @@ function Customer() {
           <span>Customer</span>
         </div>
         <div className="customer__content">
-          <input
-            className="customer__content--search"
-            type="text"
-            placeholder="Customer"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              setSearchQuery(e.target.search.value);
+            }}
+          >
+            <input
+              className="customer__content--search"
+              type="text"
+              placeholder="Customer Searching ..."
+              defaultValue={searchQuery}
+              name="search"
+            />
+            <button className="customer__content__btn__submit">Search</button>
+          </form>
           <table className="customer__content--table">
             <thead>
               <tr>
@@ -78,8 +94,8 @@ function Customer() {
               </tr>
             </thead>
             <tbody>
-              {filteredCustomers?.length > 0 ? (
-                filteredCustomers.map((item) => (
+              {customer?.length > 0 ? (
+                customer.map((item) => (
                   <tr key={item._id}>
                     <td>
                       <input type="checkbox" />
@@ -115,7 +131,7 @@ function Customer() {
                     <td>
                       <MdOutlineDeleteOutline
                         className="delete-icon"
-                        onClick={handleDeleteCustomer}
+                        onClick={() => handleDeleteCustomer(item)}
                       />
                     </td>
                   </tr>
@@ -131,6 +147,7 @@ function Customer() {
           </table>
         </div>
       </div>
+      {isLoading && <OverlayLoading />}
     </div>
   );
 }

@@ -7,9 +7,14 @@ import "./AddStaff.css";
 import Swal from "sweetalert2";
 import axiosInstanceStaff from "../../../untils/axiosInstanceStaff";
 // import { useParams } from "react-router-dom";
-// import OverlayLoading from "../../../components/OverlayLoading/OverlayLoading";
+import { FaChevronRight } from "react-icons/fa";
+import OverlayLoading from "../../../components/OverlayLoading/OverlayLoading";
+import { useNavigate } from "react-router-dom";
 
 function AddStaff() {
+  const navigateToStaff = useNavigate();
+  const navigateToAdmin = useNavigate();
+
   const [file, setFile] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   //   const { id } = useParams();
@@ -20,25 +25,43 @@ function AddStaff() {
     address: "",
     phone: "",
     position: "",
+    pass: "",
   });
 
   const [errors, setErrors] = useState({});
 
   const handleInput = (event) => {
-    setValues((prev) => ({
-      ...prev,
-      [event.target.name]: event.target.value,
+    // setValues((prev) => ({
+    //   ...prev,
+    //   [event.target.name]: event.target.value,
+    // }));
+
+    const { name, value } = event.target;
+
+    // Xóa lỗi khi người dùng bắt đầu nhập
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: "",
+    }));
+
+    setValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
     }));
   };
 
   const handleInputPhone = (event) => {
-    const onlyNums = event.target.value.replace(/\D/g, "");
-    const validationErrors = ValidationStaff(values);
+    const { name, value } = event.target;
+    const onlyNums = value.replace(/\D/g, "");
 
-    setErrors(validationErrors);
-    setValues((prev) => ({
-      ...prev,
-      [event.target.name]: onlyNums,
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: "",
+    }));
+
+    setValues((prevValues) => ({
+      ...prevValues,
+      [name]: onlyNums,
     }));
   };
 
@@ -53,16 +76,19 @@ function AddStaff() {
       try {
         const formData = new FormData();
         formData.append("staffName", values.name);
-        formData.append("staffPhone", values.phone);
+        formData.append("staffEmail", values.email);
         formData.append("staffAddress", values.address);
+        formData.append("staffPhone", values.phone);
+        formData.append("staffPassword", values.pass);
+        formData.append("roleID", values.position);
 
         const imageFile = document.getElementById("fileInput").files[0];
         if (imageFile) {
           formData.append("staffAvatar", imageFile);
         }
 
-        const res = await axiosInstanceStaff.put(
-          "/api/v1/admin/auth/update",
+        const res = await axiosInstanceStaff.post(
+          "/api/v1/admin/staffs/add",
           formData,
           {
             headers: {
@@ -71,20 +97,15 @@ function AddStaff() {
           }
         );
 
-        if (res.data.code === 200) {
-          Swal.fire({
-            title: "Successfully Saved!",
-            icon: "success",
-          });
-        } else {
-          Swal.fire({
-            title: "Error Saved!",
-            icon: "error",
-          });
-        }
+        Swal.fire({
+          title: "Successfully Saved!",
+          icon: "success",
+        });
       } catch (error) {
-        console.error("Lỗi khi cập nhật thông tin:", error);
-        alert("Đã xảy ra lỗi khi cập nhật!");
+        Swal.fire({
+          title: error.response.data.message,
+          icon: "error",
+        });
       } finally {
         setIsLoading(false);
       }
@@ -102,8 +123,21 @@ function AddStaff() {
     }
   };
 
+  const handleAdminClick = () => navigateToAdmin(`/dashboard`);
+  const handleStaffClick = () => navigateToStaff(`/dashboard/staff`);
+
   return (
     <div className="StaffProfile-container">
+      <div className="StaffProfile__title">
+        <div className="StaffProfile__title--name">Staff Add</div>
+        <div className="customer-detail__breadcrumb">
+          <span onClick={handleAdminClick}>Admin</span>
+          <FaChevronRight />
+          <span onClick={handleStaffClick}>Staff</span>
+          <FaChevronRight />
+          <span>{values.name}</span>
+        </div>
+      </div>
       <div className="StaffProfile-top">
         <div className="Profile__infor__avatar">
           <label>
@@ -172,17 +206,18 @@ function AddStaff() {
             <label>
               <strong>Position</strong>
             </label>
-            <input
-              type="text"
-              placeholder="Enter Position"
-              name="email"
-              //   disabled={true}
+            <select
+              name="position"
               onChange={handleInput}
               value={values.position}
               className="form-control rounded-0"
-            />
-            {errors.email && (
-              <span className="text-danger">{errors.email}</span>
+            >
+              <option value="">-- Select Position --</option>
+              <option value="6805b1186e7f1d812a163506">Admin</option>
+              <option value="6805b1186e7f1d812a163507">Stock</option>
+            </select>
+            {errors.position && (
+              <span className="text-danger">{errors.position}</span>
             )}
           </div>
 
@@ -218,11 +253,28 @@ function AddStaff() {
               <span className="text-danger">{errors.phone}</span>
             )}
           </div>
+
+          <div className="Profile__infor__pass">
+            <label>
+              <strong>Password</strong>
+            </label>
+            <input
+              type="password"
+              placeholder="Enter Password"
+              name="pass"
+              onChange={handleInput}
+              value={values.pass}
+              className="form-control rounded-0"
+            />
+            {errors.pass && <span className="text-danger">{errors.pass}</span>}
+          </div>
+
           <button type="submit" className="Profile__infor__form__btn">
             <strong>Save</strong>
           </button>
         </form>
       </div>
+      {/* {isLoading && <OverlayLoading />} */}
     </div>
   );
 }
