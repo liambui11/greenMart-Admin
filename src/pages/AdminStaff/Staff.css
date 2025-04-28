@@ -50,7 +50,18 @@
 .staff__content--search {
   padding: 0.7rem 2rem;
   width: 40rem;
-  border-radius: 0.6rem;
+  border-top-left-radius: 0.6rem;
+  border-bottom-left-radius: 0.6rem;
+  border-bottom: 0.1rem solid rgba(0, 0, 0, 0.249);
+  border-top: 0.1rem solid rgba(0, 0, 0, 0.249);
+  border-left: 0.1rem solid rgba(0, 0, 0, 0.249);
+  border-right: none;
+}
+
+.staff__content__btn__submit {
+  padding: 0.7rem 2rem;
+  border-top-right-radius: 0.6rem;
+  border-bottom-right-radius: 0.6rem;
   border: 0.1rem solid rgba(0, 0, 0, 0.249);
 }
 
@@ -80,11 +91,12 @@
   font-weight: 600;
 }
 
-.staff__edit-icon:hover {
+.staff__edit__icon:hover {
   color: #006838;
   cursor: pointer;
 }
-.staff__detete-icon:hover {
+
+.staff__delete__icon:hover {
   color: #006838;
   cursor: pointer;
 }

@@ -7,14 +7,18 @@ function ValidationStaff(values) {
     error.name = "Name should not be empty";
   }
 
+  if (!values.pass || values.pass.trim() === "") {
+    error.pass = "Pass should not be empty";
+  }
+
+  if (!values.position || values.position.trim() === "") {
+    error.position = "Position should not be empty";
+  }
+
   if (!values.email || values.email.trim() === "") {
     error.email = "Email should not be empty";
   } else if (!email_pattern.test(values.email)) {
     error.email = "Email didn't match";
-  }
-
-  if (!values.address || values.address.trim() === "") {
-    error.address = "Name should not be empty";
   }
 
   if (!values.phone || values.phone.trim() === "") {

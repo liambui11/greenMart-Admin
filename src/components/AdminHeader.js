@@ -3,22 +3,49 @@ import { IoIosLogOut } from "react-icons/io";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logoutStaff } from "../actions/authStaff";
+import { useState, useEffect } from "react";
+import axiosInstanceStaff from "../untils/axiosInstanceStaff";
 
 function AdminHeader() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [user, setUser] = useState([]);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await axiosInstanceStaff.get("/api/v1/admin/auth/detail");
+        if (res.data.code === 200) {
+          setUser(res.data.info);
+        }
+      } catch (err) {
+        console.error("Lỗi khi lấy thông tin user:", err);
+      } finally {
+        // setIsLoading(false);
+      }
+    };
+    fetchUser();
+  }, []);
 
   const handleLogout = () => {
-    dispatch(logoutStaff()); 
+    dispatch(logoutStaff());
     navigate("/dashboard/signin");
   };
+
+  const handleProfileAuth = () => {
+    navigate("/dashboard/authdetail");
+  };
+
   return (
     <div className="admin-header-container">
       <div className="admin-header">
         <div className="admin-header__user">
-          <div className="admin-header__user--avatar">
+          <div
+            className="admin-header__user--avatar"
+            onClick={handleProfileAuth}
+          >
             <img
-              src="https://i.pinimg.com/736x/21/4e/c5/214ec5b7ba6a42481258e1d0c5bb60e1.jpg"
+              src={user.staffAvatar}
               style={{
                 width: "100%",
                 height: "100%",
@@ -28,9 +55,9 @@ function AdminHeader() {
               alt="Admin Avatar"
             />
           </div>
-          <div className="admin-header__user--name">Luan</div>
+          <div className="admin-header__user--name">{user.staffName}</div>
         </div>
-        <div className="admin-header__log-out"  onClick={handleLogout}>
+        <div className="admin-header__log-out" onClick={handleLogout}>
           <span>Log out</span>
           <IoIosLogOut />
         </div>

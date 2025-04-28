@@ -12,9 +12,10 @@ import Overview from "../pages/AdminPageMenu/Overview";
 import AddProduct from "../pages/AdminPageMenu/AddProduct";
 import AddProductCategory from "../pages/AdminPageMenu/AddProductCategory";
 import PrivateRoute from "./PrivateRoute";
-import StaffDetail from "../pages/StaffDetail/StaffDetail";
+import StaffDetail from "../pages/AdminStaff/StaffDetail/StaffDetail";
 import Staff from "../pages/AdminStaff/Staff";
 import AddStaff from "../pages/AdminStaff/AddStaff/AddStaff";
+import AuthDetail from "../pages/AuthDetail/AuthDetail";
 
 export const routes = [
   {
@@ -54,6 +55,7 @@ export const routes = [
           { path: "staffdetail/:id", element: <StaffDetail /> },
           { path: "staff", element: <Staff /> },
           { path: "addstaff", element: <AddStaff /> },
+          { path: "authdetail", element: <AuthDetail /> },
         ],
       },
     ],
