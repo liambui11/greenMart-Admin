@@ -224,41 +224,28 @@
 .product__create-by {
   width: 30rem;
   position: absolute;
-  top: 45rem;
-  left: 0rem;
+  top: 30rem;
+  left: 80rem;
 }
 
 .product__create-at {
   width: 30rem;
   position: absolute;
-  top: 55rem;
-  left: 0rem;
+  top: 38rem;
+  left: 80rem;
 }
 
 .product__update-by {
   width: 30rem;
   position: absolute;
-  top: 45rem;
-  left: 40rem;
+  top: 46rem;
+  left: 80rem;
 }
 
 .product__update-at {
   width: 30rem;
   position: absolute;
-  top: 55rem;
-  left: 40rem;
-}
-
-.product__delete-by {
-  width: 30rem;
-  position: absolute;
-  top: 45rem;
+  top: 54rem;
   left: 80rem;
 }
 
-.product__delete-at {
-  width: 30rem;
-  position: absolute;
-  top: 55rem;
-  left: 80rem;
-}
