@@ -4,9 +4,12 @@ import { FaChevronRight } from "react-icons/fa";
 import { FaRegUser } from "react-icons/fa";
 import { IoCartOutline } from "react-icons/io5";
 import { BsBoxSeam } from "react-icons/bs";
+import { useSelector } from "react-redux";
 
 function Overview() {
   const navigate = useNavigate();
+  const info = useSelector((state)=>state.staffAuth.staffInfo);
+  console.log(info)
   return (
     <div className="over-view-container">
       <div className="over-view">

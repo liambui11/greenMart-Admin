@@ -38,7 +38,7 @@ function AdminMenu() {
             Product Categories
           </NavLink>
           <NavLink
-            to={`/products`}
+            to={`/dashboard/products`}
             className={({ isActive }) =>
               `admin-menu__items--products ${isActive ? "active" : ""}`
             }

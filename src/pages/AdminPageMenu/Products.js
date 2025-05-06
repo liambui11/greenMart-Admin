@@ -14,7 +14,7 @@ function Products() {
     navigate(`/`);
   };
   const handleProductDetailClick = (item) => {
-    navigate(`/productdetail`, {
+    navigate(`/dashboard/productdetail`, {
       state: { item },
     });
   };
