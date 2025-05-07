@@ -29,11 +29,11 @@ function ProductCategoryDetail() {
   }, []);
 
   const handleAdminClick = () => {
-    navigate(`/`);
+    navigate(`/dashboard/overview`);
   };
 
   const handleProductCategoriesClick = () => {
-    navigate(`/productcategories`);
+    navigate(`/dashboard/productcategories`);
   };
 
   const handleImageChange = (e) => {
@@ -59,7 +59,7 @@ function ProductCategoryDetail() {
             </div>
             <div
               className="back-button"
-              onClick={() => navigate(`/productcategories`)}
+              onClick={() => navigate(`/dashboard/productcategories`)}
             >
               <TbArrowBackUp />
               Back

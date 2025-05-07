@@ -7,28 +7,57 @@ import { LuSave } from "react-icons/lu";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import "./AddProduct.css";
 import Swal from "sweetalert2";
+import axiosInstanceStaff from "../../untils/axiosInstanceStaff";
+import CreateSlug from "../../components/CreateSlug";
+import OverlayLoading from "../../components/OverlayLoading/OverlayLoading";
 
 function AddProduct() {
   const navigate = useNavigate();
-  const [productName, setProductName] = useState("");
-  const [productCategory, setProductCategory] = useState("No Category");
   const [categoryList, setCategoryList] = useState([]);
-  const [productImage, setProductImage] = useState("/image/logoGM.png");
-  const [productStock, setProductStock] = useState(0);
-  const [productPrice, setProductPrice] = useState(0);
-  const [productDescription, setProductDescription] = useState("");
-  const [productStatus, setProductStatus] = useState("active");
-  const [productPosition, setProductPosition] = useState(0);
-  const [productDiscountPercentage, setProductDiscountPercentage] = useState(0);
-  const [productSlug, setProductSlug] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [productData, setProductData] = useState({
+    productName: "",
+    productCategory: "",
+    productImage: null,
+    productStock: 0,
+    productPrice: 0,
+    productDescription: "",
+    productStatus: "active",
+    productPosition: 0,
+    productDiscountPercentage: 0,
+    productSlug: "",
+  });
+
+  const handleChange = (field) => (e) => {
+    let value;
+
+    if (e.target.type === "file") {
+      value = e.target.files[0];
+    } else if (e.target.type === "number") {
+      value = Number(e.target.value);
+    } else {
+      value = e.target.value;
+    }
+
+    setProductData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  useEffect(() => {
+    if (categoryList.length > 0) {
+      setProductData((prev) => ({
+        ...prev,
+        productCategory: categoryList[0]._id,
+      }));
+    }
+  }, [categoryList]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const resParentCategory = await fetch(
-        `http://localhost:3000/api/v1/products-category`
+      const resCategoryList = await axiosInstanceStaff.get(
+        `/api/v1/admin/products-category`
       );
-      const parentCategoryJson = await resParentCategory.json();
-      setCategoryList(parentCategoryJson.info);
+      setCategoryList(resCategoryList.data.info);
     };
     fetchData();
   }, []);
@@ -36,11 +65,79 @@ function AddProduct() {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setProductImage(reader.result);
-      };
-      reader.readAsDataURL(file);
+      setProductData((prev) => ({ ...prev, productImage: file }));
+    }
+  };
+
+  const handleSave = async () => {
+    if (
+      !productData.productName.trim() ||
+      !productData.productCategory ||
+      productData.productPrice <= 0
+    ) {
+      Swal.fire({
+        icon: "error",
+        title: "Missing Information",
+        text: "Please make sure all required fields are filled out correctly.",
+      });
+      return;
+    }
+
+    if (!productData.productSlug.trim()) {
+      setProductData((prev) => ({
+        ...prev,
+        productSlug: CreateSlug(productData.productName),
+      }));
+    }
+
+    const formData = new FormData();
+    formData.append("productName", productData.productName);
+    formData.append("productPrice", productData.productPrice);
+    formData.append("productStock", productData.productStock);
+    formData.append("productDescription", productData.productDescription);
+    formData.append("productStatus", productData.productStatus);
+    formData.append("productPosition", productData.productPosition);
+    formData.append(
+      "productDiscountPercentage",
+      productData.productDiscountPercentage
+    );
+    formData.append("categoryID", productData.productCategory);
+    formData.append("productSlug", productData.productSlug);
+    formData.append("productImage", productData.productImage);
+
+    const result = await Swal.fire({
+      title: "Do you want to add this product?",
+      showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonText: "Add",
+      denyButtonText: `Don't add`,
+    });
+
+    if (result.isConfirmed) {
+      try {
+        setIsLoading(true);
+        const res = await axiosInstanceStaff.post(
+          "/api/v1/admin/products/add",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        console.log(res.message);
+        console.log("Success:", res.data);
+
+        await Swal.fire("Added!", "", "success");
+        navigate(`/dashboard/products`)
+      } catch (err) {
+        console.error("Error:", err);
+        Swal.fire("Error!", "Something went wrong.", "error");
+      } finally {
+        setIsLoading(false);
+      }
+    } else if (result.isDenied) {
+      Swal.fire("Changes are not saved", "", "info");
     }
   };
 
@@ -54,35 +151,41 @@ function AddProduct() {
               <LuSave />
               Save
             </div>
-            <div className="back-button" onClick={() => navigate(`/products`)}>
+            <div
+              className="back-button"
+              onClick={() => navigate(`/dashboard/products`)}
+            >
               <TbArrowBackUp />
               Back
             </div>
           </div>
         </div>
         <div className="add-product__breadcrumb">
-          <span onClick={() => navigate(`/`)}>Admin</span>
+          <span onClick={() => navigate(`/dashboard/overview`)}>Admin</span>
           <FaChevronRight />
-          <span onClick={() => navigate(`/products`)}>Products</span>
+          <span onClick={() => navigate(`/dashboard/products`)}>Products</span>
           <FaChevronRight />
           <span>Add New Product</span>
         </div>
         <div className="add-product__content">
           <label className="product__name">
-            Name
+            <span>
+              Name<span style={{ color: "red" }}>*</span>
+            </span>
             <input
               type="text"
-              value={productName}
-              onChange={(e) => setProductName(e.target.value)}
+              value={productData.productName}
+              onChange={handleChange("productName")}
             ></input>
           </label>
           <label className="product__category">
-            Category
+            <span>
+              Category<span style={{ color: "red" }}>*</span>
+            </span>
             <select
-              value={productCategory}
-              onChange={(e) => setProductCategory(e.target.value)}
+              value={productData.productCategory}
+              onChange={handleChange("productCategory")}
             >
-              <option value="">No Category</option>
               {categoryList?.map((item) => (
                 <option key={item._id} value={item._id}>
                   {item.categoryName}
@@ -95,7 +198,11 @@ function AddProduct() {
             <div className="product__image--content">
               <img
                 alt=""
-                src={productImage}
+                src={
+                  productData.productImage
+                    ? URL.createObjectURL(productData.productImage)
+                    : "/image/logoGM.png"
+                }
                 style={{
                   width: "20rem",
                   height: "12rem",
@@ -106,7 +213,7 @@ function AddProduct() {
               <>
                 <input
                   type="file"
-                  accept="image/*"
+                  accept="image/png, image/jpeg, image/jpg, image/webp"
                   id="imageUpload"
                   style={{ display: "none" }}
                   onChange={handleImageChange}
@@ -121,17 +228,17 @@ function AddProduct() {
             Stock
             <input
               type="number"
-              value={productStock}
+              value={productData.productStock}
               min={0}
-              onChange={(e) => setProductStock(Number(e.target.value))}
+              onChange={handleChange("productStock")}
             ></input>
           </label>
           <label className="product__description">
             Description
             <textarea
-              value={productDescription}
-              style={{ width: "100rem", height: "15rem", resize: "none" }}
-              onChange={(e) => setProductDescription(e.target.value)}
+              value={productData.productDescription}
+              style={{ width: "100rem", height: "28rem", resize: "none" }}
+              onChange={handleChange("productDescription")}
             ></textarea>
           </label>
           <label className="product__status">
@@ -141,8 +248,8 @@ function AddProduct() {
                 <input
                   type="radio"
                   value="active"
-                  checked={productStatus === "active"}
-                  onChange={(e) => setProductStatus(e.target.value)}
+                  checked={productData.productStatus === "active"}
+                  onChange={handleChange("productStatus")}
                 ></input>
                 Active
               </label>
@@ -150,8 +257,8 @@ function AddProduct() {
                 <input
                   type="radio"
                   value="inactive"
-                  checked={productStatus === "inactive"}
-                  onChange={(e) => setProductStatus(e.target.value)}
+                  checked={productData.productStatus === "inactive"}
+                  onChange={handleChange("productStatus")}
                 ></input>
                 InActive
               </label>
@@ -161,21 +268,23 @@ function AddProduct() {
             Position
             <input
               type="number"
-              value={productPosition}
-              onChange={(e) => setProductPosition(Number(e.target.value))}
+              value={productData.productPosition}
+              onChange={handleChange("productPosition")}
             ></input>
           </label>
           <label className="product__price">
-            Price
+            <span>
+              Price<span style={{ color: "red" }}>*</span>
+            </span>
             <div
               style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
             >
               <span>$</span>
               <input
                 type="number"
-                value={productPrice}
+                value={productData.productPrice}
                 min={0}
-                onChange={(e) => setProductPrice(Number(e.target.value))}
+                onChange={handleChange("productPrice")}
                 style={{
                   padding: "1rem",
                   borderRadius: "0.7rem",
@@ -189,44 +298,25 @@ function AddProduct() {
             Discount Percentage
             <input
               type="number"
-              value={productDiscountPercentage}
+              value={productData.productDiscountPercentage}
               min={0}
               max={100}
-              onChange={(e) =>
-                setProductDiscountPercentage(Number(e.target.value))
-              }
+              onChange={handleChange("productDiscountPercentage")}
             ></input>
           </label>
           <label className="product__slug">
             Slug
             <input
               type="text"
-              value={productSlug}
-              onChange={(e) => setProductSlug(e.target.value)}
+              value={productData.productSlug}
+              onChange={handleChange("productSlug")}
             ></input>
           </label>
         </div>
       </div>
+      {isLoading && <OverlayLoading />}
     </div>
   );
 }
 
 export default AddProduct;
-
-function handleSave() {
-  Swal.fire({
-    title: "Do you want to save the changes?",
-    showDenyButton: true,
-    showCancelButton: true,
-    confirmButtonText: "Save",
-    denyButtonText: `Don't save`,
-  }).then((result) => {
-    if (result.isConfirmed) {
-      Swal.fire("Saved!", "", "success");
-    } else if (result.isDenied) {
-      Swal.fire("Changes are not saved", "", "info");
-      // Thực hiện hành động khi không lưu
-    }
-    // Không cần xử lý gì nếu người dùng nhấp vào "Cancel"
-  });
-}

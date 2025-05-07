@@ -1,12 +1,12 @@
 .admin-header-container {
   height: 10rem;
   width: 100%;
-  position: fixed; 
+  position: fixed;
   top: 0;
   left: 0;
   background-color: white;
   border-bottom: 0.1rem solid rgba(0, 0, 0, 0.212);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   z-index: 10;
 }
 
@@ -55,6 +55,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.admin-header__log-out:hover {
+  cursor: pointer;
+  color: #006838;
 }
 
 .admin-header__log-out > svg {

@@ -4,39 +4,46 @@ import { CiEdit } from "react-icons/ci";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import { FaChevronRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import axiosInstanceStaff from "../../untils/axiosInstanceStaff";
+import OverlayLoading from "../../components/OverlayLoading/OverlayLoading";
+import Swal from "sweetalert2";
+import CheckRole from "../../components/CheckRole";
 
 function Products() {
   const [categoriesData, setCategoriesData] = useState([]);
   const [productsData, setProductsData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const canDelete = CheckRole("product", "delete");
+  const canAdd = CheckRole("product", "add");
   const navigate = useNavigate();
 
   const handleAdminClick = () => {
-    navigate(`/`);
+    navigate(`/dashboard/overview`);
   };
-  const handleProductDetailClick = (item) => {
-    navigate(`/dashboard/productdetail`, {
-      state: { item },
-    });
+  const handleProductDetailClick = (itemSlug) => {
+    navigate(`/dashboard/products/productdetail/${itemSlug}`);
+  };
+
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      const [resProducts, resCategories] = await Promise.all([
+        axiosInstanceStaff.get(
+          `/api/v1/admin/products?currentPage=1&limitItems=1000`
+        ),
+        axiosInstanceStaff.get(`/api/v1/admin/products-category`),
+      ]);
+
+      setProductsData(resProducts.data.info);
+      setCategoriesData(resCategories.data.info);
+    } catch (err) {
+      console.error("Lỗi: ", err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [resProducts, resCategories] = await Promise.all([
-          fetch(
-            `http://localhost:3000/api/v1/products?currentPage=1&limitItems=1000`
-          ),
-          fetch(`http://localhost:3000/api/v1/products-category`),
-        ]);
-        const productJson = await resProducts.json();
-        const categoryJson = await resCategories.json();
-
-        setProductsData(productJson.info);
-        setCategoriesData(categoryJson.info);
-      } catch (err) {
-        console.error("Lỗi fetch:", err);
-      }
-    };
     fetchData();
   }, []);
 
@@ -45,15 +52,53 @@ function Products() {
     item.productName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const handleDelete = async (itemID) => {
+    const result = await Swal.fire({
+      title: "Do you want to delete this product?",
+      showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonText: "Delete",
+      denyButtonText: `Don't delete`,
+    });
+
+    if (result.isConfirmed) {
+      try {
+        setIsLoading(true);
+        const res = await axiosInstanceStaff.delete(
+          `/api/v1/admin/products/delete/${itemID}`
+        );
+
+        console.log(res.message);
+        console.log("Success:", res.data);
+
+        await Swal.fire("Deleted!", "", "success");
+        window.scrollTo(0, 0);
+        await fetchData();
+      } catch (err) {
+        console.error("Error:", err);
+        Swal.fire("Error!", "Something went wrong.", "error");
+      } finally {
+        setIsLoading(false);
+      }
+    } else if (result.isDenied) {
+      Swal.fire("Changes are not saved", "", "info");
+    }
+  };
+
   return (
     <div className="products-container">
       <div className="products">
         <div className="products__title">
           <div className="products__title--name">Products</div>
           <div className="products__title--button">
-            <div className="add-button" onClick={() => navigate(`/addproduct`)}>
-              Add Product
-            </div>
+            {canAdd && (
+              <div
+                className="add-button"
+                onClick={() => navigate(`/dashboard/products/addproduct`)}
+              >
+                Add Product
+              </div>
+            )}
           </div>
         </div>
         <div className="products__breadcrumb">
@@ -95,7 +140,11 @@ function Products() {
                   <td>
                     <img
                       alt=""
-                      src={item.productImage}
+                      src={
+                        item.productImage === ""
+                          ? "/image/logoGM.png"
+                          : item.productImage
+                      }
                       style={{
                         height: "4rem",
                         objectFit: "contain",
@@ -121,22 +170,32 @@ function Products() {
                   </td>
                   <td>${item.productPrice}</td>
                   <td>{item.productStock}</td>
-                  <td>01/01/2025</td>
+                  <td>
+                    {item.createdAt
+                      ? new Date(item.createdAt).toLocaleDateString("vi-VN")
+                      : null}
+                  </td>
                   <td>
                     <CiEdit
                       className="edit-icon"
-                      onClick={() => handleProductDetailClick(item)}
+                      onClick={() => handleProductDetailClick(item.productSlug)}
                     />
                   </td>
-                  <td>
-                    <MdOutlineDeleteOutline />
-                  </td>
+                  {canDelete && (
+                    <td>
+                      <MdOutlineDeleteOutline
+                        className="delete-icon"
+                        onClick={() => handleDelete(item._id)}
+                      />
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       </div>
+      {isLoading && <OverlayLoading />}
     </div>
   );
 }

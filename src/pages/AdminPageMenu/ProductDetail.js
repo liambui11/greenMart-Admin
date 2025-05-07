@@ -1,5 +1,5 @@
 import { FaChevronRight } from "react-icons/fa";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "./ProductCategoryDetail.css";
 import { useEffect, useState } from "react";
 import { CiEdit } from "react-icons/ci";
@@ -8,57 +8,196 @@ import { LuSave } from "react-icons/lu";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import "./ProductDetail.css";
 import Swal from "sweetalert2";
+import axiosInstanceStaff from "../../untils/axiosInstanceStaff";
+import OverlayLoading from "../../components/OverlayLoading/OverlayLoading";
+import ErrorPage from "../ErrorPage/ErrorPage";
+import CreateSlug from "../../components/CreateSlug";
+import CheckRole from "../../components/CheckRole";
 
 function ProductDetail() {
   const navigate = useNavigate();
-  const location = useLocation();
-  const currentProduct = location.state?.item;
-  const [isEdit, setIsEdit] = useState(false);
+  const { productslug } = useParams();
+  const canEdit = CheckRole("product", "edit");
+  const [isImageChange, setIsImageChange] = useState(false);
 
-  const [productName, setProductName] = useState(currentProduct.productName);
-  const [productCategory, setProductCategory] = useState(
-    currentProduct.categoryID
-  );
+  const [isEdit, setIsEdit] = useState(false);
+  const [notFound, setNotFound] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [currentProduct, setCurrentProduct] = useState();
   const [categoryList, setCategoryList] = useState([]);
-  const [productImage, setProductImage] = useState(currentProduct.productImage);
-  const [productStock, setProductStock] = useState(currentProduct.productStock);
-  const [productPrice, setProductPrice] = useState(currentProduct.productPrice);
-  const [productDescription, setProductDescription] = useState(
-    currentProduct.productDescription
-  );
-  const [productStatus, setProductStatus] = useState(
-    currentProduct.productStatus
-  );
-  const [productPosition, setProductPosition] = useState(
-    currentProduct.productPosition
-  );
-  const [productDiscountPercentage, setProductDiscountPercentage] = useState(
-    currentProduct.productDiscountPercentage
-  );
-  const [productSlug, setProductSlug] = useState(currentProduct.productSlug);
-  const [productDeleted, setProductDeleted] = useState(currentProduct.deleted);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  });
+
+  const [productData, setProductData] = useState({
+    productName: "",
+    productCategory: "",
+    productImage: null,
+    productStock: 0,
+    productPrice: 0,
+    productDescription: "",
+    productStatus: "active",
+    productPosition: 0,
+    productDiscountPercentage: 0,
+    productSlug: "",
+    // deleted: false,
+  });
+
+  const handleChange = (field) => (e) => {
+    let value;
+
+    if (e.target.type === "file") {
+      value = e.target.files[0];
+    } else if (e.target.type === "number") {
+      value = Number(e.target.value);
+    } else if (e.target.value === "true" || e.target.value === "false") {
+      value = e.target.value === "true";
+    } else {
+      value = e.target.value;
+    }
+
+    setProductData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  useEffect(() => {
+    if (currentProduct) {
+      setProductData({
+        _id: currentProduct._id || "",
+        productName: currentProduct.productName || "",
+        productCategory: currentProduct.categoryID || "",
+        productImage: currentProduct.productImage || null,
+        productStock: currentProduct.productStock ?? 0,
+        productPrice: currentProduct.productPrice ?? 0,
+        productDescription: currentProduct.productDescription || "",
+        productStatus: currentProduct.productStatus || "active",
+        productPosition: currentProduct.productPosition ?? 0,
+        productDiscountPercentage:
+          currentProduct.productDiscountPercentage ?? 0,
+        productSlug: currentProduct.productSlug || "",
+      });
+    }
+  }, [currentProduct]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const resParentCategory = await fetch(
-        `http://localhost:3000/api/v1/products-category`
-      );
-      const parentCategoryJson = await resParentCategory.json();
-      setCategoryList(parentCategoryJson.info);
+      setIsLoading(true);
+      try {
+        const [resProduct, resCategoryList] = await Promise.all([
+          axiosInstanceStaff.get(
+            `/api/v1/admin/products/detail/${productslug}`
+          ),
+          axiosInstanceStaff.get(`/api/v1/admin/products-category`),
+        ]);
+        setCurrentProduct(resProduct.data.info);
+        setCategoryList(resCategoryList.data.info);
+        console.log(resProduct.data.info);
+      } catch (err) {
+        console.log(err);
+        setNotFound(true);
+      } finally {
+        setIsLoading(false);
+      }
     };
     fetchData();
-  }, []);
+  }, [productslug]);
 
   const handleImageChange = (e) => {
+    setIsImageChange(true);
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setProductImage(reader.result);
-      };
-      reader.readAsDataURL(file);
+      setProductData((prev) => ({ ...prev, productImage: file }));
     }
   };
+
+  const handleSave = async () => {
+    if (
+      !productData.productName.trim() ||
+      !productData.productCategory ||
+      productData.productPrice <= 0
+    ) {
+      Swal.fire({
+        icon: "error",
+        title: "Missing Information",
+        text: "Please make sure all required fields are filled out correctly.",
+      });
+      return;
+    }
+
+    if (!productData.productSlug.trim()) {
+      setProductData((prev) => ({
+        ...prev,
+        productSlug: CreateSlug(productData.productName),
+      }));
+    }
+
+    const formData = new FormData();
+    formData.append("productName", productData.productName);
+    formData.append("productPrice", productData.productPrice);
+    formData.append("productStock", productData.productStock);
+    formData.append("productDescription", productData.productDescription);
+    formData.append("productStatus", productData.productStatus);
+    formData.append("productPosition", productData.productPosition);
+    formData.append(
+      "productDiscountPercentage",
+      productData.productDiscountPercentage
+    );
+    formData.append("categoryID", productData.productCategory);
+    formData.append("productSlug", productData.productSlug);
+    if (isImageChange) {
+      formData.append("productImage", productData.productImage);
+    }
+
+    for (var value of formData.values()) {
+      console.log(value);
+    }
+    for (var key of formData.keys()) {
+      console.log(key);
+    }
+
+    const result = await Swal.fire({
+      title: "Confirm Product Update",
+      text: "Are you sure you want to update this product?",
+      icon: "question",
+      showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonText: "Update",
+      denyButtonText: "Cancel",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        setIsLoading(true);
+        const res = await axiosInstanceStaff.put(
+          `/api/v1/admin/products/update/${productData._id}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        console.log(res.message);
+        console.log("Success:", res.data);
+
+        await Swal.fire(
+          "Updated!",
+          "The product has been successfully updated.",
+          "success"
+        );
+        navigate(`/dashboard/products`);
+      } catch (err) {
+        console.error("Error:", err);
+        Swal.fire("Error!", "Something went wrong.", "error");
+      } finally {
+        setIsLoading(false);
+      }
+    } else if (result.isDenied) {
+      Swal.fire("No Changes Made", "", "info");
+    }
+  };
+
+  if (notFound) return <ErrorPage />;
   return (
     <div className="product-detail-container">
       <div className="product-detail">
@@ -66,50 +205,51 @@ function ProductDetail() {
           <div className="product-detail__title--name">Product Detail</div>
           <div className="product-detail__title--button">
             {isEdit && (
-              <div
-                className="save-button"
-                onClick={() => handleSave(setIsEdit)}
-              >
+              <div className="save-button" onClick={handleSave}>
                 <LuSave />
                 Save
               </div>
             )}
 
-            <div className="edit-button" onClick={() => setIsEdit(true)}>
-              <CiEdit />
-              Edit
-            </div>
-            <div className="back-button" onClick={() => navigate(`/products`)}>
+            {canEdit && (
+              <div className="edit-button" onClick={() => setIsEdit(true)}>
+                <CiEdit />
+                Edit
+              </div>
+            )}
+            <div
+              className="back-button"
+              onClick={() => navigate(`/dashboard/products`)}
+            >
               <TbArrowBackUp />
               Back
             </div>
           </div>
         </div>
         <div className="product-detail__breadcrumb">
-          <span onClick={() => navigate(`/`)}>Admin</span>
+          <span onClick={() => navigate(`/dashboard/overview`)}>Admin</span>
           <FaChevronRight />
-          <span onClick={() => navigate(`/products`)}>Products</span>
+          <span onClick={() => navigate(`/dashboard/products`)}>Products</span>
           <FaChevronRight />
-          <span>{currentProduct.productName}</span>
+          <span>{currentProduct?.productName}</span>
         </div>
         <div className="product-detail__content">
           <label className="product__name">
             Name
             <input
               type="text"
-              value={productName}
+              value={productData.productName}
               disabled={!isEdit}
-              onChange={(e) => setProductName(e.target.value)}
+              onChange={handleChange("productName")}
             ></input>
           </label>
           <label className="product__category">
             Category
             <select
               disabled={!isEdit}
-              value={productCategory}
-              onChange={(e) => setProductCategory(e.target.value)}
+              value={productData.productCategory}
+              onChange={handleChange("productCategory")}
             >
-              <option value="">No Category</option>
               {categoryList?.map((item) => (
                 <option key={item._id} value={item._id}>
                   {item.categoryName}
@@ -122,7 +262,13 @@ function ProductDetail() {
             <div className="product__image--content">
               <img
                 alt=""
-                src={productImage}
+                src={
+                  productData.productImage
+                    ? typeof productData.productImage === "string"
+                      ? productData.productImage
+                      : URL.createObjectURL(productData.productImage)
+                    : "/image/logoGM.png"
+                }
                 style={{
                   width: "20rem",
                   height: "12rem",
@@ -133,7 +279,7 @@ function ProductDetail() {
                 <>
                   <input
                     type="file"
-                    accept="image/*"
+                    accept="image/png, image/jpeg, image/jpg, image/webp"
                     id="imageUpload"
                     style={{ display: "none" }}
                     onChange={handleImageChange}
@@ -149,19 +295,19 @@ function ProductDetail() {
             Stock
             <input
               type="number"
-              value={productStock}
+              value={productData.productStock}
               min={0}
               disabled={!isEdit}
-              onChange={(e) => setProductStock(Number(e.target.value))}
+              onChange={handleChange("productStock")}
             ></input>
           </label>
           <label className="product__description">
             Description
             <textarea
-              value={productDescription}
+              value={productData.productDescription}
               disabled={!isEdit}
-              style={{ width: "70rem", height: "10rem", resize: "none" }}
-              onChange={(e) => setProductDescription(e.target.value)}
+              style={{ width: "70rem", height: "28rem", resize: "none" }}
+              onChange={handleChange("productDescription")}
             ></textarea>
           </label>
           <label className="product__status">
@@ -171,9 +317,9 @@ function ProductDetail() {
                 <input
                   type="radio"
                   value="active"
-                  checked={productStatus === "active"}
+                  checked={productData.productStatus === "active"}
                   disabled={!isEdit}
-                  onChange={(e) => setProductStatus(e.target.value)}
+                  onChange={handleChange("productStatus")}
                 ></input>
                 Active
               </label>
@@ -181,9 +327,9 @@ function ProductDetail() {
                 <input
                   type="radio"
                   value="inactive"
-                  checked={productStatus === "inactive"}
+                  checked={productData.productStatus === "inactive"}
                   disabled={!isEdit}
-                  onChange={(e) => setProductStatus(e.target.value)}
+                  onChange={handleChange("productStatus")}
                 ></input>
                 InActive
               </label>
@@ -193,9 +339,9 @@ function ProductDetail() {
             Position
             <input
               type="number"
-              value={productPosition}
+              value={productData.productPosition}
               disabled={!isEdit}
-              onChange={(e) => setProductPosition(Number(e.target.value))}
+              onChange={handleChange("productPosition")}
             ></input>
           </label>
           <label className="product__price">
@@ -206,10 +352,10 @@ function ProductDetail() {
               <span>$</span>
               <input
                 type="number"
-                value={productPrice}
+                value={productData.productPrice}
                 min={0}
                 disabled={!isEdit}
-                onChange={(e) => setProductPrice(Number(e.target.value))}
+                onChange={handleChange("productPrice")}
                 style={{
                   padding: "1rem",
                   borderRadius: "0.7rem",
@@ -223,29 +369,27 @@ function ProductDetail() {
             Discount Percentage
             <input
               type="number"
-              value={productDiscountPercentage}
+              value={productData.productDiscountPercentage}
               min={0}
               max={100}
               disabled={!isEdit}
-              onChange={(e) =>
-                setProductDiscountPercentage(Number(e.target.value))
-              }
+              onChange={handleChange("productDiscountPercentage")}
             ></input>
           </label>
           <label className="product__slug">
             Slug
             <input
               type="text"
-              value={productSlug}
+              value={productData.productSlug}
               disabled={!isEdit}
-              onChange={(e) => setProductSlug(e.target.value)}
+              onChange={handleChange("productSlug")}
             ></input>
           </label>
           <label className="product__create-by">
             Create By
             <input
               type="text"
-              value={currentProduct.createBy}
+              value={currentProduct?.createBy?.staffID?.staffName}
               disabled={true}
             ></input>
           </label>
@@ -253,28 +397,21 @@ function ProductDetail() {
             Update By
             <input
               type="text"
-              value={currentProduct.updateBy}
+              value={currentProduct?.updateBy}
               disabled={true}
             ></input>
           </label>
-          <label className="product__delete-by">
-            Delete By
-            <input
-              type="text"
-              value={currentProduct.deleteBy}
-              disabled={true}
-            ></input>
-          </label>
-          <label className="product__deleted">
+
+          {/* <label className="product__deleted">
             Deleted
             <div className="product__deleted--group">
               <label>
                 <input
                   type="radio"
                   value="true"
-                  checked={productDeleted.toString() === "true"}
+                  checked={productData.deleted === true}
                   disabled={!isEdit}
-                  onChange={(e) => setProductDeleted(true)}
+                  onChange={handleChange("deleted")}
                 ></input>
                 True
               </label>
@@ -282,35 +419,22 @@ function ProductDetail() {
                 <input
                   type="radio"
                   value="false"
-                  checked={productDeleted.toString() === "false"}
+                  checked={productData.deleted === false}
                   disabled={!isEdit}
-                  onChange={(e) => setProductDeleted(false)}
+                  onChange={handleChange("deleted")}
                 ></input>
                 False
               </label>
             </div>
-          </label>
-          <label className="product__delete-at">
-            Delete At
-            <input
-              type="text"
-              value={
-                currentProduct.deletedAt
-                  ? new Date(currentProduct.deletedAt).toLocaleDateString(
-                      "vi-VN"
-                    )
-                  : "Null"
-              }
-              disabled={true}
-            ></input>
-          </label>
+          </label> */}
+
           <label className="product__create-at">
             Create At
             <input
               type="text"
               value={
-                currentProduct.createdAt
-                  ? new Date(currentProduct.createdAt).toLocaleDateString(
+                currentProduct?.createdAt
+                  ? new Date(currentProduct?.createdAt).toLocaleDateString(
                       "vi-VN"
                     )
                   : "Null"
@@ -323,8 +447,8 @@ function ProductDetail() {
             <input
               type="text"
               value={
-                currentProduct.updatedAt
-                  ? new Date(currentProduct.updatedAt).toLocaleDateString(
+                currentProduct?.updatedAt
+                  ? new Date(currentProduct?.updatedAt).toLocaleDateString(
                       "vi-VN"
                     )
                   : "Null"
@@ -334,27 +458,9 @@ function ProductDetail() {
           </label>
         </div>
       </div>
+      {isLoading && <OverlayLoading />}
     </div>
   );
 }
 
 export default ProductDetail;
-
-function handleSave(setIsEdit) {
-  Swal.fire({
-    title: "Do you want to save the changes?",
-    showDenyButton: true,
-    showCancelButton: true,
-    confirmButtonText: "Save",
-    denyButtonText: `Don't save`,
-  }).then((result) => {
-    if (result.isConfirmed) {
-      Swal.fire("Saved!", "", "success");
-      setIsEdit(false);
-    } else if (result.isDenied) {
-      Swal.fire("Changes are not saved", "", "info");
-      // Thực hiện hành động khi không lưu
-    }
-    // Không cần xử lý gì nếu người dùng nhấp vào "Cancel"
-  });
-}

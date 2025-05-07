@@ -4,15 +4,17 @@ export const loginStaff = (email, password) => {
   return async (dispatch) => {
     dispatch({ type: "STAFF_AUTH_LOADING" });
     try {
-      const res = await axios.post("/api/v1/admin/staffs/login", 
-      {
-        staffEmail: email,
-        staffPassword: password
-      },
-         {
-        baseURL: "http://localhost:3000",
-        withCredentials: true,
-      });
+      const res = await axios.post(
+        "/api/v1/admin/auth/login",
+        {
+          staffEmail: email,
+          staffPassword: password,
+        },
+        {
+          baseURL: "http://localhost:3000",
+          withCredentials: true,
+        }
+      );
 
       if (res.data.code === 200) {
         dispatch({
@@ -29,7 +31,8 @@ export const loginStaff = (email, password) => {
         return { success: false };
       }
     } catch (error) {
-      const message = error.response?.data?.message || "Failed to connect to the server";
+      const message =
+        error.response?.data?.message || "Failed to connect to the server";
       dispatch({ type: "STAFF_LOGIN_FAILURE", payload: message });
       // showAlert("error", message);
       return { success: false };
@@ -42,7 +45,7 @@ export const loginStaff = (email, password) => {
 export const logoutStaff = () => async (dispatch) => {
   try {
     await axios.post(
-      "/api/v1/admin/staffs/logout",
+      "/api/v1/admin/auth/logout",
       {},
       { baseURL: "http://localhost:3000", withCredentials: true }
     );
@@ -56,7 +59,7 @@ export const logoutStaff = () => async (dispatch) => {
 export const checkAuthStaff = () => async (dispatch) => {
   dispatch({ type: "STAFF_AUTH_LOADING" });
   try {
-    const res = await axios.get("/api/v1/admin/staffs/refresh-token", {
+    const res = await axios.get("/api/v1/admin/auth/refresh-token", {
       baseURL: "http://localhost:3000",
       withCredentials: true,
     });
