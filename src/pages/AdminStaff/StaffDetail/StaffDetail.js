@@ -185,6 +185,7 @@ function StaffDetail() {
             <input
               type="file"
               id="fileInput"
+              disabled={isEdit}
               onChange={handleButtonChange}
               accept=".png, .webp, .jpeg, .jpg"
             />
