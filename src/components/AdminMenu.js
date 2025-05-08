@@ -1,6 +1,10 @@
 import { NavLink } from "react-router-dom";
 import "./AdminMenu.css";
 import CheckRole from "./CheckRole";
+import { LiaChartBarSolid } from "react-icons/lia";
+import { BiCategory } from "react-icons/bi";
+import { FiShoppingBag, FiUser, FiUsers } from "react-icons/fi";
+import { IoSettingsOutline } from "react-icons/io5";
 
 const Divider = () => {
   return (
@@ -27,6 +31,7 @@ function AdminMenu() {
               `admin-menu__items--over-view ${isActive ? "active" : ""}`
             }
           >
+            <LiaChartBarSolid size="2.5rem" style={{ marginRight: "2rem" }} />{" "}
             Overview
           </NavLink>
           <Divider />
@@ -39,6 +44,7 @@ function AdminMenu() {
                 }`
               }
             >
+              <BiCategory size="2.5rem" style={{ marginRight: "2rem" }} />{" "}
               Product Categories
             </NavLink>
           )}
@@ -49,6 +55,7 @@ function AdminMenu() {
                 `admin-menu__items--products ${isActive ? "active" : ""}`
               }
             >
+              <FiShoppingBag size="2.5rem" style={{ marginRight: "2rem" }} />
               Products
             </NavLink>
           )}
@@ -100,6 +107,7 @@ function AdminMenu() {
                 `admin-menu__items--staff ${isActive ? "active" : ""}`
               }
             >
+              <FiUser size="2.5rem" style={{ marginRight: "2rem" }} />
               Staff
             </NavLink>
           )}
@@ -110,6 +118,7 @@ function AdminMenu() {
                 `admin-menu__items--customers ${isActive ? "active" : ""}`
               }
             >
+              <FiUsers size="2.5rem" style={{ marginRight: "2rem" }} />
               Users
             </NavLink>
           )}
@@ -120,6 +129,7 @@ function AdminMenu() {
               `admin-menu__items--general-settings ${isActive ? "active" : ""}`
             }
           >
+            <IoSettingsOutline size="2.5rem" style={{ marginRight: "2rem" }} />
             General Settings
           </NavLink>
         </div>

@@ -4,9 +4,33 @@ import { FaChevronRight } from "react-icons/fa";
 import { FaRegUser } from "react-icons/fa";
 import { IoCartOutline } from "react-icons/io5";
 import { BsBoxSeam } from "react-icons/bs";
+import OverviewChart from "./OverviewChart";
+import { useEffect, useState } from "react";
+import axiosInstanceStaff from "../../untils/axiosInstanceStaff";
+import OverlayLoading from "../../components/OverlayLoading/OverlayLoading";
 
 function Overview() {
+  const [overviewData, setOverviewData] = useState();
+  const [isLoading, setIsLoading] = useState();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const resData = await axiosInstanceStaff.get(
+          `/api/v1/admin/overview/total`
+        );
+        setOverviewData(resData.data.data);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
   return (
     <div className="over-view-container">
       <div className="over-view">
@@ -25,7 +49,7 @@ function Overview() {
                   <IoCartOutline size={"4rem"} />
                 </div>
               </div>
-              <div className="card-quantity">1313</div>
+              <div className="card-quantity">{overviewData?.totalOrders}</div>
             </div>
             <div className="customer-report card">
               <div className="card-name">
@@ -34,7 +58,7 @@ function Overview() {
                   <FaRegUser size={"4rem"} />
                 </div>
               </div>
-              <div className="card-quantity">200</div>
+              <div className="card-quantity">{overviewData?.totalProducts}</div>
             </div>
             <div className="product-report card">
               <div className="card-name">
@@ -43,11 +67,15 @@ function Overview() {
                   <BsBoxSeam size={"4rem"} />
                 </div>
               </div>
-              <div className="card-quantity">100</div>
+              <div className="card-quantity">{overviewData?.totalUsers}</div>
             </div>
+          </div>
+          <div className="over-view__content--chart">
+            <OverviewChart />
           </div>
         </div>
       </div>
+      {isLoading && <OverlayLoading />}
     </div>
   );
 }

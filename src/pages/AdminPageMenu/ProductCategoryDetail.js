@@ -251,11 +251,13 @@ function ProductCategoryDetail() {
               onChange={handleChange("categoryParentID")}
             >
               <option value="">No Parent</option>
-              {categoryList?.map((item) => (
-                <option key={item._id} value={item._id}>
-                  {item.categoryName}
-                </option>
-              ))}
+              {categoryList
+                ?.filter((item) => item._id !== currentCategory._id)
+                .map((item) => (
+                  <option key={item._id} value={item._id}>
+                    {item.categoryName}
+                  </option>
+                ))}
             </select>
           </label>
           <label className="category__image">
