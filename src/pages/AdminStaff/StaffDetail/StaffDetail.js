@@ -116,7 +116,7 @@ function StaffDetail() {
           formData.append("staffAvatar", staff.staffAvatar);
         }
 
-        console.log("Form data being sent:", formData);
+        // console.log("Form data being sent:", formData);
 
         const res = await axiosInstanceStaff.put(
           `/api/v1/admin/staffs/update/${id}`,
@@ -161,10 +161,10 @@ function StaffDetail() {
   const handleStaffClick = () => navigateToStaff(`/dashboard/staff`);
 
   return (
-    <div className="StaffProfile-container">
-      <div className="StaffProfile__title">
-        <div className="StaffProfile__title--name">Staff Detail</div>
-        <div className="customer-detail__breadcrumb">
+    <div className="staffProfile-container">
+      <div className="staffProfile__title">
+        <div className="staffProfile__title--name">Staff Detail</div>
+        <div className="staff-detail__breadcrumb">
           <span onClick={handleAdminClick}>Admin</span>
           <FaChevronRight />
           <span onClick={handleStaffClick}>Staff</span>
@@ -172,11 +172,11 @@ function StaffDetail() {
           <span>{staff.staffName}</span>
         </div>
       </div>
-      <div className="StaffProfile-top">
-        <div className="Profile__infor__avatar">
+      <div className="staffProfile-top">
+        <div className="profile__infor__avatar">
           <label>
             <img
-              className="Profile__infor__avatar__img"
+              className="profile__infor__avatar__img"
               src={file || "./image/avatar-user/default-avatar-profile.png"}
               width={200}
               height={200}
@@ -190,7 +190,7 @@ function StaffDetail() {
               accept=".png, .webp, .jpeg, .jpg"
             />
             <button
-              className={`Profile__infor__avatar__btn ${
+              className={`profile__infor__avatar__btn ${
                 isEdit ? "btn-disabled" : "btn-enabled"
               }`}
               type="button"
@@ -219,9 +219,9 @@ function StaffDetail() {
           </div>
         </div>
       </div>
-      <div className="Profile__infor__form">
+      <div className="profile__infor__form">
         <form onSubmit={handleSubmit}>
-          <div className="Profile__infor__Fullname">
+          <div className="profile__infor__fullname">
             <label htmlFor="name">
               <strong>Full-Name</strong>
             </label>
@@ -238,7 +238,7 @@ function StaffDetail() {
               <span className="text-danger">{errors.staffName}</span>
             )}
           </div>
-          <div className="Profile__infor__Email">
+          <div className="profile__infor__email">
             <label htmlFor="email">
               <strong>Email</strong>
             </label>
@@ -255,7 +255,7 @@ function StaffDetail() {
               <span className="text-danger">{errors.staffEmail}</span>
             )}
           </div>
-          <div className="Profile__infor__Address">
+          <div className="profile__infor__address">
             <label htmlFor="address">
               <strong>Address</strong>
             </label>
@@ -272,7 +272,7 @@ function StaffDetail() {
               <span className="text-danger">{errors.staffAddress}</span>
             )}
           </div>
-          <div className="Profile__infor__Phone">
+          <div className="profile__infor__phone">
             <label htmlFor="phone">
               <strong>Phone Number</strong>
             </label>
@@ -289,7 +289,7 @@ function StaffDetail() {
               <span className="text-danger">{errors.staffPhone}</span>
             )}
           </div>
-          <div className="Profile__infor__password">
+          <div className="profile__infor__password">
             <label>
               <strong>New Password</strong>
             </label>
@@ -307,7 +307,7 @@ function StaffDetail() {
             )}
           </div>
 
-          <div className="Profile__infor__position">
+          <div className="profile__infor__position">
             <label>
               <strong>Position</strong>
             </label>
@@ -397,7 +397,7 @@ function StaffDetail() {
           <button
             type="submit"
             disabled={isEdit}
-            className={`Profile__infor__form__btn ${
+            className={`profile__infor__form__btn ${
               isEdit ? "btn-disabled" : "btn-enabled"
             }`}
           >

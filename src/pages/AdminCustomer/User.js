@@ -6,6 +6,7 @@ import { FaChevronRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import axiosInstanceStaff from "../../untils/axiosInstanceStaff";
 import OverlayLoading from "../../components/OverlayLoading/OverlayLoading";
+import Swal from "sweetalert2";
 
 function Customer() {
   const [customer, setCustomer] = useState([]);
@@ -48,8 +49,35 @@ function Customer() {
     navigate(`/dashboard/userdetail/${item._id}`, { state: { item } });
   };
 
-  const handleDeleteCustomer = (item) => {
-    alert("Da xoa");
+  const handleDeleteCustomer = async (item) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: `You are deleting ${item.name || "this user"}!`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await axiosInstanceStaff.delete(
+          `api/v1/admin/users/delete/${item._id}`
+        );
+        setCustomer((prev) => prev.filter((s) => s._id !== item._id));
+        Swal.fire({
+          title: "Deleted!",
+          text: "User deleted successfully.",
+          icon: "success",
+        });
+      } catch (error) {
+        console.error("Delete user error:", error);
+        Swal.fire({
+          title: "Error",
+          text: error?.response?.data?.message || "Failed to delete staff.",
+          icon: "error",
+        });
+      }
+    }
   };
 
   return (

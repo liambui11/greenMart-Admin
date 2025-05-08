@@ -16,7 +16,7 @@ function AddStaff() {
   const navigateToAdmin = useNavigate();
 
   const [file, setFile] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   //   const { id } = useParams();
 
   const [values, setValues] = useState({
@@ -127,22 +127,22 @@ function AddStaff() {
   const handleStaffClick = () => navigateToStaff(`/dashboard/staff`);
 
   return (
-    <div className="StaffProfile-container">
-      <div className="StaffProfile__title">
-        <div className="StaffProfile__title--name">Staff Add</div>
-        <div className="customer-detail__breadcrumb">
+    <div className="staffProfile-container">
+      <div className="staffProfile__title">
+        <div className="staffProfile__title--name">Staff Add</div>
+        <div className="staff-detail__breadcrumb">
           <span onClick={handleAdminClick}>Admin</span>
           <FaChevronRight />
           <span onClick={handleStaffClick}>Staff</span>
           <FaChevronRight />
-          <span>{values.name}</span>
+          <span>Add</span>
         </div>
       </div>
-      <div className="StaffProfile-top">
-        <div className="Profile__infor__avatar">
+      <div className="staffProfile-top">
+        <div className="profile__infor__avatar">
           <label>
             <img
-              className="Profile__infor__avatar__img"
+              className="profile__infor__avatar__img"
               src={file || "./image/avatar-user/default-avatar-profile.png"}
               width={200}
               height={200}
@@ -155,7 +155,7 @@ function AddStaff() {
               accept=".png, .webp, .jpeg, .jpg"
             />
             <button
-              className="Profile__infor__avatar__btn"
+              className="profile__infor__avatar__btn"
               type="button"
               onClick={handleButtonClick}
             >
@@ -165,12 +165,11 @@ function AddStaff() {
         </div>
         <div className="staff-title">
           <div className="staff-name">Add Staff Account</div>
-          {/* <div className="staff__title-info">Position: {values.position}</div> */}
         </div>
       </div>
-      <div className="Profile__infor__form">
+      <div className="profile__infor__form">
         <form onSubmit={handleSubmit}>
-          <div className="Profile__infor__Fullname">
+          <div className="profile__infor__fullname">
             <label htmlFor="name">
               <strong>Full-Name</strong>
             </label>
@@ -184,7 +183,7 @@ function AddStaff() {
             />
             {errors.name && <span className="text-danger">{errors.name}</span>}
           </div>
-          <div className="Profile__infor__Email">
+          <div className="profile__infor__email">
             <label htmlFor="email">
               <strong>Email</strong>
             </label>
@@ -202,7 +201,7 @@ function AddStaff() {
             )}
           </div>
 
-          <div className="Profile__infor__position">
+          <div className="profile__infor__position">
             <label>
               <strong>Position</strong>
             </label>
@@ -221,7 +220,7 @@ function AddStaff() {
             )}
           </div>
 
-          <div className="Profile__infor__Address">
+          <div className="profile__infor__address">
             <label htmlFor="address">
               <strong>Address</strong>
             </label>
@@ -237,7 +236,7 @@ function AddStaff() {
               <span className="text-danger">{errors.address}</span>
             )}
           </div>
-          <div className="Profile__infor__Phone">
+          <div className="profile__infor__phone">
             <label htmlFor="phone">
               <strong>Phone Number</strong>
             </label>
@@ -254,7 +253,7 @@ function AddStaff() {
             )}
           </div>
 
-          <div className="Profile__infor__pass">
+          <div className="profile__infor__pass">
             <label>
               <strong>Password</strong>
             </label>
@@ -269,12 +268,12 @@ function AddStaff() {
             {errors.pass && <span className="text-danger">{errors.pass}</span>}
           </div>
 
-          <button type="submit" className="Profile__infor__form__btn">
+          <button type="submit" className="profile__infor__form__btn">
             <strong>Save</strong>
           </button>
         </form>
       </div>
-      {/* {isLoading && <OverlayLoading />} */}
+      {isLoading && <OverlayLoading />}
     </div>
   );
 }

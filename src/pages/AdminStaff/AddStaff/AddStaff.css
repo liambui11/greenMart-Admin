@@ -1,14 +1,43 @@
-.StaffProfile-top {
+.staffProfile__title {
+  margin: 3rem;
+}
+
+.staffProfile__title--name {
+  font-size: 3rem;
+  font-weight: 600;
+}
+
+.staff-detail__breadcrumb {
+  color: #0000009e;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 2rem;
+  font-weight: 500;
+}
+
+.staff-detail__breadcrumb > svg {
+  color: #2d6a4f;
+  padding: 0.1rem;
+  margin: 0 1rem;
+}
+
+.staff-detail__breadcrumb span:first-child:hover {
+  color: #2d6a4f;
+  cursor: pointer;
+}
+
+.staffProfile-top {
   /* background-color: aqua; */
   display: flex;
   margin: 2rem auto;
 }
-.Profile__infor__avatar {
+.profile__infor__avatar {
   width: 30%;
   margin-left: 10%;
 }
 
-.Profile__infor__avatar__img {
+.profile__infor__avatar__img {
   border-radius: "50%";
   object-fit: "cover";
   border-radius: 50%;
@@ -16,11 +45,11 @@
   object-fit: cover;
 }
 
-.Profile__infor__avatar #fileInput {
+.profile__infor__avatar #fileInput {
   display: none;
 }
 
-.Profile__infor__avatar__btn {
+.profile__infor__avatar__btn {
   background: #0aad0a;
   border: none;
   margin-top: 2rem;
@@ -28,7 +57,7 @@
   width: 20rem;
 }
 
-.Profile__infor__avatar__btn:hover {
+.profile__infor__avatar__btn:hover {
   background-color: #bbb;
   color: black;
 }
@@ -46,7 +75,7 @@
 }
 
 /* bao ngoài form */
-.Profile__infor__form {
+.profile__infor__form {
   width: 80%;
   /* background-color: antiquewhite; */
   margin: 2rem auto;
@@ -54,12 +83,12 @@
 }
 
 /* mỗi dòng label + input */
-.Profile__infor__Fullname,
-.Profile__infor__position,
-.Profile__infor__Email,
-.Profile__infor__Address,
-.Profile__infor__Phone,
-.Profile__infor__pass {
+.profile__infor__fullname,
+.profile__infor__position,
+.profile__infor__email,
+.profile__infor__address,
+.profile__infor__phone,
+.profile__infor__pass {
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -68,12 +97,12 @@
 }
 
 /* label cố định đủ rộng, không wrap */
-.Profile__infor__Fullname label,
-.Profile__infor__position label,
-.Profile__infor__Email label,
-.Profile__infor__Address label,
-.Profile__infor__Phone label,
-.Profile__infor__pass label {
+.profile__infor__fullname label,
+.profile__infor__position label,
+.profile__infor__email label,
+.profile__infor__address label,
+.profile__infor__phone label,
+.profile__infor__pass label {
   flex: 0 0 15rem; /* label luôn chiếm 12rem (~192px) */
   white-space: nowrap; /* không cho xuống hàng */
   font-size: 2rem;
@@ -82,12 +111,12 @@
 }
 
 /* input sẽ chiếm phần còn lại */
-.Profile__infor__Fullname input,
-.Profile__infor__position select,
-.Profile__infor__Email input,
-.Profile__infor__Address input,
-.Profile__infor__Phone input,
-.Profile__infor__pass input {
+.profile__infor__fullname input,
+.profile__infor__position select,
+.profile__infor__email input,
+.profile__infor__address input,
+.profile__infor__phone input,
+.profile__infor__pass input {
   flex: 1;
   height: 4rem;
   font-size: 1.5rem;
@@ -97,7 +126,7 @@
   background-color: #fafafa;
 }
 
-.Profile__infor__form__btn {
+.profile__infor__form__btn {
   height: 4rem;
   width: 25rem;
   font-size: larger;
@@ -109,21 +138,21 @@
 }
 
 @media (max-width: 600px) {
-  .Profile__infor {
+  .profile__infor {
     flex-direction: column;
   }
-  .Profile__infor__form {
+  .profile__infor__form {
     width: 100%;
     margin: 0 auto;
   }
-  .Profile__infor__avatar {
+  .profile__infor__avatar {
     width: 100%;
     margin: 2rem auto;
   }
-  .StaffProfile-top {
+  .staffProfile-top {
     flex-wrap: wrap;
   }
-  .Profile__infor__form__btn {
+  .profile__infor__form__btn {
     position: relative;
     left: 10%;
   }

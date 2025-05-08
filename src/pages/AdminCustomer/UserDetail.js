@@ -9,16 +9,18 @@ import { LuSave } from "react-icons/lu";
 import axiosInstanceStaff from "../../untils/axiosInstanceStaff";
 import "./UserDetail.css";
 import OverlayLoading from "../../components/OverlayLoading/OverlayLoading";
+import ValidationUserDetail from "./ValidationUserDetail";
 
 function CustomerDetail() {
   const navigateToAdmin = useNavigate();
   const navigateToCustomer = useNavigate();
+  const [file, setFile] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  // const [userStatus, setUserStatus] = useState("inactive");
   const { id } = useParams();
 
   const [isEdit, setIsEdit] = useState(false);
-  const [userData, setUserData] = useState(null);
+  const [userData, setUserData] = useState([]);
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -28,7 +30,7 @@ function CustomerDetail() {
         );
         if (res.data.code === 200) {
           setUserData(res.data.info);
-          console.log("USER DATA:", res.data.info);
+          // console.log("USER DATA:", res.data.info);
         }
       } catch (err) {
         console.error("Lỗi khi lấy thông tin user:", err);
@@ -40,39 +42,61 @@ function CustomerDetail() {
     if (id) fetchUser();
   }, [id]);
 
-  const handleSave = () => {
-    Swal.fire({
-      title: "Do you want to save the changes?",
-      showDenyButton: true,
-      showCancelButton: true,
-      confirmButtonText: "Save",
-      denyButtonText: `Don't save`,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire("Saved!", "", "success");
-        setIsEdit(false);
-      } else if (result.isDenied) {
-        Swal.fire("Changes are not saved", "", "info");
+  const handleSave = async () => {
+    // event.preventDefault();
+    const validationErrors = ValidationUserDetail(userData);
+
+    setErrors(validationErrors);
+    if (Object.keys(validationErrors).length === 0) {
+      setIsLoading(true);
+      try {
+        const formData = new FormData();
+        formData.append("userName", userData.userName.trim());
+        formData.append("userPhone", userData.userPhone.trim());
+        formData.append("userAddress", userData.userAddress.trim());
+        formData.append("userStatus", userData.userStatus);
+        if (file) {
+          formData.append("userAvatar", file);
+        }
+
+        console.log("Form data being sent:");
+        formData.forEach((value, key) => {
+          console.log(`${key}: ${value}`);
+        });
+        const res = await axiosInstanceStaff.put(
+          `/api/v1/admin/users/update/${id}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+      } catch (error) {
+        Swal.fire({
+          title: error.response?.data?.message || "Server error occurred!",
+          icon: "error",
+        });
+      } finally {
+        setIsLoading(false);
       }
-    });
+    }
   };
 
   const handleAdminClick = () => navigateToAdmin(`/`);
   const handleCustomerClick = () => navigateToCustomer(`/dashboard/user`);
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setUserData((prev) => ({
-          ...prev,
-          userAvatar: reader.result,
-        }));
-      };
-      reader.readAsDataURL(file);
+  const handleButtonChange = (event) => {
+    const selectedFile = event.target.files[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      setUserData((prevData) => ({
+        ...prevData,
+        userAvatar: URL.createObjectURL(selectedFile),
+      }));
     }
   };
+
   if (!userData) return <OverlayLoading />;
 
   return (
@@ -130,11 +154,11 @@ function CustomerDetail() {
                   <input
                     type="file"
                     accept="image/*"
-                    id="imageUpload"
+                    id="fileInput"
                     style={{ display: "none" }}
-                    onChange={handleImageChange}
+                    onChange={handleButtonChange}
                   />
-                  <label className="upload-icon" htmlFor="imageUpload">
+                  <label className="upload-icon" htmlFor="fileInput">
                     <FaCloudUploadAlt size="3rem" />
                   </label>
                 </>
@@ -151,6 +175,9 @@ function CustomerDetail() {
                 setUserData({ ...userData, userName: e.target.value })
               }
             />
+            {errors.userName && (
+              <span className="text-danger">{errors.userName}</span>
+            )}
           </label>
           <label className="customer-email">
             Email
@@ -162,6 +189,9 @@ function CustomerDetail() {
                 setUserData({ ...userData, userEmail: e.target.value })
               }
             />
+            {errors.userEmail && (
+              <span className="text-danger">{errors.userEmail}</span>
+            )}
           </label>
 
           <label className="customer__status">
@@ -203,6 +233,9 @@ function CustomerDetail() {
                 setUserData({ ...userData, userPhone: e.target.value })
               }
             />
+            {errors.userPhone && (
+              <span className="text-danger">{errors.userPhone}</span>
+            )}
           </label>
           <label className="customer__address">
             Address
@@ -258,6 +291,7 @@ function CustomerDetail() {
           </label>
         </div>
       </div>
+      {isLoading && <OverlayLoading />}
     </div>
   );
 }
