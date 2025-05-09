@@ -83,27 +83,31 @@ function AddProduct() {
       return;
     }
 
-    if (!productData.productSlug.trim()) {
-      setProductData((prev) => ({
-        ...prev,
-        productSlug: CreateSlug(productData.productName),
-      }));
+    let tempProductData = { ...productData };
+
+    if (!tempProductData.productSlug.trim()) {
+      tempProductData.productSlug = CreateSlug(tempProductData.productName);
     }
 
     const formData = new FormData();
-    formData.append("productName", productData.productName);
-    formData.append("productPrice", productData.productPrice);
-    formData.append("productStock", productData.productStock);
-    formData.append("productDescription", productData.productDescription);
-    formData.append("productStatus", productData.productStatus);
-    formData.append("productPosition", productData.productPosition);
+    formData.append("productName", tempProductData.productName);
+    formData.append("productPrice", tempProductData.productPrice);
+    formData.append("productStock", tempProductData.productStock);
+    formData.append("productDescription", tempProductData.productDescription);
+    formData.append("productStatus", tempProductData.productStatus);
+    formData.append("productPosition", tempProductData.productPosition);
     formData.append(
       "productDiscountPercentage",
-      productData.productDiscountPercentage
+      tempProductData.productDiscountPercentage
     );
-    formData.append("categoryID", productData.productCategory);
-    formData.append("productSlug", productData.productSlug);
-    formData.append("productImage", productData.productImage);
+    formData.append("categoryID", tempProductData.productCategory);
+    formData.append("productSlug", tempProductData.productSlug);
+    formData.append("productImage", tempProductData.productImage);
+
+    console.log("formData:");
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}:`, value);
+    }
 
     const result = await Swal.fire({
       title: "Do you want to add this product?",
@@ -129,10 +133,13 @@ function AddProduct() {
         console.log("Success:", res.data);
 
         await Swal.fire("Added!", "", "success");
-        navigate(`/dashboard/products`)
-      } catch (err) {
-        console.error("Error:", err);
-        Swal.fire("Error!", "Something went wrong.", "error");
+        navigate(`/dashboard/products`);
+      } catch (error) {
+        console.error("Response error:", error.response.data.errors);
+        Swal.fire({
+          title: error.response.data.message,
+          icon: "error",
+        });
       } finally {
         setIsLoading(false);
       }

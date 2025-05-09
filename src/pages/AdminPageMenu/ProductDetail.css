@@ -249,3 +249,23 @@
   left: 80rem;
 }
 
+.updown-button {
+  position: absolute;
+  top: 48rem;
+  left: 110rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.updown-button > button {
+  border: none;
+  width: 3rem;
+  background-color: white;
+  color: #0000009b;
+}
+
+.updown-button > button:hover {
+  color: #2d6a4f;
+}

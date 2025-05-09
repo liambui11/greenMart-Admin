@@ -33,10 +33,12 @@
 
 .over-view__content--cards {
   margin-top: 7rem;
-  display: flex;
   gap: 5rem;
   height: 30rem;
-  justify-content: space-around;
+
+  place-items: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(35rem, 1fr));
 }
 
 .card {
@@ -97,12 +99,19 @@
   padding-right: 3rem;
 }
 
-.orders-report .card-quantity{
+.orders-report .card-quantity {
   color: rgb(102, 77, 3);
 }
-.product-report .card-quantity{
+.product-report .card-quantity {
   color: rgb(88, 19, 19);
 }
-.customer-report .card-quantity{
+.customer-report .card-quantity {
   color: rgb(0, 43, 99);
+}
+
+.over-view__content--chart {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

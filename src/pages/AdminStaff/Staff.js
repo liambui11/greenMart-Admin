@@ -39,11 +39,11 @@ function Staff() {
   }, [searchQuery, sortKey, sortValue]);
 
   const handleStaffdetail = (item) => {
-    navigate(`/dashboard/staffdetail/${item._id}`);
+    navigate(`/dashboard/staff/staffdetail/${item._id}`);
   };
 
   const handleAddStaff = (item) => {
-    navigate(`/dashboard/addstaff`);
+    navigate(`/dashboard/staff/addstaff`);
   };
 
   const handleDeleteStaff = async (item) => {

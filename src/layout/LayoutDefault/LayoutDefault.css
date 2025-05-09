@@ -68,7 +68,7 @@
   }
 
   .layout-default__nav.open {
-    width: 40rem;
+    width: 35rem;
     display: flex;
     position: absolute;
     top: 10.1rem;
@@ -86,7 +86,6 @@
     height: 100vh;
   }
 }
-
 
 @media (max-width: 550px) {
   body {

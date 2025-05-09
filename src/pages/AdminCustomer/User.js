@@ -46,7 +46,7 @@ function Customer() {
   };
 
   const handleCustomerClick = (item) => {
-    navigate(`/dashboard/userdetail/${item._id}`, { state: { item } });
+    navigate(`/dashboard/user/userdetail/${item._id}`, { state: { item } });
   };
 
   const handleDeleteCustomer = async (item) => {
