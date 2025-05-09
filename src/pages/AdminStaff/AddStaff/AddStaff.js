@@ -106,6 +106,7 @@ function AddStaff() {
           title: error.response.data.message,
           icon: "error",
         });
+        console.log(error);
       } finally {
         setIsLoading(false);
       }
@@ -143,7 +144,11 @@ function AddStaff() {
           <label>
             <img
               className="profile__infor__avatar__img"
-              src={file || "./image/avatar-user/default-avatar-profile.png"}
+              src={
+                file === null || file === ""
+                  ? "/image/avatar-user/default-avatar-profile.png"
+                  : file
+              }
               width={200}
               height={200}
               alt="Avatar"

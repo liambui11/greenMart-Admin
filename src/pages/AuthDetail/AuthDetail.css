@@ -1,0 +1,154 @@
+/* .staffProfile__title {
+  margin: 3rem;
+}
+
+.staffProfile__title--name {
+  font-size: 3rem;
+  font-weight: 600;
+}
+
+.staff-detail__breadcrumb {
+  color: #0000009e;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 2rem;
+  font-weight: 500;
+}
+
+.staff-detail__breadcrumb > svg {
+  color: #2d6a4f;
+  padding: 0.1rem;
+  margin: 0 1rem;
+}
+
+.staff-detail__breadcrumb span:first-child:hover {
+  color: #2d6a4f;
+  cursor: pointer;
+} */
+
+.authprofile-top {
+  display: flex;
+  margin: 2rem auto;
+}
+.authprofile__infor__avatar {
+  width: 30%;
+  margin-left: 10%;
+}
+
+.authprofile__infor__avatar__img {
+  border-radius: "50%";
+  object-fit: "cover";
+  border-radius: 50%;
+  display: block;
+  object-fit: cover;
+}
+
+.authprofile__infor__avatar #fileInput {
+  display: none;
+}
+
+.authprofile__infor__avatar__btn {
+  background: #0aad0a;
+  border: none;
+  margin-top: 2rem;
+  color: white;
+  width: 20rem;
+}
+
+.authprofile__infor__avatar__btn:hover {
+  background-color: #bbb;
+  color: black;
+}
+
+.staff-title {
+  margin-top: 5rem;
+}
+.staff-name {
+  font-size: 5rem;
+  font-weight: 700;
+}
+.staff__title-info {
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+.authprofile__infor__form {
+  width: 80%;
+  margin: 2rem auto;
+  padding: 1.5rem 0;
+}
+
+.authprofile__infor__fullname,
+.authprofile__infor__position,
+.authprofile__infor__email,
+.authprofile__infor__address,
+.authprofile__infor__phone,
+.authprofile__infor__pass {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 3rem;
+  margin-bottom: 3rem;
+}
+
+/* label cố định đủ rộng, không wrap */
+.authprofile__infor__fullname label,
+.authprofile__infor__position label,
+.authprofile__infor__email label,
+.authprofile__infor__address label,
+.authprofile__infor__phone label,
+.authprofile__infor__pass label {
+  flex: 0 0 15rem;
+  white-space: nowrap;
+  font-size: 2rem;
+  font-weight: 400;
+  text-align: left;
+}
+
+.authprofile__infor__fullname input,
+.authprofile__infor__position select,
+.authprofile__infor__email input,
+.authprofile__infor__address input,
+.authprofile__infor__phone input,
+.authprofile__infor__pass input {
+  flex: 1;
+  height: 4rem;
+  font-size: 1.5rem;
+  padding: 0 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fafafa;
+}
+
+.authprofile__infor__form__btn {
+  height: 4rem;
+  width: 25rem;
+  font-size: larger;
+  border: none;
+  background-color: #0aad0a;
+  color: white;
+  position: relative;
+  left: 40%;
+}
+
+@media (max-width: 600px) {
+  .authprofile__infor {
+    flex-direction: column;
+  }
+  .authprofile__infor__form {
+    width: 100%;
+    margin: 0 auto;
+  }
+  .authprofile__infor__avatar {
+    width: 100%;
+    margin: 2rem auto;
+  }
+  .authprofile-top {
+    flex-wrap: wrap;
+  }
+  .authprofile__infor__form__btn {
+    position: relative;
+    left: 10%;
+  }
+}

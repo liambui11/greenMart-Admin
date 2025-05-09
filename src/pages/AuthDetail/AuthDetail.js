@@ -2,7 +2,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import React, { useEffect, useState } from "react";
 import ValidationAuth from "./MyProfileValidationAuth";
-// import "./StaffDetail.css";
+import "./AuthDetail.css";
 
 import Swal from "sweetalert2";
 import axiosInstanceStaff from "../../untils/axiosInstanceStaff";
@@ -83,7 +83,6 @@ function AuthDetail() {
         formData.append("staffName", values.name);
         formData.append("staffPhone", values.phone);
         formData.append("staffAddress", values.address);
-        // formData.append("staffAddress", values.address);
 
         const imageFile = document.getElementById("fileInput").files[0];
         if (imageFile) {
@@ -132,12 +131,12 @@ function AuthDetail() {
   };
 
   return (
-    <div className="StaffProfile-container">
-      <div className="StaffProfile-top">
-        <div className="Profile__infor__avatar">
+    <div className="authprofile-container">
+      <div className="authprofile-top">
+        <div className="authprofile__infor__avatar">
           <label>
             <img
-              className="Profile__infor__avatar__img"
+              className="authprofile__infor__avatar__img"
               src={file || "./image/avatar-user/default-avatar-profile.png"}
               width={200}
               height={200}
@@ -150,7 +149,7 @@ function AuthDetail() {
               accept=".png, .webp, .jpeg, .jpg"
             />
             <button
-              className="Profile__infor__avatar__btn"
+              className="authprofile__infor__avatar__btn"
               type="button"
               onClick={handleButtonClick}
             >
@@ -163,9 +162,9 @@ function AuthDetail() {
           <div className="staff__title-info">Position: {values.position}</div>
         </div>
       </div>
-      <div className="Profile__infor__form">
+      <div className="authprofile__infor__form">
         <form onSubmit={handleSubmit}>
-          <div className="Profile__infor__Fullname">
+          <div className="authprofile__infor__fullname">
             <label htmlFor="name">
               <strong>Full-Name</strong>
             </label>
@@ -179,7 +178,7 @@ function AuthDetail() {
             />
             {errors.name && <span className="text-danger">{errors.name}</span>}
           </div>
-          <div className="Profile__infor__Email">
+          <div className="authprofile__infor__email">
             <label htmlFor="email">
               <strong>Email</strong>
             </label>
@@ -196,7 +195,7 @@ function AuthDetail() {
               <span className="text-danger">{errors.email}</span>
             )}
           </div>
-          <div className="Profile__infor__Address">
+          <div className="authprofile__infor__address">
             <label htmlFor="address">
               <strong>Address</strong>
             </label>
@@ -212,7 +211,7 @@ function AuthDetail() {
               <span className="text-danger">{errors.address}</span>
             )}
           </div>
-          <div className="Profile__infor__Phone">
+          <div className="authprofile__infor__phone">
             <label htmlFor="phone">
               <strong>Phone Number</strong>
             </label>
@@ -228,7 +227,7 @@ function AuthDetail() {
               <span className="text-danger">{errors.phone}</span>
             )}
           </div>
-          <button type="submit" className="Profile__infor__form__btn">
+          <button type="submit" className="authprofile__infor__form__btn">
             <strong>Save</strong>
           </button>
         </form>
