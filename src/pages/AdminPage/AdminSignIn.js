@@ -3,6 +3,7 @@ import "./AdminSignIn.css";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loginStaff } from "../../actions/authStaff";
+import { useAlert } from "../../context/AlertContext";
 
 function AdminSignIn() {
   const navigate = useNavigate();
@@ -10,6 +11,8 @@ function AdminSignIn() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState({});
   const dispatch = useDispatch();
+  const { showAlert } = useAlert();
+
 
   const isAuthenticated = useSelector(
     (state) => state.staffAuth.isAuthenticated
@@ -43,16 +46,21 @@ function AdminSignIn() {
   const handleLogin = async (event) => {
     event.preventDefault();
     const validationErrors = validate();
+
     if (Object.keys(validationErrors).length === 0) {
       const result = await dispatch(loginStaff(email, password));
-      console.log(email, password);
+
       if (result.success) {
+        showAlert("success", "Admin login successful!");
         navigate("/dashboard/overview");
+      } else {
+        showAlert("error", result.message || "Login failed. Please try again.");
       }
     } else {
       setError(validationErrors);
     }
   };
+
 
   return (
     <div className="admin-sign-in-container">
