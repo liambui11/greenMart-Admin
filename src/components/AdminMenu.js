@@ -5,6 +5,7 @@ import { LiaChartBarSolid } from "react-icons/lia";
 import { BiCategory } from "react-icons/bi";
 import { FiShoppingBag, FiUser, FiUsers } from "react-icons/fi";
 import { IoSettingsOutline } from "react-icons/io5";
+import { LiaFileInvoiceDollarSolid } from "react-icons/lia";
 
 const Divider = () => {
   return (
@@ -44,7 +45,7 @@ function AdminMenu() {
                 }`
               }
             >
-              <BiCategory size="2.5rem" style={{ marginRight: "2rem" }} />{" "}
+              <BiCategory size="2.5rem" style={{ marginRight: "2rem" }} />
               Product Categories
             </NavLink>
           )}
@@ -59,14 +60,18 @@ function AdminMenu() {
               Products
             </NavLink>
           )}
-          {/* <NavLink
-            to={`/dashboard/promotions`}
+          <NavLink
+            to={`/dashboard/orders`}
             className={({ isActive }) =>
-              `admin-menu__items--promotions ${isActive ? "active" : ""}`
+              `admin-menu__items--orders ${isActive ? "active" : ""}`
             }
           >
-            Promotions
-          </NavLink> */}
+            <LiaFileInvoiceDollarSolid
+              size="2.5rem"
+              style={{ marginRight: "2rem" }}
+            />
+            Orders
+          </NavLink>
           {/* <NavLink
             to={`/dashboard/rolesgroup`}
             className={({ isActive }) =>
@@ -122,7 +127,7 @@ function AdminMenu() {
               Users
             </NavLink>
           )}
-          <Divider />
+          {/* <Divider />
           <NavLink
             to={`/AdminPage/GeneralSetting`}
             className={({ isActive }) =>
@@ -131,7 +136,7 @@ function AdminMenu() {
           >
             <IoSettingsOutline size="2.5rem" style={{ marginRight: "2rem" }} />
             General Settings
-          </NavLink>
+          </NavLink> */}
         </div>
       </div>
     </div>

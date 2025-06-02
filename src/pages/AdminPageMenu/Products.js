@@ -117,9 +117,6 @@ function Products() {
           <table className="products__content--table">
             <thead>
               <tr>
-                <th>
-                  <input type="checkbox"></input>
-                </th>
                 <th>Image</th>
                 <th>Name</th>
                 <th>Category</th>
@@ -134,9 +131,6 @@ function Products() {
             <tbody>
               {filteredProduct.map((item) => (
                 <tr key={item._id}>
-                  <td>
-                    <input type="checkbox"></input>
-                  </td>
                   <td>
                     <img
                       alt=""
