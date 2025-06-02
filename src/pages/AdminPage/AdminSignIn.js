@@ -2,8 +2,7 @@ import { useNavigate } from "react-router-dom";
 import "./AdminSignIn.css";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { loginStaff } from "../../actions/authStaff"; 
-
+import { loginStaff } from "../../actions/authStaff";
 
 function AdminSignIn() {
   const navigate = useNavigate();
@@ -12,14 +11,15 @@ function AdminSignIn() {
   const [error, setError] = useState({});
   const dispatch = useDispatch();
 
-  const isAuthenticated = useSelector((state) => state.staffAuth.isAuthenticated);
+  const isAuthenticated = useSelector(
+    (state) => state.staffAuth.isAuthenticated
+  );
 
   useEffect(() => {
     if (isAuthenticated) {
       navigate("/dashboard/overview");
     }
   }, [isAuthenticated, navigate]);
-
 
   const validate = () => {
     const newErrors = {};

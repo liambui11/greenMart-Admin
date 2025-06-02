@@ -6,6 +6,8 @@ import { FaChevronRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import axiosInstanceStaff from "../../untils/axiosInstanceStaff";
 import OverlayLoading from "../../components/OverlayLoading/OverlayLoading";
+import Swal from "sweetalert2";
+// import CheckRole from "../../components/CheckRole";
 
 function ProductCategories() {
   const [categoriesData, setCategoriesData] = useState([]);
@@ -21,24 +23,54 @@ function ProductCategories() {
     );
   };
 
-  const handleCategoryProductDeleteClick = () => {
-    console.log("deleted");
-  };
+  const handleCategoryProductDeleteClick = async (itemID) => {
+    const result = await Swal.fire({
+      title: "Do you want to delete this category?",
+      showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonText: "Delete",
+      denyButtonText: `Don't delete`,
+    });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
+    if (result.isConfirmed) {
       try {
-        const resProductCategory = await axiosInstanceStaff.get(
-          `/api/v1/admin/products-category`
+        setIsLoading(true);
+        const res = await axiosInstanceStaff.delete(
+          `/api/v1/admin/products-category/delete/${itemID}`
         );
-        setCategoriesData(resProductCategory.data.info);
+
+        console.log(res.message);
+        console.log("Success:", res.data);
+
+        await Swal.fire("Deleted!", "", "success");
+        window.scrollTo(0, 0);
+        await fetchData();
       } catch (err) {
-        console.log(err);
+        console.error("Error:", err);
+        Swal.fire("Error!", "Something went wrong.", "error");
       } finally {
         setIsLoading(false);
       }
-    };
+    } else if (result.isDenied) {
+      Swal.fire("Changes are not saved", "", "info");
+    }
+  };
+
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      const resProductCategory = await axiosInstanceStaff.get(
+        `/api/v1/admin/products-category`
+      );
+      setCategoriesData(resProductCategory.data.info);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -81,15 +113,11 @@ function ProductCategories() {
           <table className="product-categories__content--table">
             <thead>
               <tr>
-                <th>
-                  <input type="checkbox"></input>
-                </th>
                 <th>Image</th>
                 <th>Name</th>
                 <th>Status</th>
                 <th>Create At</th>
                 <th>Update At</th>
-                <th>Delete At</th>
                 <th></th>
                 <th></th>
               </tr>
@@ -97,9 +125,6 @@ function ProductCategories() {
             <tbody>
               {filteredCategory.map((item) => (
                 <tr key={item._id}>
-                  <td>
-                    <input type="checkbox"></input>
-                  </td>
                   <td>
                     <img
                       alt=""
@@ -130,11 +155,6 @@ function ProductCategories() {
                       ? new Date(item.updatedAt).toLocaleDateString("vi-VN")
                       : ""}
                   </td>
-                  <td>
-                    {item.deletedAt
-                      ? new Date(item.deletedAt).toLocaleDateString("vi-VN")
-                      : "Null"}
-                  </td>
 
                   <td>
                     <CiEdit
@@ -147,7 +167,7 @@ function ProductCategories() {
                   <td>
                     <MdOutlineDeleteOutline
                       className="delete-icon"
-                      onClick={handleCategoryProductDeleteClick}
+                      onClick={() => handleCategoryProductDeleteClick(item._id)}
                     />
                   </td>
                 </tr>

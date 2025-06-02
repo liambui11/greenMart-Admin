@@ -28,15 +28,19 @@
 }
 
 .over-view__content {
-  height: 50rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 2rem;
 }
 
 .over-view__content--cards {
-  margin-top: 7rem;
-  display: flex;
-  gap: 5rem;
-  height: 30rem;
-  justify-content: space-around;
+  grid-column: 1 / span 3; 
+  grid-row: 1 / span 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(35rem, 1fr));
+  place-items: center;
+  gap: 2rem;
 }
 
 .card {
@@ -97,12 +101,17 @@
   padding-right: 3rem;
 }
 
-.orders-report .card-quantity{
+.orders-report .card-quantity {
   color: rgb(102, 77, 3);
 }
-.product-report .card-quantity{
+.product-report .card-quantity {
   color: rgb(88, 19, 19);
 }
-.customer-report .card-quantity{
+.customer-report .card-quantity {
   color: rgb(0, 43, 99);
+}
+
+.over-view__content--revenue {
+  grid-column: 1 / span 3;
+  grid-row: 2 / span 1;
 }

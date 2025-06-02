@@ -16,6 +16,8 @@ import StaffDetail from "../pages/AdminStaff/StaffDetail/StaffDetail";
 import Staff from "../pages/AdminStaff/Staff";
 import AddStaff from "../pages/AdminStaff/AddStaff/AddStaff";
 import AuthDetail from "../pages/AuthDetail/AuthDetail";
+import Orders from "../pages/AdminPageMenu/Orders";
+import OrderDetail from "../pages/AdminPageMenu/OrderDetail";
 
 export const routes = [
   {
@@ -42,7 +44,7 @@ export const routes = [
           },
           { path: "products", element: <Products /> },
           { path: "user", element: <Customer /> },
-          { path: "userdetail/:id", element: <CustomerDetail /> },
+          { path: "user/userdetail/:id", element: <CustomerDetail /> },
           {
             path: "products/productdetail/:productslug",
             element: <ProductDetail />,
@@ -52,10 +54,12 @@ export const routes = [
             path: "productcategories/addproductcategory",
             element: <AddProductCategory />,
           },
-          { path: "staffdetail/:id", element: <StaffDetail /> },
+          { path: "staff/staffdetail/:id", element: <StaffDetail /> },
           { path: "staff", element: <Staff /> },
-          { path: "addstaff", element: <AddStaff /> },
+          { path: "staff/addstaff", element: <AddStaff /> },
           { path: "authdetail", element: <AuthDetail /> },
+          { path: "orders", element: <Orders /> },
+          { path: "orders/orderdetail/:orderId", element: <OrderDetail /> },
         ],
       },
     ],

@@ -13,12 +13,14 @@ import OverlayLoading from "../../components/OverlayLoading/OverlayLoading";
 import ErrorPage from "../ErrorPage/ErrorPage";
 import CreateSlug from "../../components/CreateSlug";
 import CheckRole from "../../components/CheckRole";
+import { LuSquareChevronDown, LuSquareChevronUp } from "react-icons/lu";
 
 function ProductDetail() {
   const navigate = useNavigate();
   const { productslug } = useParams();
   const canEdit = CheckRole("product", "edit");
   const [isImageChange, setIsImageChange] = useState(false);
+  const [index, setIndex] = useState(0);
 
   const [isEdit, setIsEdit] = useState(false);
   const [notFound, setNotFound] = useState(false);
@@ -28,7 +30,7 @@ function ProductDetail() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  });
+  }, []);
 
   const [productData, setProductData] = useState({
     productName: "",
@@ -51,8 +53,6 @@ function ProductDetail() {
       value = e.target.files[0];
     } else if (e.target.type === "number") {
       value = Number(e.target.value);
-    } else if (e.target.value === "true" || e.target.value === "false") {
-      value = e.target.value === "true";
     } else {
       value = e.target.value;
     }
@@ -76,6 +76,9 @@ function ProductDetail() {
           currentProduct.productDiscountPercentage ?? 0,
         productSlug: currentProduct.productSlug || "",
       });
+    }
+    if (Array.isArray(currentProduct?.updateBy)) {
+      setIndex(currentProduct.updateBy.length - 1);
     }
   }, [currentProduct]);
 
@@ -124,35 +127,32 @@ function ProductDetail() {
       return;
     }
 
-    if (!productData.productSlug.trim()) {
-      setProductData((prev) => ({
-        ...prev,
-        productSlug: CreateSlug(productData.productName),
-      }));
+    let tempProductData = { ...productData };
+
+    if (!tempProductData.productSlug.trim()) {
+      tempProductData.productSlug = CreateSlug(tempProductData.productName);
     }
 
     const formData = new FormData();
-    formData.append("productName", productData.productName);
-    formData.append("productPrice", productData.productPrice);
-    formData.append("productStock", productData.productStock);
-    formData.append("productDescription", productData.productDescription);
-    formData.append("productStatus", productData.productStatus);
-    formData.append("productPosition", productData.productPosition);
+    formData.append("productName", tempProductData.productName);
+    formData.append("productPrice", tempProductData.productPrice);
+    formData.append("productStock", tempProductData.productStock);
+    formData.append("productDescription", tempProductData.productDescription);
+    formData.append("productStatus", tempProductData.productStatus);
+    formData.append("productPosition", tempProductData.productPosition);
     formData.append(
       "productDiscountPercentage",
-      productData.productDiscountPercentage
+      tempProductData.productDiscountPercentage
     );
-    formData.append("categoryID", productData.productCategory);
-    formData.append("productSlug", productData.productSlug);
+    formData.append("categoryID", tempProductData.productCategory);
+    formData.append("productSlug", tempProductData.productSlug);
     if (isImageChange) {
-      formData.append("productImage", productData.productImage);
+      formData.append("productImage", tempProductData.productImage);
     }
 
-    for (var value of formData.values()) {
-      console.log(value);
-    }
-    for (var key of formData.keys()) {
-      console.log(key);
+    console.log("formData:");
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}:`, value);
     }
 
     const result = await Swal.fire({
@@ -194,6 +194,20 @@ function ProductDetail() {
       }
     } else if (result.isDenied) {
       Swal.fire("No Changes Made", "", "info");
+    }
+  };
+
+  console.log("currentProduct", currentProduct);
+
+  const handleUp = () => {
+    if (index > 0) {
+      setIndex((prev) => prev - 1);
+    }
+  };
+
+  const handleDown = () => {
+    if (index < currentProduct?.updateBy.length - 1) {
+      setIndex((prev) => prev + 1);
     }
   };
 
@@ -397,45 +411,34 @@ function ProductDetail() {
             Update By
             <input
               type="text"
-              value={currentProduct?.updateBy}
+              value={currentProduct?.updateBy[index]?.staffID?.staffName}
               disabled={true}
             ></input>
           </label>
-
-          {/* <label className="product__deleted">
-            Deleted
-            <div className="product__deleted--group">
-              <label>
-                <input
-                  type="radio"
-                  value="true"
-                  checked={productData.deleted === true}
-                  disabled={!isEdit}
-                  onChange={handleChange("deleted")}
-                ></input>
-                True
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  value="false"
-                  checked={productData.deleted === false}
-                  disabled={!isEdit}
-                  onChange={handleChange("deleted")}
-                ></input>
-                False
-              </label>
-            </div>
-          </label> */}
-
+          <div className="updown-button">
+            <button type="button" onClick={handleUp}>
+              <LuSquareChevronUp />
+            </button>
+            <button type="button" onClick={handleDown}>
+              <LuSquareChevronDown />
+            </button>
+          </div>
           <label className="product__create-at">
             Create At
             <input
               type="text"
               value={
                 currentProduct?.createdAt
-                  ? new Date(currentProduct?.createdAt).toLocaleDateString(
-                      "vi-VN"
+                  ? new Date(currentProduct?.createdAt).toLocaleString(
+                      "vi-VN",
+                      {
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        second: "2-digit",
+                      }
                     )
                   : "Null"
               }
@@ -447,10 +450,17 @@ function ProductDetail() {
             <input
               type="text"
               value={
-                currentProduct?.updatedAt
-                  ? new Date(currentProduct?.updatedAt).toLocaleDateString(
-                      "vi-VN"
-                    )
+                currentProduct?.updateBy[index]?.date
+                  ? new Date(
+                      currentProduct?.updateBy[index]?.date
+                    ).toLocaleString("vi-VN", {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      second: "2-digit",
+                    })
                   : "Null"
               }
               disabled={true}

@@ -44,6 +44,7 @@ export const loginStaff = (email, password) => {
 
 export const logoutStaff = () => async (dispatch) => {
   try {
+    dispatch({ type: "STAFF_LOGOUT" });
     await axios.post(
       "/api/v1/admin/auth/logout",
       {},

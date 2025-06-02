@@ -6,24 +6,45 @@ import { TbArrowBackUp } from "react-icons/tb";
 import { LuSave } from "react-icons/lu";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import Swal from "sweetalert2";
+import axiosInstanceStaff from "../../untils/axiosInstanceStaff";
+import CreateSlug from "../../components/CreateSlug";
+import OverlayLoading from "../../components/OverlayLoading/OverlayLoading";
 
 function ProductCategoryDetail() {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const [currentParentCategory, setCurrentParentCategory] = useState();
-  const [categoryName, setCategoryName] = useState("");
-  const [categoryImage, setCategoryImage] = useState("/image/logoGM.png");
-  const [parentCategory, setParentCategory] = useState("No Parent");
-  const [categoryStatus, setCategoryStatus] = useState("active");
-  const [categorySlug, setCategorySlug] = useState("");
-  const [categoryPosition, setCategoryPosition] = useState(0);
+
+  const [categoryData, setCategoryData] = useState({
+    categoryName: "",
+    categoryImage: null,
+    categoryParentID: "",
+    categoryStatus: "active",
+    categorySlug: "",
+    categoryPosition: 0,
+  });
+
+  const handleChange = (field) => (e) => {
+    let value;
+
+    if (e.target.type === "file") {
+      value = e.target.files[0];
+    } else if (e.target.type === "number") {
+      value = Number(e.target.value);
+    } else {
+      value = e.target.value;
+    }
+
+    setCategoryData((prev) => ({ ...prev, [field]: value }));
+  };
 
   useEffect(() => {
     const fetchData = async () => {
-      const resParentCategory = await fetch(
-        `http://localhost:3000/api/v1/products-category`
+      const resCategoryList = await axiosInstanceStaff.get(
+        `/api/v1/admin/products-category`
       );
-      const parentCategoryJson = await resParentCategory.json();
-      setCurrentParentCategory(parentCategoryJson.info);
+
+      setCurrentParentCategory(resCategoryList.data.info);
     };
     fetchData();
   }, []);
@@ -39,11 +60,77 @@ function ProductCategoryDetail() {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setCategoryImage(reader.result);
-      };
-      reader.readAsDataURL(file);
+      setCategoryData((prev) => ({ ...prev, categoryImage: file }));
+    }
+  };
+
+  const handleSave = async () => {
+    if (!categoryData.categoryName.trim()) {
+      Swal.fire({
+        icon: "error",
+        title: "Missing Information",
+        text: "Please make sure all required fields are filled out correctly.",
+      });
+      return;
+    }
+
+    let tempCategoryData = { ...categoryData };
+
+    if (!tempCategoryData.categorySlug.trim()) {
+      tempCategoryData.categorySlug = CreateSlug(tempCategoryData.categoryName);
+    }
+
+    const formData = new FormData();
+    formData.append("categoryName", tempCategoryData.categoryName);
+    formData.append("categoryStatus", tempCategoryData.categoryStatus);
+    formData.append("categoryPosition", tempCategoryData.categoryPosition);
+    formData.append("categorySlug", tempCategoryData.categorySlug);
+    if (tempCategoryData.categoryParentID !== "") {
+      formData.append("categoryParentID", tempCategoryData.categoryParentID);
+    }
+    formData.append("categoryImage", tempCategoryData.categoryImage);
+
+    console.log("formData:");
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}:`, value);
+    }
+
+    const result = await Swal.fire({
+      title: "Do you want to add this category?",
+      showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonText: "Add",
+      denyButtonText: `Don't add`,
+    });
+
+    if (result.isConfirmed) {
+      try {
+        setIsLoading(true);
+        const res = await axiosInstanceStaff.post(
+          "/api/v1/admin/products-category/add",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        console.log(res.message);
+        console.log("Success:", res.data);
+
+        await Swal.fire("Added!", "", "success");
+        navigate(`/dashboard/productcategories`);
+      } catch (error) {
+        console.error("Response error:", error.response.data.errors);
+        Swal.fire({
+          title: error.response.data.message,
+          icon: "error",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    } else if (result.isDenied) {
+      Swal.fire("Changes are not saved", "", "info");
     }
   };
 
@@ -53,7 +140,7 @@ function ProductCategoryDetail() {
         <div className="add-category__title">
           <div className="add-category__title--name">Add New Category</div>
           <div className="add-category__title--button">
-            <div className="save-button" onClick={() => handleSave()}>
+            <div className="save-button" onClick={handleSave}>
               <LuSave />
               Save
             </div>
@@ -78,15 +165,15 @@ function ProductCategoryDetail() {
             Name
             <input
               type="text"
-              value={categoryName}
-              onChange={(e) => setCategoryName(e.target.value)}
+              value={categoryData.categoryName}
+              onChange={handleChange("categoryName")}
             ></input>
           </label>
           <label className="category__parent-category">
             Parent Category
             <select
-              value={parentCategory}
-              onChange={(e) => setParentCategory(e.target.value)}
+              value={categoryData.categoryParentID}
+              onChange={handleChange("categoryParentID")}
             >
               <option value="">No Parent</option>
               {currentParentCategory?.map((item) => (
@@ -101,7 +188,13 @@ function ProductCategoryDetail() {
             <div className="category__image--content">
               <img
                 alt=""
-                src={categoryImage}
+                src={
+                  categoryData.categoryImage
+                    ? typeof categoryData.categoryImage === "string"
+                      ? categoryData.categoryImage
+                      : URL.createObjectURL(categoryData.categoryImage)
+                    : "/image/logoGM.png"
+                }
                 style={{
                   width: "20rem",
                   height: "12rem",
@@ -130,8 +223,8 @@ function ProductCategoryDetail() {
                 <input
                   type="radio"
                   value="active"
-                  checked={categoryStatus === "active"}
-                  onChange={(e) => setCategoryStatus(e.target.value)}
+                  checked={categoryData.categoryStatus === "active"}
+                  onChange={handleChange("categoryStatus")}
                 ></input>
                 Active
               </label>
@@ -139,8 +232,8 @@ function ProductCategoryDetail() {
                 <input
                   type="radio"
                   value="inactive"
-                  checked={categoryStatus === "inactive"}
-                  onChange={(e) => setCategoryStatus(e.target.value)}
+                  checked={categoryData.categoryStatus === "inactive"}
+                  onChange={handleChange("categoryStatus")}
                 ></input>
                 InActive
               </label>
@@ -150,40 +243,23 @@ function ProductCategoryDetail() {
             Position
             <input
               type="number"
-              value={categoryPosition}
-              onChange={(e) => setCategoryPosition(Number(e.target.value))}
+              value={categoryData.categoryPosition}
+              onChange={handleChange("categoryPosition")}
             ></input>
           </label>
           <label className="category__slug">
             Slug
             <input
               type="text"
-              value={categorySlug}
-              onChange={(e) => setCategorySlug(e.target.value)}
+              value={categoryData.categorySlug}
+              onChange={handleChange("categorySlug")}
             ></input>
           </label>
         </div>
       </div>
+      {isLoading && <OverlayLoading />}
     </div>
   );
 }
 
 export default ProductCategoryDetail;
-
-function handleSave() {
-  Swal.fire({
-    title: "Do you want to save the changes?",
-    showDenyButton: true,
-    showCancelButton: true,
-    confirmButtonText: "Save",
-    denyButtonText: `Don't save`,
-  }).then((result) => {
-    if (result.isConfirmed) {
-      Swal.fire("Saved!", "", "success");
-    } else if (result.isDenied) {
-      Swal.fire("Changes are not saved", "", "info");
-      // Thực hiện hành động khi không lưu
-    }
-    // Không cần xử lý gì nếu người dùng nhấp vào "Cancel"
-  });
-}

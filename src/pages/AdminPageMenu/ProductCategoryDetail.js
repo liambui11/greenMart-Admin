@@ -10,7 +10,8 @@ import Swal from "sweetalert2";
 import axiosInstanceStaff from "../../untils/axiosInstanceStaff";
 import OverlayLoading from "../../components/OverlayLoading/OverlayLoading";
 import ErrorPage from "../ErrorPage/ErrorPage";
-
+import CreateSlug from "../../components/CreateSlug";
+import { LuSquareChevronDown, LuSquareChevronUp } from "react-icons/lu";
 
 function ProductCategoryDetail() {
   const navigate = useNavigate();
@@ -19,27 +20,50 @@ function ProductCategoryDetail() {
   const [isEdit, setIsEdit] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [notFound, setNotFound] = useState(false);
-
-  const [categoryList, setCategoryList] = useState([]);
+  const [isImageChange, setIsImageChange] = useState(false);
   const [currentCategory, setCurrentCategory] = useState();
+  const [index, setIndex] = useState(0);
+  const [categoryList, setCategoryList] = useState([]);
 
-  const [categoryName, setCategoryName] = useState("");
-  const [categoryImage, setCategoryImage] = useState("/image/logoGM.png");
-  const [parentCategory, setParentCategory] = useState("");
-  const [categoryStatus, setCategoryStatus] = useState("inactive");
-  const [categorySlug, setCategorySlug] = useState("");
-  const [categoryDeleted, setCategoryDeleted] = useState(false);
-  const [categoryPosition, setCategoryPosition] = useState(0);
+  const [categoryData, setCategoryData] = useState({
+    categoryName: "",
+    categoryImage: null,
+    categoryParentID: "",
+    categoryStatus: "active",
+    categorySlug: "",
+    categoryPosition: 0,
+  });
+
+  const handleChange = (field) => (e) => {
+    let value;
+
+    if (e.target.type === "file") {
+      value = e.target.files[0];
+    } else if (e.target.type === "number") {
+      value = Number(e.target.value);
+    } else {
+      value = e.target.value;
+    }
+
+    setCategoryData((prev) => ({ ...prev, [field]: value }));
+  };
 
   useEffect(() => {
     if (currentCategory) {
-      setCategoryName(currentCategory.categoryName);
-      setCategoryImage(currentCategory.categoryImage);
-      setParentCategory(currentCategory.categoryParentID);
-      setCategoryStatus(currentCategory.categoryStatus);
-      setCategorySlug(currentCategory.categorySlug);
-      setCategoryDeleted(currentCategory.deleted);
-      setCategoryPosition(currentCategory.categoryPosition);
+      setCategoryData({
+        categoryName: currentCategory.categoryName || "",
+        categoryImage: currentCategory.categoryImage || null,
+        categoryParentID:
+          currentCategory.categoryParentID?._id ||
+          currentCategory.categoryParentID ||
+          "",
+        categoryStatus: currentCategory.categoryStatus || "active",
+        categorySlug: currentCategory.categorySlug || "",
+        categoryPosition: currentCategory.categoryPosition || 0,
+      });
+    }
+    if (Array.isArray(currentCategory?.updateBy)) {
+      setIndex(currentCategory.updateBy.length - 1);
     }
   }, [currentCategory]);
 
@@ -55,8 +79,6 @@ function ProductCategoryDetail() {
         ]);
         setCurrentCategory(resProductCategory.data.info);
         setCategoryList(resCategoryList.data.info);
-        console.log(resProductCategory.data.code)
-        console.log(resCategoryList.data.code)
       } catch (err) {
         console.log(err);
         setNotFound(true);
@@ -76,13 +98,102 @@ function ProductCategoryDetail() {
   };
 
   const handleImageChange = (e) => {
+    setIsImageChange(true);
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setCategoryImage(reader.result);
-      };
-      reader.readAsDataURL(file);
+      setCategoryData((prev) => ({ ...prev, categoryImage: file }));
+    }
+  };
+
+  const handleSave = async () => {
+    if (!categoryData.categoryName.trim()) {
+      Swal.fire({
+        icon: "error",
+        title: "Missing Information",
+        text: "Please make sure all required fields are filled out correctly.",
+      });
+      return;
+    }
+
+    let tempCategoryData = { ...categoryData };
+
+    if (!tempCategoryData.categorySlug.trim()) {
+      tempCategoryData.categorySlug = CreateSlug(tempCategoryData.categoryName);
+    }
+
+    const formData = new FormData();
+    formData.append("categoryName", tempCategoryData.categoryName);
+    formData.append("categoryStatus", tempCategoryData.categoryStatus);
+    formData.append("categoryPosition", tempCategoryData.categoryPosition);
+    formData.append("categorySlug", tempCategoryData.categorySlug);
+    if (tempCategoryData.categoryParentID !== "") {
+      formData.append("categoryParentID", tempCategoryData.categoryParentID);
+    }
+    if (isImageChange) {
+      formData.append("categoryImage", tempCategoryData.categoryImage);
+    }
+
+    console.log("formData:");
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}:`, value);
+    }
+
+    const result = await Swal.fire({
+      title: "Confirm Category Update",
+      text: "Are you sure you want to update this category?",
+      icon: "question",
+      showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonText: "Update",
+      denyButtonText: "Cancel",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        setIsLoading(true);
+        const res = await axiosInstanceStaff.put(
+          `/api/v1/admin/products-category/update/${currentCategory._id}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        console.log(res.message);
+        console.log("Success:", res.data);
+
+        await Swal.fire(
+          "Updated!",
+          "The category has been successfully updated.",
+          "success"
+        );
+        navigate(`/dashboard/productcategories`);
+      } catch (error) {
+        console.error("Response error:", error.response.data.errors);
+        Swal.fire({
+          title: error.response.data.message,
+          icon: "error",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    } else if (result.isDenied) {
+      Swal.fire("No Changes Made", "", "info");
+    }
+  };
+
+  console.log(currentCategory);
+
+  const handleUp = () => {
+    if (index > 0) {
+      setIndex((prev) => prev - 1);
+    }
+  };
+
+  const handleDown = () => {
+    if (index < currentCategory?.updateBy.length - 1) {
+      setIndex((prev) => prev + 1);
     }
   };
 
@@ -96,10 +207,7 @@ function ProductCategoryDetail() {
           </div>
           <div className="product-category-detail__title--button">
             {isEdit && (
-              <div
-                className="save-button"
-                onClick={() => handleSave(setIsEdit)}
-              >
+              <div className="save-button" onClick={handleSave}>
                 <LuSave />
                 Save
               </div>
@@ -123,31 +231,33 @@ function ProductCategoryDetail() {
           <FaChevronRight />
           <span onClick={handleProductCategoriesClick}>Product Categories</span>
           <FaChevronRight />
-          <span>{categoryName}</span>
+          <span>{categoryData.categoryName}</span>
         </div>
         <div className="product-category-detail__content">
           <label className="category__name">
             Name
             <input
               type="text"
-              value={categoryName}
+              value={categoryData.categoryName}
               disabled={!isEdit}
-              onChange={(e) => setCategoryName(e.target.value)}
+              onChange={handleChange("categoryName")}
             ></input>
           </label>
           <label className="category__parent-category">
             Parent Category
             <select
               disabled={!isEdit}
-              value={parentCategory}
-              onChange={(e) => setParentCategory(e.target.value)}
+              value={categoryData.categoryParentID}
+              onChange={handleChange("categoryParentID")}
             >
               <option value="">No Parent</option>
-              {categoryList?.map((item) => (
-                <option key={item._id} value={item._id}>
-                  {item.categoryName}
-                </option>
-              ))}
+              {categoryList
+                ?.filter((item) => item._id !== currentCategory._id)
+                .map((item) => (
+                  <option key={item._id} value={item._id}>
+                    {item.categoryName}
+                  </option>
+                ))}
             </select>
           </label>
           <label className="category__image">
@@ -155,7 +265,13 @@ function ProductCategoryDetail() {
             <div className="category__image--content">
               <img
                 alt=""
-                src={categoryImage}
+                src={
+                  categoryData.categoryImage
+                    ? typeof categoryData.categoryImage === "string"
+                      ? categoryData.categoryImage
+                      : URL.createObjectURL(categoryData.categoryImage)
+                    : "/image/logoGM.png"
+                }
                 style={{
                   width: "20rem",
                   height: "12rem",
@@ -185,9 +301,9 @@ function ProductCategoryDetail() {
                 <input
                   type="radio"
                   value="active"
-                  checked={categoryStatus === "active"}
+                  checked={categoryData.categoryStatus === "active"}
                   disabled={!isEdit}
-                  onChange={(e) => setCategoryStatus(e.target.value)}
+                  onChange={handleChange("categoryStatus")}
                 ></input>
                 Active
               </label>
@@ -195,9 +311,9 @@ function ProductCategoryDetail() {
                 <input
                   type="radio"
                   value="inactive"
-                  checked={categoryStatus === "inactive"}
+                  checked={categoryData.categoryStatus === "inactive"}
                   disabled={!isEdit}
-                  onChange={(e) => setCategoryStatus(e.target.value)}
+                  onChange={handleChange("categoryStatus")}
                 ></input>
                 InActive
               </label>
@@ -207,25 +323,25 @@ function ProductCategoryDetail() {
             Position
             <input
               type="number"
-              value={categoryPosition}
+              value={categoryData.categoryPosition}
               disabled={!isEdit}
-              onChange={(e) => setCategoryPosition(Number(e.target.value))}
+              onChange={handleChange("categoryPosition")}
             ></input>
           </label>
           <label className="category__slug">
             Slug
             <input
               type="text"
-              value={categorySlug}
+              value={categoryData.categorySlug}
               disabled={!isEdit}
-              onChange={(e) => setCategorySlug(e.target.value)}
+              onChange={handleChange("categorySlug")}
             ></input>
           </label>
           <label className="category__create-by">
             Create By
             <input
               type="text"
-              value={currentCategory?.createBy}
+              value={currentCategory?.createBy?.staffID?.staffName}
               disabled={true}
             ></input>
           </label>
@@ -233,57 +349,18 @@ function ProductCategoryDetail() {
             Update By
             <input
               type="text"
-              value={currentCategory?.updateBy}
+              value={currentCategory?.updateBy[index]?.staffID?.staffName}
               disabled={true}
             ></input>
           </label>
-          <label className="category__delete-by">
-            Delete By
-            <input
-              type="text"
-              value={currentCategory?.deleteBy}
-              disabled={true}
-            ></input>
-          </label>
-          <label className="category__deleted">
-            Deleted
-            <div className="category__deleted--group">
-              <label>
-                <input
-                  type="radio"
-                  value="true"
-                  checked={categoryDeleted.toString() === "true"}
-                  disabled={!isEdit}
-                  onChange={(e) => setCategoryDeleted(true)}
-                ></input>
-                True
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  value="false"
-                  checked={categoryDeleted.toString() === "false"}
-                  disabled={!isEdit}
-                  onChange={(e) => setCategoryDeleted(false)}
-                ></input>
-                False
-              </label>
-            </div>
-          </label>
-          <label className="category__delete-at">
-            Delete At
-            <input
-              type="text"
-              value={
-                currentCategory?.deletedAt
-                  ? new Date(currentCategory.deletedAt).toLocaleDateString(
-                      "vi-VN"
-                    )
-                  : "Null"
-              }
-              disabled={true}
-            ></input>
-          </label>
+          <div className="updown-button-category">
+            <button type="button" onClick={handleUp}>
+              <LuSquareChevronUp />
+            </button>
+            <button type="button" onClick={handleDown}>
+              <LuSquareChevronDown />
+            </button>
+          </div>
           <label className="category__create-at">
             Create At
             <input
@@ -291,7 +368,15 @@ function ProductCategoryDetail() {
               value={
                 currentCategory?.createdAt
                   ? new Date(currentCategory.createdAt).toLocaleDateString(
-                      "vi-VN"
+                      "vi-VN",
+                      {
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        second: "2-digit",
+                      }
                     )
                   : "Null"
               }
@@ -303,10 +388,17 @@ function ProductCategoryDetail() {
             <input
               type="text"
               value={
-                currentCategory?.updatedAt
-                  ? new Date(currentCategory.updatedAt).toLocaleDateString(
-                      "vi-VN"
-                    )
+                currentCategory?.updateBy[index]?.date
+                  ? new Date(
+                      currentCategory?.updateBy[index]?.date
+                    ).toLocaleDateString("vi-VN", {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      second: "2-digit",
+                    })
                   : "Null"
               }
               disabled={true}
@@ -320,22 +412,3 @@ function ProductCategoryDetail() {
 }
 
 export default ProductCategoryDetail;
-
-function handleSave(setIsEdit) {
-  Swal.fire({
-    title: "Do you want to save the changes?",
-    showDenyButton: true,
-    showCancelButton: true,
-    confirmButtonText: "Save",
-    denyButtonText: `Don't save`,
-  }).then((result) => {
-    if (result.isConfirmed) {
-      Swal.fire("Saved!", "", "success");
-      setIsEdit(false);
-    } else if (result.isDenied) {
-      Swal.fire("Changes are not saved", "", "info");
-      // Thực hiện hành động khi không lưu
-    }
-    // Không cần xử lý gì nếu người dùng nhấp vào "Cancel"
-  });
-}
