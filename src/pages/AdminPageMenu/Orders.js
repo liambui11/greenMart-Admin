@@ -11,6 +11,7 @@ import { IoMdSearch } from "react-icons/io";
 
 function Orders() {
   const [isLoading, setIsLoading] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
   const navigate = useNavigate();
   const [statusFilter, setStatusFilter] = useState("All");
 
@@ -137,7 +138,24 @@ function Orders() {
     }
   };
 
-  const handleSearchButton = () => {};
+  const handleSearchButton = async () => {
+    setIsLoading(true);
+    console.log("gt search", searchValue);
+
+    try {
+      const resData = await axiosInstanceStaff.get(
+        `/api/v1/admin/orders?keyword=${searchValue}&status=${
+          statusFilter === "All" ? "" : statusFilter.toLowerCase()
+        }`
+      );
+      console.log(resData.data);
+      setOrderData(resData.data);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="orders-container">
@@ -156,8 +174,8 @@ function Orders() {
               className="orders__content--search"
               type="text"
               placeholder="Search Order"
-              // value={searchQuery}
-              // onChange={(e) => setSearchQuery(e.target.value)}
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
             ></input>
             <div
               className="orders__content--search-button"
@@ -167,6 +185,7 @@ function Orders() {
             </div>
             <select
               className="orders__content--select"
+              value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
             >
               {orderStatus.map((item, index) => (
