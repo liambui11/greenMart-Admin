@@ -7,6 +7,7 @@ import Swal from "sweetalert2";
 import "./Orders.css";
 import { LiaExchangeAltSolid } from "react-icons/lia";
 import { FaRegEye } from "react-icons/fa6";
+import { IoMdSearch } from "react-icons/io";
 
 function Orders() {
   const [isLoading, setIsLoading] = useState(false);
@@ -136,6 +137,8 @@ function Orders() {
     }
   };
 
+  const handleSearchButton = () => {};
+
   return (
     <div className="orders-container">
       <div className="orders">
@@ -148,21 +151,29 @@ function Orders() {
           <span>Orders</span>
         </div>
         <div className="orders__content">
-          <input
-            className="orders__content--search"
-            type="text"
-            placeholder="Search Order"
-            // value={searchQuery}
-            // onChange={(e) => setSearchQuery(e.target.value)}
-          ></input>
-          <select
-            className="orders__content--select"
-            onChange={(e) => setStatusFilter(e.target.value)}
-          >
-            {orderStatus.map((item, index) => (
-              <option key={index}>{item}</option>
-            ))}
-          </select>
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+            <input
+              className="orders__content--search"
+              type="text"
+              placeholder="Search Order"
+              // value={searchQuery}
+              // onChange={(e) => setSearchQuery(e.target.value)}
+            ></input>
+            <div
+              className="orders__content--search-button"
+              onClick={() => handleSearchButton()}
+            >
+              <IoMdSearch size={"2rem"} />
+            </div>
+            <select
+              className="orders__content--select"
+              onChange={(e) => setStatusFilter(e.target.value)}
+            >
+              {orderStatus.map((item, index) => (
+                <option key={index}>{item}</option>
+              ))}
+            </select>
+          </div>
           <table className="orders__content--table">
             <thead>
               <tr>

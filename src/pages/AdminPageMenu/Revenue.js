@@ -20,10 +20,7 @@ function Revenue() {
   const [startDay, setStartDay] = useState(dayjs());
   const [endDay, setEndDay] = useState(dayjs());
   const [revenue, setRevenue] = useState({ totalOrders: 0, totalRevenue: 0 });
-  useEffect(() => {
-    // console.log(startDay.format("YYYY-MM-DD"));
-    console.log(endDay.format("YYYY-MM-DD"));
-  }, [startDay, endDay]);
+
 
   //   useEffect(() => {
   //     const fetchData = async () => {
@@ -76,7 +73,14 @@ function Revenue() {
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DesktopDatePicker
                 label="Start Date"
-                onChange={(newDate) => setStartDay(newDate)}
+                value={startDay}
+                onChange={(newDate) => {
+                  if (newDate && dayjs(newDate).isValid()) {
+                    setStartDay(newDate);
+                  } else {
+                    setStartDay(null);
+                  }
+                }}
                 format="DD/MM/YYYY"
                 renderInput={(params) => (
                   <TextField
@@ -95,7 +99,14 @@ function Revenue() {
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DesktopDatePicker
                 label="End Date"
-                onChange={(newDate) => setEndDay(newDate)}
+                value={endDay}
+                onChange={(newDate) => {
+                  if (newDate && dayjs(newDate).isValid()) {
+                    setEndDay(newDate);
+                  } else {
+                    setEndDay(null);
+                  }
+                }}
                 format="DD/MM/YYYY"
                 renderInput={(params) => (
                   <TextField

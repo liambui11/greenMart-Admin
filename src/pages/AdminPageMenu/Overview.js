@@ -72,8 +72,10 @@ function Overview() {
           </div>
           <div className="over-view__content--revenue">
             <Revenue />
-            
           </div>
+          {/* <div className="over-view__content--recent-order">
+
+          </div> */}
         </div>
       </div>
       {isLoading && <OverlayLoading />}

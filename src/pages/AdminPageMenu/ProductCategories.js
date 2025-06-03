@@ -7,10 +7,11 @@ import { useNavigate } from "react-router-dom";
 import axiosInstanceStaff from "../../untils/axiosInstanceStaff";
 import OverlayLoading from "../../components/OverlayLoading/OverlayLoading";
 import Swal from "sweetalert2";
-// import CheckRole from "../../components/CheckRole";
+import { IoMdSearch } from "react-icons/io";
 
 function ProductCategories() {
   const [categoriesData, setCategoriesData] = useState([]);
+  const [searchValue, setSearchValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -74,10 +75,19 @@ function ProductCategories() {
     fetchData();
   }, []);
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const filteredCategory = categoriesData.filter((item) =>
-    item.categoryName.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const handleSearchButton = async () => {
+    setIsLoading(true);
+    try {
+      const resProductCategory = await axiosInstanceStaff.get(
+        `/api/v1/admin/products-category?keyword=${searchValue}`
+      );
+      setCategoriesData(resProductCategory.data.info);
+    } catch (err) {
+      console.error("Lỗi: ", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="product-categories-container">
@@ -103,13 +113,21 @@ function ProductCategories() {
           <span>Product Categories</span>
         </div>
         <div className="product-categories__content">
-          <input
-            className="product-categories__content--search"
-            type="text"
-            placeholder="Search Product Category"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          ></input>
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+            <input
+              className="product-categories__content--search"
+              type="text"
+              placeholder="Search Product Category"
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+            ></input>
+            <div
+              className="products-categories__content--search-button"
+              onClick={() => handleSearchButton()}
+            >
+              <IoMdSearch size={"2rem"} />
+            </div>
+          </div>
           <table className="product-categories__content--table">
             <thead>
               <tr>
@@ -123,7 +141,7 @@ function ProductCategories() {
               </tr>
             </thead>
             <tbody>
-              {filteredCategory.map((item) => (
+              {categoriesData.map((item) => (
                 <tr key={item._id}>
                   <td>
                     <img

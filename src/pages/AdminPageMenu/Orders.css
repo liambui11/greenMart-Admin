@@ -47,6 +47,19 @@
   border: 0.1rem solid rgba(0, 0, 0, 0.249);
 }
 
+.orders__content--search-button {
+  padding: 0.7rem;
+  border-radius: 0.6rem;
+  border: 0.1rem solid rgba(0, 0, 0, 0.249);
+  color: #5c6c75;
+  cursor: pointer;
+}
+
+.orders__content--search-button:hover {
+  color: white;
+  background-color: #2d6a4f;
+}
+
 .orders__content--select {
   margin-left: 2rem;
   color: #000000c2;

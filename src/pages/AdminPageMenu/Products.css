@@ -76,6 +76,19 @@
   border: 0.1rem solid rgba(0, 0, 0, 0.249);
 }
 
+.products__content--search-button {
+  padding: 0.7rem;
+  border-radius: 0.6rem;
+  border: 0.1rem solid rgba(0, 0, 0, 0.249);
+  color: #5c6c75;
+  cursor: pointer;
+}
+
+.products__content--search-button:hover {
+  color: white;
+  background-color: #2d6a4f;
+}
+
 .products__content--table {
   margin-top: 2rem;
   width: 100%;
