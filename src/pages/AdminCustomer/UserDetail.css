@@ -160,31 +160,25 @@
   left: 0rem;
 }
 
-.customer__create-by {
+.customer__create-at {
   width: 40rem;
   position: absolute;
   top: 30rem;
   left: 50rem;
 }
 
-.customer__create-at {
+.customer__update-at {
   width: 40rem;
   position: absolute;
   top: 40rem;
   left: 0rem;
 }
 
-.customer__update-at {
+/* .customer__update-at {
   width: 40rem;
   position: absolute;
   top: 40rem;
   left: 50rem;
-}
-/* .customer__update-at {
-  width: 40rem;
-  position: absolute;
-  top: 50rem;
-  left: 0rem;
 } */
 
 @media (max-width: 992px) {

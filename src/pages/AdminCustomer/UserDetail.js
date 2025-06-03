@@ -235,19 +235,11 @@ function CustomerDetail() {
               }
             />
           </label>
-          <label className="customer__create-by">
+          {/* <label className="customer__create-by">
             Create By
             <input
               type="text"
               value={userData?.createBy}
-              disabled={true}
-            ></input>
-          </label>
-          {/* <label className="customer__update-by">
-            Update By
-            <input
-              type="text"
-              value={userData?.updateBy}
               disabled={true}
             ></input>
           </label> */}
