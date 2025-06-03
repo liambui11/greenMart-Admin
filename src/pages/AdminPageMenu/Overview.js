@@ -4,10 +4,10 @@ import { FaChevronRight } from "react-icons/fa";
 import { FaRegUser } from "react-icons/fa";
 import { IoCartOutline } from "react-icons/io5";
 import { BsBoxSeam } from "react-icons/bs";
-import OverviewChart from "./OverviewChart";
 import { useEffect, useState } from "react";
 import axiosInstanceStaff from "../../untils/axiosInstanceStaff";
 import OverlayLoading from "../../components/OverlayLoading/OverlayLoading";
+import Revenue from "./Revenue";
 
 function Overview() {
   const [overviewData, setOverviewData] = useState();
@@ -70,9 +70,12 @@ function Overview() {
               <div className="card-quantity">{overviewData?.totalUsers}</div>
             </div>
           </div>
-          <div className="over-view__content--chart">
-            <OverviewChart />
+          <div className="over-view__content--revenue">
+            <Revenue />
           </div>
+          {/* <div className="over-view__content--recent-order">
+
+          </div> */}
         </div>
       </div>
       {isLoading && <OverlayLoading />}

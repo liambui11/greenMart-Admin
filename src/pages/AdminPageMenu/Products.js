@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import "./Products.css";
 import { CiEdit } from "react-icons/ci";
 import { MdOutlineDeleteOutline } from "react-icons/md";
@@ -8,11 +8,13 @@ import axiosInstanceStaff from "../../untils/axiosInstanceStaff";
 import OverlayLoading from "../../components/OverlayLoading/OverlayLoading";
 import Swal from "sweetalert2";
 import CheckRole from "../../components/CheckRole";
+import { IoMdSearch } from "react-icons/io";
 
 function Products() {
   const [categoriesData, setCategoriesData] = useState([]);
   const [productsData, setProductsData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
   const canDelete = CheckRole("product", "delete");
   const canAdd = CheckRole("product", "add");
   const navigate = useNavigate();
@@ -47,11 +49,6 @@ function Products() {
     fetchData();
   }, []);
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const filteredProduct = productsData.filter((item) =>
-    item.productName.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
   const handleDelete = async (itemID) => {
     const result = await Swal.fire({
       title: "Do you want to delete this product?",
@@ -85,6 +82,20 @@ function Products() {
     }
   };
 
+  const handleSearchButton = async () => {
+    setIsLoading(true);
+    try {
+      const resProducts = await axiosInstanceStaff.get(
+        `/api/v1/admin/products?keyword=${searchValue}&currentPage=1&limitItems=1000`
+      );
+      setProductsData(resProducts.data.info);
+    } catch (err) {
+      console.error("Lỗi: ", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="products-container">
       <div className="products">
@@ -107,19 +118,24 @@ function Products() {
           <span>Products</span>
         </div>
         <div className="products__content">
-          <input
-            className="products__content--search"
-            type="text"
-            placeholder="Search Product"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          ></input>
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+            <input
+              className="products__content--search"
+              type="text"
+              placeholder="Search Product"
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+            ></input>
+            <div
+              className="products__content--search-button"
+              onClick={() => handleSearchButton()}
+            >
+              <IoMdSearch size={"2rem"} />
+            </div>
+          </div>
           <table className="products__content--table">
             <thead>
               <tr>
-                <th>
-                  <input type="checkbox"></input>
-                </th>
                 <th>Image</th>
                 <th>Name</th>
                 <th>Category</th>
@@ -132,11 +148,8 @@ function Products() {
               </tr>
             </thead>
             <tbody>
-              {filteredProduct.map((item) => (
+              {productsData.map((item) => (
                 <tr key={item._id}>
-                  <td>
-                    <input type="checkbox"></input>
-                  </td>
                   <td>
                     <img
                       alt=""

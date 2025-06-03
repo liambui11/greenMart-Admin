@@ -1,0 +1,59 @@
+.revenue-container {
+  margin-top: 2rem;
+  margin-left: 2rem;
+}
+
+.revenue {
+  width: 70rem;
+  box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.2);
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+.revenue__title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #0000009e;
+  margin-bottom: 1rem;
+}
+
+.revenue__date {
+  display: flex;
+  gap: 3rem;
+}
+
+.check-revenue-button {
+  border: none;
+  background-color: #5c6c75;
+  color: white;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  padding: 0 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.check-revenue-button:hover {
+  background-color: #2d6a4f;
+  color: white;
+}
+
+.revenue__result {
+  margin-top: 2rem;
+}
+
+.revenue__result--money {
+  color: #db3030;
+  font-size: 5rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+}
+
+.revenue__result--order {
+  color: #0aad0a;
+  font-size: 5rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+}
