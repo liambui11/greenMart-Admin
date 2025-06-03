@@ -31,12 +31,13 @@ function AddStaff() {
   const [errors, setErrors] = useState({});
 
   const handleInput = (event) => {
-    // setValues((prev) => ({
-    //   ...prev,
-    //   [event.target.name]: event.target.value,
-    // }));
-
     const { name, value } = event.target;
+
+    let newValue = value;
+
+    if (name === "name") {
+      newValue = value.replace(/[0-9]/g, "");
+    }
 
     // Xóa lỗi khi người dùng bắt đầu nhập
     setErrors((prevErrors) => ({
@@ -46,7 +47,7 @@ function AddStaff() {
 
     setValues((prevValues) => ({
       ...prevValues,
-      [name]: value,
+      [name]: newValue,
     }));
   };
 

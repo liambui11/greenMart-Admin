@@ -105,19 +105,6 @@ function CustomerDetail() {
         <div className="customer-detail__title">
           <div className="customer-detail__title--name">Customer Detail</div>
           <div className="customer-detail__title--button">
-            {isEdit && (
-              <div className="customer-save-button" onClick={handleSave}>
-                <LuSave />
-                Save
-              </div>
-            )}
-            <div
-              className="customer-edit-button"
-              onClick={() => setIsEdit(true)}
-            >
-              <CiEdit />
-              Edit
-            </div>
             <div
               className="customer-back-button"
               onClick={() => navigateToCustomer(`/dashboard/user`)}
@@ -256,14 +243,14 @@ function CustomerDetail() {
               disabled={true}
             ></input>
           </label>
-          <label className="customer__update-by">
+          {/* <label className="customer__update-by">
             Update By
             <input
               type="text"
               value={userData?.updateBy}
               disabled={true}
             ></input>
-          </label>
+          </label> */}
 
           <label className="customer__create-at">
             Create At
