@@ -58,7 +58,7 @@ function Overview() {
                   <FaRegUser size={"4rem"} />
                 </div>
               </div>
-              <div className="card-quantity">{overviewData?.totalProducts}</div>
+              <div className="card-quantity">{overviewData?.totalUsers}</div>
             </div>
             <div className="product-report card">
               <div className="card-name">
@@ -67,7 +67,7 @@ function Overview() {
                   <BsBoxSeam size={"4rem"} />
                 </div>
               </div>
-              <div className="card-quantity">{overviewData?.totalUsers}</div>
+              <div className="card-quantity">{overviewData?.totalProducts}</div>
             </div>
           </div>
           <div className="over-view__content--revenue">
