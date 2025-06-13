@@ -6,6 +6,10 @@ import OverlayLoading from "../../components/OverlayLoading/OverlayLoading";
 import { LiaExchangeAltSolid } from "react-icons/lia";
 import Swal from "sweetalert2";
 import "./OrderDetail.css";
+import { IoPrintOutline } from "react-icons/io5";
+import html2pdf from "html2pdf.js";
+import InvoicePrintable from "./InvoicePrintable";
+import ReactDOMServer from "react-dom/server";
 
 function OrderDetail() {
   const [isLoading, setIsLoading] = useState(false);
@@ -102,33 +106,39 @@ function OrderDetail() {
     }
   };
 
+  const handlePrintInvoice = () => {
+    const htmlString = ReactDOMServer.renderToStaticMarkup(
+      <InvoicePrintable orderInfo={currentOrderInfo} />
+    );
+
+    const tempContainer = document.createElement("div");
+    tempContainer.innerHTML = htmlString;
+    document.body.appendChild(tempContainer);
+
+    const opt = {
+      margin: 0.5,
+      filename: `invoice-${currentOrderInfo._id}.pdf`,
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+    };
+
+    setTimeout(() => {
+      html2pdf()
+        .set(opt)
+        .from(tempContainer)
+        .save()
+        .then(() => {
+          document.body.removeChild(tempContainer);
+        });
+    }, 300);
+  };
+
   return (
     <div className="order-detail-container">
       <div className="order-detail">
         <div className="order-detail__title">
           <div className="order-detail__title--name">Order Detail</div>
-          <div className="order-detail__title--button">
-            {/* {isEdit && (
-              <div className="save-button" onClick={handleSave}>
-                <LuSave />
-                Save
-              </div>
-            )}
-
-            {canEdit && (
-              <div className="edit-button" onClick={() => setIsEdit(true)}>
-                <CiEdit />
-                Edit
-              </div>
-            )}
-            <div
-              className="back-button"
-              onClick={() => navigate(`/dashboard/products`)}
-            >
-              <TbArrowBackUp />
-              Back
-            </div> */}
-          </div>
         </div>
         <div className="order-detail__breadcrumb">
           <span onClick={() => navigate(`/dashboard/overview`)}>Admin</span>
@@ -146,6 +156,11 @@ function OrderDetail() {
             {currentOrderInfo?.orderStatus === "pending" && (
               <div onClick={() => handleChangeStatus(currentOrderInfo?._id)}>
                 <LiaExchangeAltSolid />
+              </div>
+            )}
+            {currentOrderInfo?.orderStatus === "success" && (
+              <div onClick={handlePrintInvoice}>
+                <IoPrintOutline />
               </div>
             )}
           </div>

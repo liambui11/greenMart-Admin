@@ -17,7 +17,7 @@ function parsePermissions(permissionArray) {
   return result;
 }
 
-function CheckRole(model, action) {
+export default function useCheckRole(model, action) {
   const permissions = useSelector(
     (state) => state.staffAuth.staffInfo.role.rolePermissions
   );
@@ -29,5 +29,3 @@ function CheckRole(model, action) {
 
   return actions.includes(action);
 }
-
-export default CheckRole;

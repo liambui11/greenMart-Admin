@@ -118,11 +118,11 @@ input[type="checkbox"] {
   cursor: pointer;
 }
 
-.edit-icon,
+.view-icon,
 .change-icon {
   cursor: pointer;
 }
-.edit-icon:hover,
+.view-icon:hover,
 .change-icon:hover {
   color: #006838;
 }

@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import "./AdminMenu.css";
-import CheckRole from "./CheckRole";
+import useCheckRole from "./CheckRole";
 import { LiaChartBarSolid } from "react-icons/lia";
 import { BiCategory } from "react-icons/bi";
 import { FiShoppingBag, FiUser, FiUsers } from "react-icons/fi";
@@ -21,6 +21,12 @@ const Divider = () => {
 };
 
 function AdminMenu() {
+  const canViewCategory = useCheckRole("category", "view");
+  const canViewProduct = useCheckRole("product", "view");
+  const canViewOrder = useCheckRole("order", "view");
+  const canViewStaff = useCheckRole("staff", "view");
+  const canViewUser = useCheckRole("user", "view");
+
   return (
     <div className="admin-menu-container">
       <div className="admin-menu">
@@ -36,7 +42,7 @@ function AdminMenu() {
             Overview
           </NavLink>
           <Divider />
-          {CheckRole("category", "view") && (
+          {canViewCategory && (
             <NavLink
               to={`/dashboard/productcategories`}
               className={({ isActive }) =>
@@ -49,7 +55,7 @@ function AdminMenu() {
               Product Categories
             </NavLink>
           )}
-          {CheckRole("product", "view") && (
+          {canViewProduct && (
             <NavLink
               to={`/dashboard/products`}
               className={({ isActive }) =>
@@ -60,18 +66,20 @@ function AdminMenu() {
               Products
             </NavLink>
           )}
-          <NavLink
-            to={`/dashboard/orders`}
-            className={({ isActive }) =>
-              `admin-menu__items--orders ${isActive ? "active" : ""}`
-            }
-          >
-            <LiaFileInvoiceDollarSolid
-              size="2.5rem"
-              style={{ marginRight: "2rem" }}
-            />
-            Orders
-          </NavLink>
+          {canViewOrder && (
+            <NavLink
+              to={`/dashboard/orders`}
+              className={({ isActive }) =>
+                `admin-menu__items--orders ${isActive ? "active" : ""}`
+              }
+            >
+              <LiaFileInvoiceDollarSolid
+                size="2.5rem"
+                style={{ marginRight: "2rem" }}
+              />
+              Orders
+            </NavLink>
+          )}
           {/* <NavLink
             to={`/dashboard/rolesgroup`}
             className={({ isActive }) =>
@@ -105,7 +113,7 @@ function AdminMenu() {
             Customers
           </NavLink>
           </NavLink> */}
-          {CheckRole("staff", "view") && (
+          {canViewStaff && (
             <NavLink
               to={`/dashboard/staff`}
               className={({ isActive }) =>
@@ -116,7 +124,7 @@ function AdminMenu() {
               Staff
             </NavLink>
           )}
-          {CheckRole("user", "view") && (
+          {canViewUser && (
             <NavLink
               to={`/dashboard/user`}
               className={({ isActive }) =>

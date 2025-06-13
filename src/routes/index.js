@@ -18,6 +18,7 @@ import AddStaff from "../pages/AdminStaff/AddStaff/AddStaff";
 import AuthDetail from "../pages/AuthDetail/AuthDetail";
 import Orders from "../pages/AdminPageMenu/Orders";
 import OrderDetail from "../pages/AdminPageMenu/OrderDetail";
+import ProtectedRoute from "./ProtectedRoute";
 
 export const routes = [
   {
@@ -29,6 +30,10 @@ export const routes = [
     element: <AdminSignIn />,
   },
   {
+    path: "/dashboard/unauthorized",
+    element: <ErrorPage />, 
+  },
+  {
     path: "/dashboard",
     element: <PrivateRoute />,
     children: [
@@ -37,29 +42,54 @@ export const routes = [
         element: <LayoutDefault />,
         children: [
           { path: "overview", element: <Overview /> },
-          { path: "productcategories", element: <ProductCategories /> },
           {
-            path: "productcategories/productcategorydetail/:categoryslug",
-            element: <ProductCategoryDetail />,
+            element: <ProtectedRoute model="category" />,
+            children: [
+              { path: "productcategories", element: <ProductCategories /> },
+              {
+                path: "productcategories/addproductcategory",
+                element: <AddProductCategory />,
+              },
+              {
+                path: "productcategories/productcategorydetail/:categoryslug",
+                element: <ProductCategoryDetail />,
+              },
+            ],
           },
-          { path: "products", element: <Products /> },
-          { path: "user", element: <Customer /> },
-          { path: "user/userdetail/:id", element: <CustomerDetail /> },
           {
-            path: "products/productdetail/:productslug",
-            element: <ProductDetail />,
+            element: <ProtectedRoute model="user" />,
+            children: [
+              { path: "user", element: <Customer /> },
+              { path: "user/userdetail/:id", element: <CustomerDetail /> },
+            ],
           },
-          { path: "products/addproduct", element: <AddProduct /> },
           {
-            path: "productcategories/addproductcategory",
-            element: <AddProductCategory />,
+            element: <ProtectedRoute model="product" />,
+            children: [
+              { path: "products", element: <Products /> },
+              {
+                path: "products/productdetail/:productslug",
+                element: <ProductDetail />,
+              },
+              { path: "products/addproduct", element: <AddProduct /> },
+            ],
           },
-          { path: "staff/staffdetail/:id", element: <StaffDetail /> },
-          { path: "staff", element: <Staff /> },
-          { path: "staff/addstaff", element: <AddStaff /> },
           { path: "authdetail", element: <AuthDetail /> },
-          { path: "orders", element: <Orders /> },
-          { path: "orders/orderdetail/:orderId", element: <OrderDetail /> },
+          {
+            element: <ProtectedRoute model="order" />,
+            children: [
+              { path: "orders", element: <Orders /> },
+              { path: "orders/orderdetail/:orderId", element: <OrderDetail /> },
+            ],
+          },
+          {
+            element: <ProtectedRoute model="staff" />,
+            children: [
+              { path: "staff", element: <Staff /> },
+              { path: "staff/staffdetail/:id", element: <StaffDetail /> },
+              { path: "staff/addstaff", element: <AddStaff /> },
+            ],
+          },
         ],
       },
     ],

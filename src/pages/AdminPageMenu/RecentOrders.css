@@ -1,0 +1,40 @@
+.recent-orders {
+  margin-top: 2rem;
+}
+
+.recent-orders__title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #0000009e;
+}
+
+.recent-orders__content--table-container {
+  max-height: 24rem;
+  overflow-y: auto;
+  display: block;
+}
+
+.recent-orders__content--table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.2);
+}
+
+.recent-orders__content--table th {
+  background-color: #f0f3f2;
+  color: #5c6c75;
+  text-align: center;
+  height: 5rem;
+}
+
+.recent-orders__content--table td {
+  text-align: center;
+  height: 8rem;
+}
+
+.view-icon {
+  cursor: pointer;
+}
+.view-icon:hover {
+  color: #006838;
+}

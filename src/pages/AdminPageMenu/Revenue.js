@@ -21,7 +21,6 @@ function Revenue() {
   const [endDay, setEndDay] = useState(dayjs());
   const [revenue, setRevenue] = useState({ totalOrders: 0, totalRevenue: 0 });
 
-
   //   useEffect(() => {
   //     const fetchData = async () => {
   //       try {

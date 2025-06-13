@@ -245,7 +245,7 @@ function Orders() {
                     <td>${item.totalAmount}</td>
                     <td>
                       <FaRegEye
-                        className="edit-icon"
+                        className="view-icon"
                         onClick={() => handleOrderDetailClick(item._id)}
                       />
                     </td>

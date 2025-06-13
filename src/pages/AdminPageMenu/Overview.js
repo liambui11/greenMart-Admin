@@ -8,6 +8,8 @@ import { useEffect, useState } from "react";
 import axiosInstanceStaff from "../../untils/axiosInstanceStaff";
 import OverlayLoading from "../../components/OverlayLoading/OverlayLoading";
 import Revenue from "./Revenue";
+import RecentOrders from "./RecentOrders";
+import { useSelector } from "react-redux";
 
 function Overview() {
   const [overviewData, setOverviewData] = useState();
@@ -31,6 +33,11 @@ function Overview() {
     fetchData();
   }, []);
 
+  const staffRole = useSelector(
+    (state) => state.staffAuth.staffInfo.role.roleName
+  );
+
+  console.log("staffRole:", staffRole);
   return (
     <div className="over-view-container">
       <div className="over-view">
@@ -42,7 +49,7 @@ function Overview() {
         </div>
         <div className="over-view__content">
           <div className="over-view__content--cards">
-            <div className="orders-report card">
+            {staffRole === "admin" && <div className="orders-report card">
               <div className="card-name">
                 <div className="card-name__name">Orders</div>
                 <div className="card-name__icon">
@@ -50,8 +57,8 @@ function Overview() {
                 </div>
               </div>
               <div className="card-quantity">{overviewData?.totalOrders}</div>
-            </div>
-            <div className="customer-report card">
+            </div>}
+            {staffRole === "admin" &&<div className="customer-report card">
               <div className="card-name">
                 <div className="card-name__name">Customer</div>
                 <div className="card-name__icon">
@@ -59,7 +66,7 @@ function Overview() {
                 </div>
               </div>
               <div className="card-quantity">{overviewData?.totalUsers}</div>
-            </div>
+            </div>}
             <div className="product-report card">
               <div className="card-name">
                 <div className="card-name__name">Products</div>
@@ -70,12 +77,12 @@ function Overview() {
               <div className="card-quantity">{overviewData?.totalProducts}</div>
             </div>
           </div>
-          <div className="over-view__content--revenue">
+          {staffRole === "admin" && <div className="over-view__content--recent-order">
+            <RecentOrders />
+          </div>}
+          {staffRole === "admin" && <div className="over-view__content--revenue">
             <Revenue />
-          </div>
-          {/* <div className="over-view__content--recent-order">
-
-          </div> */}
+          </div>}
         </div>
       </div>
       {isLoading && <OverlayLoading />}

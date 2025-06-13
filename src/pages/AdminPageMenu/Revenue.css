@@ -1,17 +1,17 @@
 .revenue-container {
-  margin-top: 2rem;
-  margin-left: 2rem;
+  /* margin-top: 2rem;
+  margin-left: 2rem; */
 }
 
 .revenue {
-  width: 70rem;
+  width: 100%;
   box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.2);
   border-radius: 0.5rem;
   padding: 1rem;
 }
 
 .revenue__title {
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: 600;
   color: #0000009e;
   margin-bottom: 1rem;
@@ -40,6 +40,8 @@
 
 .revenue__result {
   margin-top: 2rem;
+  display: flex;
+  gap: 5%;
 }
 
 .revenue__result--money {
