@@ -1,70 +1,74 @@
-# Getting Started with Create React App
+# 📘Frontend min - Website Siêu thị trực tuyến GreenMart
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Đây là giao diện quản trị dành cho **quản trị viên** của hệ thống GreenMart, xây dựng bằng ReactJS (Create React App). Admin có thể quản lý sản phẩm, danh mục, người dùng, nhân viên và các đơn hàng.
 
-## Available Scripts
+## 🛠️Công nghệ sử dụng
 
-In the project directory, you can run:
+Visual Studio Code: Môi trường phát triển tích hợp (IDE) được sử dụng để lập trình.
+Postman: Công cụ kiểm thử API RESTful.
+Git/GitHub: Quản lý mã nguồn và theo dõi phiên bản.
+Nodejs: Lập trình phía server.
+MongoDB: Quản lý cơ sở dữ liệu.
 
-### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 📂 Cấu Trúc Dự Án
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+greenmart-admin/
+├── public/                   # Các tài nguyên tĩnh được phục vụ trực tiếp
+│   ├── image/                # Thư mục chứa hình ảnh
+│   ├── index.html            # File HTML chính
+│   ├── logo192.png           # Logo ứng dụng (192x192)
+│   ├── logo512.png           # Logo ứng dụng (512x512)
+│   ├── manifest.json         # Cấu hình PWA
+│   └── robots.txt            # Cho phép/không cho phép trình thu thập web
 
-### `npm test`
+├── src/                      # Mã nguồn frontend
+│   ├── actions/              # Các action Redux (nếu dùng Redux thuần)
+│   ├── components/           # Các component dùng lại như Button, Modal, Table
+│   ├── context/              # React Context API (nếu không dùng Redux)
+│   ├── layout/               # Layout giao diện chính (LayoutDefault, Header, Sidebar, etc.)
+│   │   └── LayoutDefault/
+│   ├── pages/                # Các trang chính như Dashboard, Product, User, Order
+│   ├── reducers/             # Các reducer Redux (nếu dùng Redux)
+│   ├── redux/                # Store cấu hình Redux Toolkit (nếu có)
+│   ├── routes/               # Cấu hình route cho ứng dụng
+│   ├── untils/               # Các hàm tiện ích, xử lý chung (utils)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+│   ├── App.css               # Style tổng thể cho App
+│   ├── App.js                # Component gốc App
+│   ├── App.test.js           # Test file mẫu
+│   ├── index.css             # Style nền mặc định
+│   ├── index.js              # Điểm khởi đầu của ứng dụng React
+│   ├── reportWebVitals.js    # Báo cáo hiệu năng (có thể bỏ)
+│   └── setupTests.js         # Cấu hình cho testing
 
-### `npm run build`
+├── .gitignore                # File/directory bị Git bỏ qua
+├── package.json              # Thông tin dự án & phụ thuộc npm
+├── package-lock.json         # Khóa phiên bản phụ thuộc
+└── README.md                 # Tài liệu giới thiệu dự án
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Cài đặt và chạy dự án 
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 1. Clone Repository
+```bash
+git clone https://github.com/liambui11/greenMart-Admin.git
+cd GreenMartFrontEndAdmin
+```
+### 2. Cài đặt phụ thuộc
+```bash
+npm install
+```
 
-### `npm run eject`
+### 3. Khởi chạy dự án
+```bash
+npm start
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## 👥 Nhóm Thực Hiện
+- Nguyễn Ngọc Long - N22DCCN149
+- Bùi Kinh Luân - N22DCCN151
+- Bùi Minh Quân - N22DCCN163
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 📄 License
+Dự án được thực hiện với mục đích học tập
