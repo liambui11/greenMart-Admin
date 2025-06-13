@@ -1,14 +1,14 @@
-# 📘Frontend min - Website Siêu thị trực tuyến GreenMart
+# 📘Frontend Admin - Website Siêu thị trực tuyến GreenMart
 
 Đây là giao diện quản trị dành cho **quản trị viên** của hệ thống GreenMart, xây dựng bằng ReactJS (Create React App). Admin có thể quản lý sản phẩm, danh mục, người dùng, nhân viên và các đơn hàng.
 
 ## 🛠️Công nghệ sử dụng
 
-Visual Studio Code: Môi trường phát triển tích hợp (IDE) được sử dụng để lập trình.
-Postman: Công cụ kiểm thử API RESTful.
-Git/GitHub: Quản lý mã nguồn và theo dõi phiên bản.
-Nodejs: Lập trình phía server.
-MongoDB: Quản lý cơ sở dữ liệu.
+Visual Studio Code: Môi trường phát triển tích hợp (IDE) được sử dụng để lập trình.<br>
+Postman: Công cụ kiểm thử API RESTful.<br>
+Git/GitHub: Quản lý mã nguồn và theo dõi phiên bản.<br>
+Nodejs: Lập trình phía server.<br>
+MongoDB: Quản lý cơ sở dữ liệu.<br>
 
 
 ### 📂 Cấu Trúc Dự Án
