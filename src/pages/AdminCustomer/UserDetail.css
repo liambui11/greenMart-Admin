@@ -26,7 +26,7 @@
 }
 
 /* .customer-edit-button, */
-/* .customer-save-button, */
+.customer-save-button,
 .customer-back-button {
   min-width: 8rem;
   padding: 1rem 1rem;
@@ -41,7 +41,7 @@
   cursor: pointer;
 }
 
-/* .customer-edit-button:hover, */
+.customer-save-button:hover,
 .customer-back-button:hover {
   background-color: #2d6a4f;
 }
