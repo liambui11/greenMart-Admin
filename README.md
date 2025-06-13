@@ -12,7 +12,7 @@ MongoDB: Quản lý cơ sở dữ liệu.
 
 
 ### 📂 Cấu Trúc Dự Án
-
+```
 greenmart-admin/
 ├── public/                   # Các tài nguyên tĩnh được phục vụ trực tiếp
 │   ├── image/                # Thư mục chứa hình ảnh
@@ -46,8 +46,7 @@ greenmart-admin/
 ├── package.json              # Thông tin dự án & phụ thuộc npm
 ├── package-lock.json         # Khóa phiên bản phụ thuộc
 └── README.md                 # Tài liệu giới thiệu dự án
-
-
+```
 ## Cài đặt và chạy dự án 
 
 ### 1. Clone Repository
