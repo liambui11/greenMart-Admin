@@ -30,7 +30,7 @@ function CustomerDetail() {
         );
         if (res.data.code === 200) {
           setUserData(res.data.info);
-          // console.log("USER DATA:", res.data.info);
+          console.log("USER DATA:", res.data.info);
         }
       } catch (err) {
         console.error("Lỗi khi lấy thông tin user:", err);
@@ -43,38 +43,37 @@ function CustomerDetail() {
   }, [id]);
 
   const handleSave = async () => {
-    // event.preventDefault();
     const validationErrors = ValidationUserDetail(userData);
-
     setErrors(validationErrors);
+
     if (Object.keys(validationErrors).length === 0) {
       setIsLoading(true);
       try {
-        const formData = new FormData();
-        formData.append("userName", userData.userName.trim());
-        formData.append("userPhone", userData.userPhone.trim());
-        formData.append("userAddress", userData.userAddress.trim());
-        formData.append("userStatus", userData.userStatus);
-        if (file) {
-          formData.append("userAvatar", file);
-        }
-
-        console.log("Form data being sent:");
-        formData.forEach((value, key) => {
-          console.log(`${key}: ${value}`);
-        });
+        console.log(userData.userStatus);
         const res = await axiosInstanceStaff.put(
           `/api/v1/admin/users/update/${id}`,
-          formData,
+          {
+            userName: userData.userName,
+            userEmail: userData.userEmail,
+            userPhone: userData.userPhone,
+            userAddress: userData.userAddress,
+            userStatus: userData.userStatus,
+          },
           {
             headers: {
-              "Content-Type": "multipart/form-data",
+              "Content-Type": "application/json",
             },
           }
         );
-      } catch (error) {
+
         Swal.fire({
-          title: error.response?.data?.message || "Server error occurred!",
+          title: "Save Success!",
+          icon: "success",
+        });
+      } catch (error) {
+        console.log("Lỗi chi tiết:", error.response?.data);
+        Swal.fire({
+          title: error.response?.data?.message || "Có lỗi xảy ra từ server!",
           icon: "error",
         });
       } finally {
@@ -86,16 +85,16 @@ function CustomerDetail() {
   const handleAdminClick = () => navigateToAdmin(`/`);
   const handleCustomerClick = () => navigateToCustomer(`/dashboard/user`);
 
-  const handleButtonChange = (event) => {
-    const selectedFile = event.target.files[0];
-    if (selectedFile) {
-      setFile(selectedFile);
-      setUserData((prevData) => ({
-        ...prevData,
-        userAvatar: URL.createObjectURL(selectedFile),
-      }));
-    }
-  };
+  // const handleButtonChange = (event) => {
+  //   const selectedFile = event.target.files[0];
+  //   if (selectedFile) {
+  //     setFile(selectedFile);
+  //     setUserData((prevData) => ({
+  //       ...prevData,
+  //       userAvatar: URL.createObjectURL(selectedFile),
+  //     }));
+  //   }
+  // };
 
   if (!userData) return <OverlayLoading />;
 
@@ -111,6 +110,10 @@ function CustomerDetail() {
             >
               <TbArrowBackUp />
               Back
+            </div>
+            <div className="customer-save-button" onClick={() => handleSave()}>
+              <LuSave />
+              Save
             </div>
           </div>
         </div>
@@ -143,7 +146,6 @@ function CustomerDetail() {
                     accept="image/*"
                     id="fileInput"
                     style={{ display: "none" }}
-                    onChange={handleButtonChange}
                   />
                   <label className="upload-icon" htmlFor="fileInput">
                     <FaCloudUploadAlt size="3rem" />
@@ -189,7 +191,7 @@ function CustomerDetail() {
                   type="radio"
                   value="active"
                   checked={userData.userStatus === "active"}
-                  disabled={!isEdit}
+                  disabled={false}
                   onChange={(e) =>
                     setUserData({ ...userData, userStatus: e.target.value })
                   }
@@ -201,7 +203,7 @@ function CustomerDetail() {
                   type="radio"
                   value="inactive"
                   checked={userData.userStatus === "inactive"}
-                  disabled={!isEdit}
+                  disabled={false}
                   onChange={(e) =>
                     setUserData({ ...userData, userStatus: e.target.value })
                   }
