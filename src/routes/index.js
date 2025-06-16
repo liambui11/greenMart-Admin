@@ -2,22 +2,22 @@ import { Navigate } from "react-router-dom";
 import LayoutDefault from "../layout/LayoutDefault/LayoutDefault";
 import Customer from "../pages/AdminCustomer/User";
 import CustomerDetail from "../pages/AdminCustomer/UserDetail";
-import ProductCategories from "../pages/AdminPageMenu/ProductCategories";
-import ProductCategoryDetail from "../pages/AdminPageMenu/ProductCategoryDetail";
-import Products from "../pages/AdminPageMenu/Products";
-import ProductDetail from "../pages/AdminPageMenu/ProductDetail";
+import ProductCategories from "../pages/AdminProductCategory/ProductCategories";
+import ProductCategoryDetail from "../pages/AdminProductCategory/ProductCategoryDetail";
+import Products from "../pages/AdminProduct/Products";
+import ProductDetail from "../pages/AdminProduct/ProductDetail";
 import ErrorPage from "../pages/ErrorPage/ErrorPage";
-import AdminSignIn from "../pages/AdminPage/AdminSignIn";
-import Overview from "../pages/AdminPageMenu/Overview";
-import AddProduct from "../pages/AdminPageMenu/AddProduct";
-import AddProductCategory from "../pages/AdminPageMenu/AddProductCategory";
+import AdminSignIn from "../pages/SignInPage/AdminSignIn";
+import Overview from "../pages/AdminOverview/Overview";
+import AddProduct from "../pages/AdminProduct/AddProduct";
+import AddProductCategory from "../pages/AdminProductCategory/AddProductCategory";
 import PrivateRoute from "./PrivateRoute";
 import StaffDetail from "../pages/AdminStaff/StaffDetail/StaffDetail";
 import Staff from "../pages/AdminStaff/Staff";
 import AddStaff from "../pages/AdminStaff/AddStaff/AddStaff";
 import AuthDetail from "../pages/AuthDetail/AuthDetail";
-import Orders from "../pages/AdminPageMenu/Orders";
-import OrderDetail from "../pages/AdminPageMenu/OrderDetail";
+import Orders from "../pages/AdminOrder/Orders";
+import OrderDetail from "../pages/AdminOrder/OrderDetail";
 import ProtectedRoute from "./ProtectedRoute";
 
 export const routes = [
@@ -31,7 +31,7 @@ export const routes = [
   },
   {
     path: "/dashboard/unauthorized",
-    element: <ErrorPage />, 
+    element: <ErrorPage />,
   },
   {
     path: "/dashboard",

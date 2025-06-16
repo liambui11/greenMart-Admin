@@ -3,8 +3,9 @@ import { jwtDecode } from "jwt-decode";
 import { store } from "../redux/store";
 import { checkAuthStaff } from "../actions/authStaff";
 
+const apiUrl = process.env.REACT_APP_API_URL;
 const axiosInstanceStaff = axios.create({
-  baseURL: "http://localhost:3000",
+  baseURL: apiUrl,
   withCredentials: true,
 });
 

@@ -4,6 +4,7 @@ export const loginStaff = (email, password) => {
   return async (dispatch) => {
     dispatch({ type: "STAFF_AUTH_LOADING" });
     try {
+      const apiUrl = process.env.REACT_APP_API_URL;
       const res = await axios.post(
         "/api/v1/admin/auth/login",
         {
@@ -11,7 +12,7 @@ export const loginStaff = (email, password) => {
           staffPassword: password,
         },
         {
-          baseURL: "http://localhost:3000",
+          baseURL: apiUrl,
           withCredentials: true,
         }
       );
@@ -44,10 +45,11 @@ export const loginStaff = (email, password) => {
 
 export const logoutStaff = () => async (dispatch) => {
   try {
+    const apiUrl = process.env.REACT_APP_API_URL;
     await axios.post(
       "/api/v1/admin/auth/logout",
       {},
-      { baseURL: "http://localhost:3000", withCredentials: true }
+      { baseURL: apiUrl, withCredentials: true }
     );
   } catch (error) {
     console.error("Logout staff error:", error);
@@ -59,8 +61,9 @@ export const logoutStaff = () => async (dispatch) => {
 export const checkAuthStaff = () => async (dispatch) => {
   dispatch({ type: "STAFF_AUTH_LOADING" });
   try {
+    const apiUrl = process.env.REACT_APP_API_URL;
     const res = await axios.get("/api/v1/admin/auth/refresh-token", {
-      baseURL: "http://localhost:3000",
+      baseURL: apiUrl,
       withCredentials: true,
     });
 

@@ -13,7 +13,6 @@ function AdminSignIn() {
   const dispatch = useDispatch();
   const { showAlert } = useAlert();
 
-
   const isAuthenticated = useSelector(
     (state) => state.staffAuth.isAuthenticated
   );
@@ -60,7 +59,6 @@ function AdminSignIn() {
       setError(validationErrors);
     }
   };
-
 
   return (
     <div className="admin-sign-in-container">

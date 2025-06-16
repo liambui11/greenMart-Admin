@@ -1,6 +1,5 @@
 import { FaChevronRight } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
-import "./ProductCategoryDetail.css";
 import { useEffect, useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { TbArrowBackUp } from "react-icons/tb";
