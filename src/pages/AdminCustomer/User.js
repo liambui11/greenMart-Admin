@@ -108,9 +108,9 @@ function Customer() {
           <table className="customer__content--table">
             <thead>
               <tr>
-                <th>
+                {/* <th>
                   <input type="checkbox" />
-                </th>
+                </th> */}
                 <th>Image</th>
                 <th>Name</th>
                 <th>Email</th>
@@ -125,9 +125,9 @@ function Customer() {
               {customer?.length > 0 ? (
                 customer.map((item) => (
                   <tr key={item._id}>
-                    <td>
+                    {/* <td>
                       <input type="checkbox" />
-                    </td>
+                    </td> */}
                     <td>
                       <img
                         alt=""
